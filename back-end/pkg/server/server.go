@@ -2,6 +2,7 @@ package server
 
 import (
 	"styk/pkg/server/controllers"
+	"styk/pkg/server/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,6 +15,7 @@ func Start() {
 
 	var server = fiber.New(config)
 	server.Server().MaxConnsPerIP = 2
+	server.Use(middleware.GetCorsMiddleware())
 	setupRoutes(server)
 
 	server.Listen(":10000")
