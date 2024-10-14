@@ -1,4 +1,3 @@
-import "./App.css";
 import FormInput from "./components/FormInput/FormInput";
 
 function App() {

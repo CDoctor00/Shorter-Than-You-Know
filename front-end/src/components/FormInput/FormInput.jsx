@@ -21,22 +21,26 @@ let handleSubmit = async (event) => {
   event.preventDefault();
 
   let { url, timeToLive } = event.target;
-  const postBody = {
+  const body = {
     url: url.value,
-    timeToLive: timeToLive.value,
+    timeToLive: Number(timeToLive.value),
   };
 
-  console.log(1, url.value, typeof timeToLive.value);
-
-  let response = await fetch("http://192.168.0.102:10000/shorten", {
+  fetch("http://192.168.0.102:10000/shorten", {
     method: "POST",
-    body: JSON.stringify(postBody),
+    body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
     },
-  });
-
-  console.log(2, response);
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Request rejected");
+      }
+    })
+    .catch((err) => {
+      console.error(`Fetch error: ${err}`);
+    });
 };
 
 export default FormInput;
