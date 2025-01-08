@@ -60,8 +60,13 @@ func Shorten(context *fiber.Ctx) error {
 		})
 }
 
+/*
+This function check the correctness of the given URL.
+
+It returns true or false if the regex match the string.
+*/
 func checkURL(url string) bool {
-	var expression = `^https?:\/\/(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$`
+	var expression = `^(https?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$`
 
 	regex, _ := regexp.Compile(expression)
 
