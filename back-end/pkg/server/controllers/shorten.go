@@ -42,6 +42,14 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
+	if !checkExpirationTime(requestBody.ExpirationTime) {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(
+			utils.ResponseError{
+				Error:         "Wrong expiration time",
+				FriendlyError: "The system accepts only timestamp greater than actual time and less than 9999999999 (2286/11/20 05:46:39 GMT) in seconds",
+			})
+	}
+
 	var newURL = createNewURL(requestBody)
 
 	errStoring := storeData(newURL)
@@ -73,17 +81,31 @@ func checkURL(url string) bool {
 	return regex.MatchString(url)
 }
 
+/*
+This function check the correctness of the given expiration time.
+
+It returns true if the given time is after current time and before
+the 9999999999 (2286/11/20 05:46:39 GMT), else it returns false.
+*/
+func checkExpirationTime(expirationTime int64) bool {
+	//? Accept only timestamp in seconds and not in milliseconds
+
+	if time.Now().Unix() > expirationTime || expirationTime > 9999999999 {
+		return false
+	}
+
+	return true
+}
+
 func createNewURL(requestBody api.Request) dbType.URL {
 	urlUUID := uuid.New()
-
-	insertTime := time.Now()
 
 	return dbType.URL{
 		UUID:           urlUUID,
 		Original:       requestBody.URL,
 		Short:          urlUUID.String()[:8],
-		InsertTime:     insertTime,
-		ExpirationTime: time.Unix(insertTime.Unix()+requestBody.TimeToLive, 0),
+		InsertTime:     time.Now(),
+		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
 	}
 }
 
