@@ -42,6 +42,14 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
+	if len(requestBody.Note) > 500 {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(
+			utils.ResponseError{
+				Error:         "Unacceptable Note",
+				FriendlyError: "The system does not accept an note longer than 500 characters",
+			})
+	}
+
 	var newURL = createNewURL(requestBody)
 
 	errStoring := storeData(newURL)
@@ -108,6 +116,7 @@ func createNewURL(requestBody api.Request) dbType.URL {
 		Short:          urlUUID.String()[:8],
 		InsertTime:     time.Now(),
 		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
+		Note:           requestBody.Note,
 	}
 }
 

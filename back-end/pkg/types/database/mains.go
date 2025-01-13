@@ -12,4 +12,5 @@ type URL struct {
 	Short          string    `db_name:"short" db_type:"VARCHAR(20)"`
 	InsertTime     time.Time `db_name:"insert_time" db_type:"TIMESTAMPTZ"`
 	ExpirationTime time.Time `db_name:"expiration_time" db_type:"TIMESTAMPTZ"`
+	Note           string    `db_name:"note" db_type:"VARCHAR(500)"`
 }
