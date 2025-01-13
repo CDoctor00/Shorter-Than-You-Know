@@ -26,19 +26,11 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
-	if requestBody.URL == "" {
+	if check, err := checkURL(requestBody.URL); !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			utils.ResponseError{
-				Error:         "Empty body",
-				FriendlyError: "The system does not accept an empty string",
-			})
-	}
-
-	if !checkURL(requestBody.URL) {
-		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			utils.ResponseError{
-				Error:         "Wrong url",
-				FriendlyError: "The system does not accept a malformed url",
+				Error:         "Unacceptable URL",
+				FriendlyError: err,
 			})
 	}
 
@@ -71,14 +63,24 @@ func Shorten(context *fiber.Ctx) error {
 /*
 This function check the correctness of the given URL.
 
-It returns true or false if the regex match the string.
+It returns false if the URL doesn't respect length rules or
+doesn't match the regex. Otherwise, it returns true.
+In addition, it returns a string that explains the problem.
 */
-func checkURL(url string) bool {
+func checkURL(url string) (bool, string) {
+	if url == "" {
+		return false, "The system does not accept an empty URL"
+	}
+
+	if len(url) > 2100 {
+		return false, "The system does not accept an URL longer than 2100 characters"
+	}
+
 	var expression = `^(https?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$`
 
 	regex, _ := regexp.Compile(expression)
 
-	return regex.MatchString(url)
+	return regex.MatchString(url), "The system does not accept an URL with invalid syntax"
 }
 
 /*
