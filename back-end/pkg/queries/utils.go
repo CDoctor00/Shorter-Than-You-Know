@@ -36,6 +36,18 @@ func retrieveTags(item interface{}) [][2]string {
 	return tags
 }
 
+/*
+This function generates the structure of the relative database table
+from the specified Golang interface.
+
+Using the tags added to the Go type, the function builds the correct
+query to create the table on the database. Then, the database type and
+name of each field depends on the values wrote in the tags of the Golang type.
+
+Please note that to ensure the correctness of the query, the only fields
+required are 'Name', 'Schema' and 'Structure'. The 'Constraints' and
+'AddIndex' fields are optional and depend on the database table requirements.
+*/
 func generateTableStructure(table dbType.Table) string {
 	var query string
 	var tableTags = retrieveTags(table.Structure)
@@ -53,7 +65,7 @@ func generateTableStructure(table dbType.Table) string {
 
 	if table.Constraints != "" {
 		query = fmt.Sprintf("%s,\n%s", query, table.Constraints)
-		//TODO verificare se modificare il parametro constraints da string a []string e ciclarlo
+		//TODO: check if change the Constraints type from string to []string
 	}
 
 	return query
@@ -87,6 +99,19 @@ func generateInsertQuery(table dbType.Table) string {
 }
 
 /*
+This function generates a string of necessary placeholders to create
+the PostgreSQL INSERT query based on the number of fields of the item.
+*/
+func generateInsertPlaceholders(numFields int) string {
+	var placeholders string
+	for j := 1; j <= numFields; j++ {
+		placeholders = fmt.Sprintf("%s,$%d", placeholders, j)
+	}
+
+	return placeholders[1:]
+}
+
+/*
 This function returns an array of `interface{}` in order to pass it in
 the `sql.Exec()` functions as the arguments to replace the placeholders
 of the query. The functions get the item and returns an array composed
@@ -102,17 +127,4 @@ func generateInsertArgs(item interface{}) []interface{} {
 	}
 
 	return args
-}
-
-/*
-This function generates a string of necessary placeholders to create
-the PostgreSQL INSERT query based on the number of fields of the item.
-*/
-func generateInsertPlaceholders(numFields int) string {
-	var placeholders string
-	for j := 1; j <= numFields; j++ {
-		placeholders = fmt.Sprintf("%s,$%d", placeholders, j)
-	}
-
-	return placeholders[1:]
 }
