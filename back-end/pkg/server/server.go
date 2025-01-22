@@ -23,6 +23,7 @@ func Start() {
 
 func setupRoutes(server *fiber.App) {
 	server.Get("/greet/:value", controllers.Greet)
+	server.Post("/redirect", controllers.RedirectWithPwd)
 	server.Post("/shorten", controllers.Shorten)
 	server.Get("/*", controllers.Redirect)
 }

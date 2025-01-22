@@ -12,16 +12,14 @@ to get the original URL path from the 'shortURL' given parameter and returns it.
 func (m Model) RetrieveOriginalURL(shortURL string, table database.Table) (database.URL, error) {
 	var originalURL database.URL
 
-	var query = fmt.Sprintf("SELECT uuid, original, short, insert_time, expiration_time from %s.%s WHERE short = $1",
+	var query = fmt.Sprintf("SELECT original, expiration_time, password from %s.%s WHERE short = $1",
 		table.Schema, table.Name)
 
 	result := m.DB.QueryRow(query, shortURL)
 	errQuery := result.Scan(
-		&originalURL.UUID,
 		&originalURL.Original,
-		&originalURL.Short,
-		&originalURL.InsertTime,
 		&originalURL.ExpirationTime,
+		&originalURL.Password,
 	)
 	if errQuery != nil {
 		return originalURL, fmt.Errorf("queries.RetrieveOriginalURL: %w", errQuery)

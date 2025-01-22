@@ -11,12 +11,13 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Shorten(context *fiber.Ctx) error {
 	// context.Accepts("application/json")
 
-	var requestBody = api.Request{}
+	var requestBody = api.ShortenRequest{}
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
 		return context.Status(fiber.StatusNotAcceptable).JSON(
@@ -46,11 +47,26 @@ func Shorten(context *fiber.Ctx) error {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			utils.ResponseError{
 				Error:         "Unacceptable Note",
-				FriendlyError: "The system does not accept an note longer than 500 characters",
+				FriendlyError: "The system does not accept a note longer than 500 characters",
 			})
 	}
 
-	var newURL = createNewURL(requestBody)
+	var newURL, errCreate = createNewURL(requestBody)
+	if errCreate != nil {
+		if errCreate == bcrypt.ErrPasswordTooLong {
+			return context.Status(fiber.StatusUnprocessableEntity).JSON(
+				utils.ResponseError{
+					Error:         "Unacceptable Password",
+					FriendlyError: "The system does not accept a password longer than 72 characters",
+				})
+		} else {
+			return context.Status(fiber.StatusInternalServerError).JSON(
+				utils.ResponseError{
+					Error:         errCreate.Error(),
+					FriendlyError: "The system has encountered an error while creating the new URL",
+				})
+		}
+	}
 
 	errStoring := storeData(newURL)
 	if errStoring != nil {
@@ -61,8 +77,8 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
-	return context.Status(fiber.StatusOK).JSON(
-		api.Response{
+	return context.Status(fiber.StatusCreated).JSON(
+		api.ShortenResponse{
 			OriginalURL: requestBody.URL,
 			ShortURL:    newURL.Short,
 		})
@@ -107,17 +123,29 @@ func checkExpirationTime(expirationTime int64) bool {
 	return true
 }
 
-func createNewURL(requestBody api.Request) dbType.URL {
-	urlUUID := uuid.New()
+func createNewURL(requestBody api.ShortenRequest) (dbType.URL, error) {
+	var (
+		urlUUID   = uuid.New()
+		password  string
+		errCreate error
+	)
+
+	if len(requestBody.Password) > 0 {
+		hash, errGenerate := bcrypt.GenerateFromPassword(
+			[]byte(requestBody.Password), bcrypt.DefaultCost)
+		password = string(hash)
+		errCreate = errGenerate
+	}
 
 	return dbType.URL{
 		UUID:           urlUUID,
 		Original:       requestBody.URL,
 		Short:          urlUUID.String()[:8],
+		Password:       password,
 		InsertTime:     time.Now(),
 		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
 		Note:           requestBody.Note,
-	}
+	}, errCreate
 }
 
 func storeData(url dbType.URL) error {

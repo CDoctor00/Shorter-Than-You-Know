@@ -1,12 +1,13 @@
 package api
 
-type Request struct {
+type ShortenRequest struct {
 	URL            string `json:"URL"`            //a correct url like: https://www.google.com or www.google.com
 	ExpirationTime int64  `json:"ExpirationTime"` //timestamp of expiration time like: 1735689600 = 2025/01/01 00:00:00
 	Note           string `json:"Note"`           //a text field to explain the purpose of the link
+	Password       string `json:"Password"`       //a text field (max 72 chars) that limits the access to the link
 }
 
-type Response struct {
+type ShortenResponse struct {
 	OriginalURL string `json:"originalURL"`
 	ShortURL    string `json:"shortURL"`
 }
