@@ -35,6 +35,26 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
+	model, errGetInstance := database.GetInstance()
+	if errGetInstance != nil {
+		return errGetInstance
+	}
+	check, errCheck := model.CheckCustomURL(requestBody.CustomURL, database.TableURLs)
+	if errCheck != nil {
+		return context.Status(fiber.StatusInternalServerError).JSON(
+			utils.ResponseError{
+				Error:         errCheck.Error(),
+				FriendlyError: "The system has encountered an error while saving the data",
+			})
+	}
+	if check {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(
+			utils.ResponseError{
+				Error:         "Unacceptable Custom URL",
+				FriendlyError: "The chosen URL is already used",
+			})
+	}
+
 	if !checkExpirationTime(requestBody.ExpirationTime) {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			utils.ResponseError{
@@ -68,7 +88,7 @@ func Shorten(context *fiber.Ctx) error {
 		}
 	}
 
-	errStoring := storeData(newURL)
+	errStoring := model.InsertData(newURL, database.TableURLs)
 	if errStoring != nil {
 		return context.Status(fiber.StatusInternalServerError).JSON(
 			utils.ResponseError{
@@ -128,6 +148,7 @@ func createNewURL(requestBody api.ShortenRequest) (dbType.URL, error) {
 		urlUUID   = uuid.New()
 		password  string
 		errCreate error
+		shortURL  = urlUUID.String()[:8]
 	)
 
 	if len(requestBody.Password) > 0 {
@@ -137,22 +158,17 @@ func createNewURL(requestBody api.ShortenRequest) (dbType.URL, error) {
 		errCreate = errGenerate
 	}
 
+	if len(requestBody.CustomURL) > 0 {
+		shortURL = requestBody.CustomURL
+	}
+
 	return dbType.URL{
 		UUID:           urlUUID,
 		Original:       requestBody.URL,
-		Short:          urlUUID.String()[:8],
+		Short:          shortURL,
 		Password:       password,
 		InsertTime:     time.Now(),
 		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
 		Note:           requestBody.Note,
 	}, errCreate
-}
-
-func storeData(url dbType.URL) error {
-	model, errGetInstance := database.GetInstance()
-	if errGetInstance != nil {
-		return errGetInstance
-	}
-
-	return model.InsertData(url, database.TableURLs)
 }

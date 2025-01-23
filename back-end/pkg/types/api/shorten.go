@@ -1,7 +1,8 @@
 package api
 
 type ShortenRequest struct {
-	URL            string `json:"URL"`            //a correct url like: https://www.google.com or www.google.com
+	URL            string `json:"URL"`            //a correct url like: 'https://www.google.com' or 'www.google.com'
+	CustomURL      string `json:"CustomURL"`      //a string representing the new shorten URL: 'short'
 	ExpirationTime int64  `json:"ExpirationTime"` //timestamp of expiration time like: 1735689600 = 2025/01/01 00:00:00
 	Note           string `json:"Note"`           //a text field to explain the purpose of the link
 	Password       string `json:"Password"`       //a text field (max 72 chars) that limits the access to the link
