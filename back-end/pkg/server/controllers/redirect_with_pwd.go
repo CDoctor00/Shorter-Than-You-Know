@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"styk/pkg/database"
 	"styk/pkg/types/api"
-	"styk/pkg/types/utils"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,7 +16,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
 		return context.Status(fiber.StatusNotAcceptable).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         errParser.Error(),
 				FriendlyError: fmt.Sprintf("The system could not process the '%v' entity sended in the request", requestBody),
 			})
@@ -32,7 +31,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 		requestBody.ShortURL, database.TableURLs)
 	if errRetrieve != nil {
 		return context.Status(fiber.StatusNotFound).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         errRetrieve.Error(),
 				FriendlyError: "The system did not found the specified resource asked",
 			})
@@ -41,7 +40,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 	if bcrypt.CompareHashAndPassword(
 		[]byte(originalURL.Password), []byte(requestBody.Password)) != nil {
 		return context.Status(fiber.StatusUnauthorized).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         "Wrong password",
 				FriendlyError: "The given password isn't correct",
 			})
@@ -49,7 +48,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 
 	if originalURL.ExpirationTime.Before(time.Now()) {
 		return context.Status(fiber.StatusNotFound).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         "Resource expired",
 				FriendlyError: "The system found the resource but it is expired",
 			})
@@ -58,7 +57,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 	errRedirect := context.Redirect(addProtocolIfNotExists(originalURL.Original))
 	if errRedirect != nil {
 		return context.Status(fiber.StatusInternalServerError).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         errRedirect.Error(),
 				FriendlyError: "The system has encountered an error to redirect to the original URL",
 			})

@@ -6,7 +6,6 @@ import (
 	"styk/pkg/database"
 	"styk/pkg/types/api"
 	dbType "styk/pkg/types/database"
-	"styk/pkg/types/utils"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +20,7 @@ func Shorten(context *fiber.Ctx) error {
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
 		return context.Status(fiber.StatusNotAcceptable).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         errParser.Error(),
 				FriendlyError: fmt.Sprintf("The system could not process the '%v' entity sended in the request", requestBody),
 			})
@@ -29,7 +28,7 @@ func Shorten(context *fiber.Ctx) error {
 
 	if check, err := checkURL(requestBody.URL); !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         "Unacceptable URL",
 				FriendlyError: err,
 			})
@@ -42,14 +41,14 @@ func Shorten(context *fiber.Ctx) error {
 	check, errCheck := model.CheckCustomURL(requestBody.CustomURL, database.TableURLs)
 	if errCheck != nil {
 		return context.Status(fiber.StatusInternalServerError).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         errCheck.Error(),
 				FriendlyError: "The system has encountered an error while saving the data",
 			})
 	}
 	if check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         "Unacceptable Custom URL",
 				FriendlyError: "The chosen URL is already used",
 			})
@@ -57,7 +56,7 @@ func Shorten(context *fiber.Ctx) error {
 
 	if !checkExpirationTime(requestBody.ExpirationTime) {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         "Wrong expiration time",
 				FriendlyError: "The system accepts only timestamp greater than actual time and less than 9999999999 (2286/11/20 05:46:39 GMT) in seconds",
 			})
@@ -65,7 +64,7 @@ func Shorten(context *fiber.Ctx) error {
 
 	if len(requestBody.Note) > 500 {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         "Unacceptable Note",
 				FriendlyError: "The system does not accept a note longer than 500 characters",
 			})
@@ -75,13 +74,13 @@ func Shorten(context *fiber.Ctx) error {
 	if errCreate != nil {
 		if errCreate == bcrypt.ErrPasswordTooLong {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
-				utils.ResponseError{
+				api.ResponseError{
 					Error:         "Unacceptable Password",
 					FriendlyError: "The system does not accept a password longer than 72 characters",
 				})
 		} else {
 			return context.Status(fiber.StatusInternalServerError).JSON(
-				utils.ResponseError{
+				api.ResponseError{
 					Error:         errCreate.Error(),
 					FriendlyError: "The system has encountered an error while creating the new URL",
 				})
@@ -91,7 +90,7 @@ func Shorten(context *fiber.Ctx) error {
 	errStoring := model.InsertData(newURL, database.TableURLs)
 	if errStoring != nil {
 		return context.Status(fiber.StatusInternalServerError).JSON(
-			utils.ResponseError{
+			api.ResponseError{
 				Error:         errStoring.Error(),
 				FriendlyError: "The system has encountered an error while saving the data",
 			})
