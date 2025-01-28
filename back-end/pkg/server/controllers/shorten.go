@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"styk/pkg/database"
+	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
 	dbType "styk/pkg/types/database"
 	"time"
@@ -70,9 +72,18 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
-	var newURL, errCreate = createNewURL(requestBody)
+	userUUID, errGetClaim := getUserUUIDFromToken(context)
+	if errGetClaim != nil {
+		return context.Status(fiber.StatusInternalServerError).JSON(
+			api.ResponseError{
+				Error:         errGetClaim.Error(),
+				FriendlyError: "The system has encountered an error while creating the new URL",
+			})
+	}
+
+	var newURL, errCreate = createNewURL(requestBody, userUUID)
 	if errCreate != nil {
-		if errCreate == bcrypt.ErrPasswordTooLong {
+		if errors.Is(errors.Unwrap(errCreate), bcrypt.ErrPasswordTooLong) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
 				api.ResponseError{
 					Error:         "Unacceptable Password",
@@ -142,19 +153,45 @@ func checkExpirationTime(expirationTime int64) bool {
 	return true
 }
 
-func createNewURL(requestBody api.ShortenRequest) (dbType.URL, error) {
+func getUserUUIDFromToken(context *fiber.Ctx) (uuid.UUID, error) {
+	var userUUID uuid.UUID
+
+	tokenString := string(context.Request().Header.Peek("Authorization"))
+	if tokenString != "" {
+		tokenString = tokenString[len("Bearer "):]
+		claims, errToken := auth.GetClaimsFromToken(tokenString)
+		if errToken != nil {
+			return userUUID, fmt.Errorf("controllers.getUserUUIDFromToken: %w", errToken)
+		}
+
+		var (
+			stringUUID, _ = claims["userUUID"].(string)
+			errParse      error
+		)
+		userUUID, errParse = uuid.Parse(stringUUID)
+		if errParse != nil {
+			return userUUID, fmt.Errorf("controllers.getUserUUIDFromToken: %w", errParse)
+		}
+	}
+
+	return userUUID, nil
+}
+
+func createNewURL(requestBody api.ShortenRequest, userUUID uuid.UUID) (dbType.URL, error) {
 	var (
-		urlUUID   = uuid.New()
-		password  string
-		errCreate error
-		shortURL  = urlUUID.String()[:8]
+		urlUUID  = uuid.New()
+		password string
+		shortURL = urlUUID.String()[:8]
 	)
 
 	if len(requestBody.Password) > 0 {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
 			[]byte(requestBody.Password), bcrypt.DefaultCost)
 		password = string(hash)
-		errCreate = errGenerate
+
+		if errGenerate != nil {
+			return dbType.URL{}, fmt.Errorf("controllers.createNewURL: %w", errGenerate)
+		}
 	}
 
 	if len(requestBody.CustomURL) > 0 {
@@ -166,8 +203,9 @@ func createNewURL(requestBody api.ShortenRequest) (dbType.URL, error) {
 		Original:       requestBody.URL,
 		Short:          shortURL,
 		Password:       password,
+		OwnerUUID:      userUUID,
 		InsertTime:     time.Now(),
 		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
 		Note:           requestBody.Note,
-	}, errCreate
+	}, nil
 }
