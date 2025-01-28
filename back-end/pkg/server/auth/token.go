@@ -9,22 +9,42 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func CreateToken(user database.User) (string, error) {
+func CreateAccessToken(user database.User) (string, error) {
 	var token = jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"userUUID":       user.UUID,
-			"email":          user.Email,
-			"name":           user.Name,
-			"surname":        user.Surname,
-			"expirationTime": time.Now().Add(time.Hour * 24).Unix(),
+			"userUUID": user.UUID,
+			"email":    user.Email,
+			"name":     user.Name,
+			"surname":  user.Surname,
+			"iat":      time.Now().Unix(),
+			"exp":      time.Now().Add(time.Minute * 30).Unix(),
 		})
 
 	secret_key := []byte(os.Getenv("JWT_KEY"))
 
 	tokenString, errSign := token.SignedString(secret_key)
 	if errSign != nil {
-		return "", fmt.Errorf("auth.CreateToken: %w", errSign)
+		return "", fmt.Errorf("auth.CreateAccessToken: %w", errSign)
+	}
+
+	return tokenString, nil
+}
+
+func CreateRefreshToken(userEmail string) (string, error) {
+	var token = jwt.NewWithClaims(
+		jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"userEmail": userEmail,
+			"iat":       time.Now().Unix(),
+			"exp":       time.Now().Add(time.Hour * 24 * 30).Unix(),
+		})
+
+	secret_key := []byte(os.Getenv("JWT_KEY"))
+
+	tokenString, errSign := token.SignedString(secret_key)
+	if errSign != nil {
+		return "", fmt.Errorf("auth.CreateRefreshToken: %w", errSign)
 	}
 
 	return tokenString, nil

@@ -55,14 +55,20 @@ func Login(context *fiber.Ctx) error {
 		return serverError(context, errCompare.Error())
 	}
 
-	token, errCreate := auth.CreateToken(user)
+	accessToken, errCreate := auth.CreateAccessToken(user)
+	if errCreate != nil {
+		return serverError(context, errCreate.Error())
+	}
+
+	refreshToken, errCreate := auth.CreateRefreshToken(user.Email)
 	if errCreate != nil {
 		return serverError(context, errCreate.Error())
 	}
 
 	return context.Status(fiber.StatusOK).JSON(
 		map[string]interface{}{
-			"token": token,
+			"accessToken":  accessToken,
+			"refreshToken": refreshToken,
 		},
 	)
 }

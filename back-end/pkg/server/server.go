@@ -27,5 +27,9 @@ func setupRoutes(server *fiber.App) {
 	server.Post("/shorten", controllers.Shorten)
 	server.Post("/signup", controllers.SignUp)
 	server.Post("/login", controllers.Login)
+
+	authGroup := server.Group("auth", middleware.GetJWTMiddleware())
+	authGroup.Get("/refreshToken", controllers.RefreshToken)
+
 	server.Get("/*", controllers.Redirect)
 }
