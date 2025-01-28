@@ -41,8 +41,53 @@ func (m Model) CheckCustomURL(customURL string, table database.Table) (bool, err
 	result := m.DB.QueryRow(query, customURL)
 	errQuery := result.Scan(&check)
 	if errQuery != nil {
-		return false, fmt.Errorf("queries.RetrieveOriginalURL: %w", errQuery)
+		return false, fmt.Errorf("queries.CheckCustomURL: %w", errQuery)
 	}
 
 	return check, nil
+}
+
+/*
+This function does a SELECT query on the database of the specific table,
+to check if exists another user with the same email.
+*/
+func (m Model) CheckEmail(customURL string, table database.Table) (bool, error) {
+	var check bool
+
+	var query = fmt.Sprintf("SELECT EXISTS (SELECT 1 FROM %s.%s WHERE email = $1)",
+		table.Schema, table.Name)
+
+	result := m.DB.QueryRow(query, customURL)
+	errQuery := result.Scan(&check)
+	if errQuery != nil {
+		return false, fmt.Errorf("queries.CheckEmail: %w", errQuery)
+	}
+
+	return check, nil
+}
+
+/*
+This function does a SELECT query on the database of the specific table,
+to get the all user information of the given email.
+*/
+func (m Model) GetUserFromEmail(email string, table database.Table) (database.User, error) {
+	var user database.User
+
+	var query = fmt.Sprintf("SELECT uuid, email, password, name, surname, created_at FROM %s.%s WHERE email = $1",
+		table.Schema, table.Name)
+
+	result := m.DB.QueryRow(query, email)
+	errQuery := result.Scan(
+		&user.UUID,
+		&user.Email,
+		&user.Password,
+		&user.Name,
+		&user.Surname,
+		&user.CreationTime,
+	)
+	if errQuery != nil {
+		return user, fmt.Errorf("queries.GetUserFromEmail: %w", errQuery)
+	}
+
+	return user, nil
 }

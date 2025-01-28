@@ -9,3 +9,11 @@ var TableURLs = dbType.Table{
 	Constraints: "UNIQUE(uuid), UNIQUE(short)",
 	AddIndex:    true,
 }
+
+var TableUsers = dbType.Table{
+	Name:        "users",
+	Schema:      "styk",
+	Structure:   dbType.User{},
+	Constraints: "UNIQUE(email), UNIQUE(uuid)",
+	AddIndex:    true,
+}

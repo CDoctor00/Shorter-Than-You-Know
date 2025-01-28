@@ -25,5 +25,7 @@ func setupRoutes(server *fiber.App) {
 	server.Get("/greet/:value", controllers.Greet)
 	server.Post("/redirect", controllers.RedirectWithPwd)
 	server.Post("/shorten", controllers.Shorten)
+	server.Post("/signup", controllers.SignUp)
+	server.Post("/login", controllers.Login)
 	server.Get("/*", controllers.Redirect)
 }
