@@ -68,17 +68,17 @@ func (m Model) CheckEmail(customURL string, table database.Table) (bool, error) 
 
 /*
 This function does a SELECT query on the database of the specific table,
-to get the all user information of the given email.
+to get the all user informations of the given email.
 */
 func (m Model) GetUserFromEmail(email string, table database.Table) (database.User, error) {
 	var user database.User
 
-	var query = fmt.Sprintf("SELECT uuid, email, password, name, surname, created_at FROM %s.%s WHERE email = $1",
+	var query = fmt.Sprintf("SELECT id, email, password, name, surname, created_at FROM %s.%s WHERE email = $1",
 		table.Schema, table.Name)
 
 	result := m.DB.QueryRow(query, email)
 	errQuery := result.Scan(
-		&user.UUID,
+		&user.ID,
 		&user.Email,
 		&user.Password,
 		&user.Name,

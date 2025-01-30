@@ -81,13 +81,21 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
-	//? Get the userUUID from the JWT, if the user is logged, to link the new URL with the owner
-	userUUID, errGetClaim := getUserUUIDFromToken(context)
-	if errGetClaim != nil {
-		return serverError(context, errGetClaim, "URL shortening")
+	//? Get the userID from the JWT, if the user is logged, to link the new URL with the owner
+	var userID string
+
+	tokenString := string(context.Request().Header.Peek("Authorization"))
+	if tokenString != "" {
+		tokenString = tokenString[len("Bearer "):]
+		claims, errGetClaim := auth.GetClaimsFromToken(tokenString)
+		if errGetClaim != nil {
+			return serverError(context, errGetClaim, "URL shortening")
+		}
+
+		userID, _ = claims[auth.UserID].(string)
 	}
 
-	var newURL, errCreate = createNewURL(requestBody, userUUID)
+	var newURL, errCreate = createNewURL(requestBody, userID)
 	if errCreate != nil {
 		if errors.Is(errors.Unwrap(errCreate), bcrypt.ErrPasswordTooLong) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -151,37 +159,7 @@ func checkExpirationTime(expirationTime int64) bool {
 	return true
 }
 
-/*
-This function retrieves the UUID claim from the Authorization header JWT.
-
-It returns the UUID or an error if encounters a problem to retrieve the claims from the JWT
-or during the parsing the UUID claim (string) into an uuid.UUID type.
-*/
-func getUserUUIDFromToken(context *fiber.Ctx) (uuid.UUID, error) {
-	var userUUID uuid.UUID
-
-	tokenString := string(context.Request().Header.Peek("Authorization"))
-	if tokenString != "" {
-		tokenString = tokenString[len("Bearer "):]
-		claims, errToken := auth.GetClaimsFromToken(tokenString)
-		if errToken != nil {
-			return userUUID, fmt.Errorf("controllers.getUserUUIDFromToken: %w", errToken)
-		}
-
-		var (
-			stringUUID, _ = claims["userUUID"].(string)
-			errParse      error
-		)
-		userUUID, errParse = uuid.Parse(stringUUID)
-		if errParse != nil {
-			return userUUID, fmt.Errorf("controllers.getUserUUIDFromToken: %w", errParse)
-		}
-	}
-
-	return userUUID, nil
-}
-
-func createNewURL(requestBody api.ShortenRequest, userUUID uuid.UUID) (dbType.URL, error) {
+func createNewURL(requestBody api.ShortenRequest, userID string) (dbType.URL, error) {
 	var (
 		urlUUID  = uuid.New()
 		password string
@@ -207,7 +185,7 @@ func createNewURL(requestBody api.ShortenRequest, userUUID uuid.UUID) (dbType.UR
 		Original:       requestBody.URL,
 		Short:          shortURL,
 		Password:       password,
-		OwnerUUID:      userUUID,
+		OwnerID:        userID,
 		InsertTime:     time.Now(),
 		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
 		Note:           requestBody.Note,

@@ -14,6 +14,6 @@ var TableUsers = dbType.Table{
 	Name:        "users",
 	Schema:      "styk",
 	Structure:   dbType.User{},
-	Constraints: "UNIQUE(email), UNIQUE(uuid)",
+	Constraints: "UNIQUE(email), UNIQUE(id)",
 	AddIndex:    true,
 }

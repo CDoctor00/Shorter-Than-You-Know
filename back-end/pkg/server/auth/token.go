@@ -3,41 +3,38 @@ package auth
 import (
 	"fmt"
 	"os"
-	"styk/pkg/types/database"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func CreateAccessToken(user database.User) (string, error) {
-	var token = jwt.NewWithClaims(
-		jwt.SigningMethodHS256,
-		jwt.MapClaims{
-			"userUUID": user.UUID,
-			"email":    user.Email,
-			"name":     user.Name,
-			"surname":  user.Surname,
-			"iat":      time.Now().Unix(),
-			"exp":      time.Now().Add(time.Minute * 30).Unix(),
-		})
+const ( //Token type
+	AccessToken  = "accessToken"
+	RefreshToken = "refreshToken"
+)
 
-	secret_key := []byte(os.Getenv("JWT_KEY"))
+const ( //Token claims
+	UserID         = "userID"
+	CreationTime   = "iat"
+	ExpirationTime = "exp"
+)
 
-	tokenString, errSign := token.SignedString(secret_key)
-	if errSign != nil {
-		return "", fmt.Errorf("auth.CreateAccessToken: %w", errSign)
+func CreateToken(userID string, tokenType string) (string, error) {
+	var duration time.Duration
+
+	switch tokenType {
+	case AccessToken:
+		duration = time.Minute * 30
+	case RefreshToken:
+		duration = time.Hour * 24 * 30
 	}
 
-	return tokenString, nil
-}
-
-func CreateRefreshToken(userEmail string) (string, error) {
 	var token = jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"userEmail": userEmail,
-			"iat":       time.Now().Unix(),
-			"exp":       time.Now().Add(time.Hour * 24 * 30).Unix(),
+			UserID:         userID,
+			CreationTime:   time.Now().Unix(),
+			ExpirationTime: time.Now().Add(duration).Unix(),
 		})
 
 	secret_key := []byte(os.Getenv("JWT_KEY"))

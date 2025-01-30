@@ -110,7 +110,7 @@ func createNewUser(requestBody api.SignUpRequest) (dbType.User, error) {
 	}
 
 	return dbType.User{
-		UUID:         uuid.New(),
+		ID:           uuid.New().String()[:8],
 		Email:        requestBody.Email,
 		Name:         requestBody.Name,
 		Surname:      requestBody.Surname,
