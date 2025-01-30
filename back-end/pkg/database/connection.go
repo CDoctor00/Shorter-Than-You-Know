@@ -28,13 +28,13 @@ func GetInstance() (queries.Model, error) {
 	})
 	if err != nil {
 		return queries.Model{},
-			fmt.Errorf("error encountered during the connection to the database: %w", err)
+			fmt.Errorf("database.GetInstance: %w", err)
 	}
 
 	err = instance.Ping()
 	if err != nil {
 		return queries.Model{},
-			fmt.Errorf("error encountered during the ping to the database: %w", err)
+			fmt.Errorf("database.GetInstance: %w", err)
 	}
 
 	return queries.Model{DB: instance}, nil

@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-	"regexp"
 	"styk/pkg/database"
 	"styk/pkg/types/api"
 	"time"
@@ -15,7 +13,7 @@ func Redirect(context *fiber.Ctx) error {
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return errGetInstance
+		return serverError(context, errGetInstance, "login")
 	}
 
 	originalURL, errRetrieve := model.RetrieveOriginalURL(shortURL, database.TableURLs)
@@ -42,30 +40,8 @@ func Redirect(context *fiber.Ctx) error {
 
 	errRedirect := context.Redirect(addProtocolIfNotExists(originalURL.Original))
 	if errRedirect != nil {
-		return context.Status(fiber.StatusInternalServerError).JSON(
-			api.ResponseError{
-				Error:         errRedirect.Error(),
-				FriendlyError: "The system has encountered an error to redirect to the original URL",
-			})
+		return serverError(context, errRedirect, "redirect")
 	}
 
 	return nil
-}
-
-/*
-This function check if the given URL has or not the protocol.
-If it hasn't, the 'https://' will be added.
-
-It returns the given URL with the certainty that the protocol is present.
-*/
-func addProtocolIfNotExists(url string) string {
-	var expression = `^(http|https):\/\/`
-
-	regex, _ := regexp.Compile(expression)
-
-	if regex.MatchString(url) {
-		return url
-	}
-
-	return fmt.Sprintf("https://%s", url)
 }

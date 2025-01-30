@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"styk/pkg/database"
@@ -35,16 +36,12 @@ func SignUp(context *fiber.Ctx) error {
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return errGetInstance
+		return serverError(context, errGetInstance, "signup")
 	}
 
 	check, errCheck := model.CheckEmail(requestBody.Email, database.TableUsers)
 	if errCheck != nil {
-		return context.Status(fiber.StatusInternalServerError).JSON(
-			api.ResponseError{
-				Error:         errCheck.Error(),
-				FriendlyError: "The system has encountered an error while saving the data",
-			})
+		return serverError(context, errCheck, "signup")
 	}
 	if check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -56,28 +53,20 @@ func SignUp(context *fiber.Ctx) error {
 
 	var newUser, errCreate = createNewUser(requestBody)
 	if errCreate != nil {
-		if errCreate == bcrypt.ErrPasswordTooLong {
+		if errors.Is(errCreate, bcrypt.ErrPasswordTooLong) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
 				api.ResponseError{
 					Error:         "Unacceptable Password",
 					FriendlyError: "The system does not accept a password longer than 72 characters",
 				})
-		} else {
-			return context.Status(fiber.StatusInternalServerError).JSON(
-				api.ResponseError{
-					Error:         errCreate.Error(),
-					FriendlyError: "The system has encountered an error while creating the new URL",
-				})
 		}
+
+		return serverError(context, errCreate, "signup")
 	}
 
 	errStoring := model.InsertData(newUser, database.TableUsers)
 	if errStoring != nil {
-		return context.Status(fiber.StatusInternalServerError).JSON(
-			api.ResponseError{
-				Error:         errStoring.Error(),
-				FriendlyError: "The system has encountered an error while saving the data",
-			})
+		return serverError(context, errStoring, "signup")
 	}
 
 	return context.Status(fiber.StatusCreated).SendString("User created")

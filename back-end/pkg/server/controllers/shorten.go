@@ -16,8 +16,6 @@ import (
 )
 
 func Shorten(context *fiber.Ctx) error {
-	// context.Accepts("application/json")
-
 	var requestBody = api.ShortenRequest{}
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
@@ -38,15 +36,12 @@ func Shorten(context *fiber.Ctx) error {
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return errGetInstance
+		return serverError(context, errGetInstance, "URL shortening")
 	}
+
 	check, errCheck := model.CheckCustomURL(requestBody.CustomURL, database.TableURLs)
 	if errCheck != nil {
-		return context.Status(fiber.StatusInternalServerError).JSON(
-			api.ResponseError{
-				Error:         errCheck.Error(),
-				FriendlyError: "The system has encountered an error while saving the data",
-			})
+		return serverError(context, errCheck, "URL shortening")
 	}
 	if check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -74,11 +69,7 @@ func Shorten(context *fiber.Ctx) error {
 
 	userUUID, errGetClaim := getUserUUIDFromToken(context)
 	if errGetClaim != nil {
-		return context.Status(fiber.StatusInternalServerError).JSON(
-			api.ResponseError{
-				Error:         errGetClaim.Error(),
-				FriendlyError: "The system has encountered an error while creating the new URL",
-			})
+		return serverError(context, errGetClaim, "URL shortening")
 	}
 
 	var newURL, errCreate = createNewURL(requestBody, userUUID)
@@ -89,22 +80,14 @@ func Shorten(context *fiber.Ctx) error {
 					Error:         "Unacceptable Password",
 					FriendlyError: "The system does not accept a password longer than 72 characters",
 				})
-		} else {
-			return context.Status(fiber.StatusInternalServerError).JSON(
-				api.ResponseError{
-					Error:         errCreate.Error(),
-					FriendlyError: "The system has encountered an error while creating the new URL",
-				})
 		}
+
+		return serverError(context, errCreate, "URL shortening")
 	}
 
 	errStoring := model.InsertData(newURL, database.TableURLs)
 	if errStoring != nil {
-		return context.Status(fiber.StatusInternalServerError).JSON(
-			api.ResponseError{
-				Error:         errStoring.Error(),
-				FriendlyError: "The system has encountered an error while saving the data",
-			})
+		return serverError(context, errStoring, "URL shortening")
 	}
 
 	return context.Status(fiber.StatusCreated).JSON(
@@ -138,7 +121,7 @@ func checkURL(url string) (bool, string) {
 }
 
 /*
-This function check the correctness of the given expiration time.
+This function checks the correctness of the given expiration time.
 
 It returns true if the given time is after current time and before
 the 9999999999 (2286/11/20 05:46:39 GMT), else it returns false.

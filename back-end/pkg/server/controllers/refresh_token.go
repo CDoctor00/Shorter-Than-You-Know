@@ -3,7 +3,6 @@ package controllers
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"styk/pkg/database"
 	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
@@ -12,19 +11,22 @@ import (
 )
 
 func RefreshToken(context *fiber.Ctx) error {
+	var userEmail string
 
-	userEmail, errExtract := getUserEmailFromToken(context)
-	if errExtract != nil {
-		return context.Status(fiber.StatusInternalServerError).JSON(
-			api.ResponseError{
-				Error:         errExtract.Error(),
-				FriendlyError: "The system has encountered an error while refreshing the token",
-			})
+	//? Retrieving user email from the JWT
+	tokenString := string(context.Request().Header.Peek("Authorization"))
+	tokenString = tokenString[len("Bearer "):]
+
+	claims, errClaims := auth.GetClaimsFromToken(tokenString)
+	if errClaims != nil {
+		return serverError(context, errClaims, "refresh token")
 	}
+
+	userEmail, _ = claims["userEmail"].(string)
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return serverError(context, errGetInstance.Error())
+		return serverError(context, errGetInstance, "refresh token")
 	}
 
 	user, errGet := model.GetUserFromEmail(userEmail, database.TableUsers)
@@ -37,12 +39,12 @@ func RefreshToken(context *fiber.Ctx) error {
 				})
 		}
 
-		return serverError(context, errGet.Error())
+		return serverError(context, errGet, "refresh token")
 	}
 
 	accessToken, errCreate := auth.CreateAccessToken(user)
 	if errCreate != nil {
-		return serverError(context, errCreate.Error())
+		return serverError(context, errCreate, "refresh token")
 	}
 
 	return context.Status(fiber.StatusOK).JSON(
@@ -50,18 +52,4 @@ func RefreshToken(context *fiber.Ctx) error {
 			"accessToken": accessToken,
 		},
 	)
-}
-
-func getUserEmailFromToken(context *fiber.Ctx) (string, error) {
-	tokenString := string(context.Request().Header.Peek("Authorization"))
-	tokenString = tokenString[len("Bearer "):]
-
-	claims, errClaims := auth.GetClaimsFromToken(tokenString)
-	if errClaims != nil {
-		return "", fmt.Errorf("controllers.getUserEmailFromToken: %w", errClaims)
-	}
-
-	userUUID, _ := claims["userEmail"].(string)
-
-	return userUUID, nil
 }

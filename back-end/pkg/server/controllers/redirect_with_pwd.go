@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"styk/pkg/database"
 	"styk/pkg/types/api"
@@ -24,7 +25,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return errGetInstance
+		return serverError(context, errGetInstance, "login")
 	}
 
 	originalURL, errRetrieve := model.RetrieveOriginalURL(
@@ -37,13 +38,17 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 			})
 	}
 
-	if bcrypt.CompareHashAndPassword(
-		[]byte(originalURL.Password), []byte(requestBody.Password)) != nil {
-		return context.Status(fiber.StatusUnauthorized).JSON(
-			api.ResponseError{
-				Error:         "Wrong password",
-				FriendlyError: "The given password isn't correct",
-			})
+	errCompare := bcrypt.CompareHashAndPassword([]byte(originalURL.Password), []byte(requestBody.Password))
+	if errCompare != nil {
+		if errors.Is(errCompare, bcrypt.ErrMismatchedHashAndPassword) {
+			return context.Status(fiber.StatusUnauthorized).JSON(
+				api.ResponseError{
+					Error:         errCompare.Error(),
+					FriendlyError: "The password provided is incorrect",
+				})
+		}
+
+		return serverError(context, errCompare, "redirect")
 	}
 
 	if originalURL.ExpirationTime.Before(time.Now()) {
@@ -56,11 +61,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 
 	errRedirect := context.Redirect(addProtocolIfNotExists(originalURL.Original))
 	if errRedirect != nil {
-		return context.Status(fiber.StatusInternalServerError).JSON(
-			api.ResponseError{
-				Error:         errRedirect.Error(),
-				FriendlyError: "The system has encountered an error to redirect to the original URL",
-			})
+		return serverError(context, errRedirect, "redirect")
 	}
 
 	return nil

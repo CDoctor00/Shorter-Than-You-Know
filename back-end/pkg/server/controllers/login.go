@@ -26,7 +26,7 @@ func Login(context *fiber.Ctx) error {
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return serverError(context, errGetInstance.Error())
+		return serverError(context, errGetInstance, "login")
 	}
 
 	user, errGet := model.GetUserFromEmail(requestBody.Email, database.TableUsers)
@@ -35,11 +35,11 @@ func Login(context *fiber.Ctx) error {
 			return context.Status(fiber.StatusUnauthorized).JSON(
 				api.ResponseError{
 					Error:         errGet.Error(),
-					FriendlyError: "The email or password provided is incorrect.",
+					FriendlyError: "The email or password provided is incorrect",
 				})
 		}
 
-		return serverError(context, errGet.Error())
+		return serverError(context, errGet, "login")
 	}
 
 	errCompare := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestBody.Password))
@@ -48,21 +48,21 @@ func Login(context *fiber.Ctx) error {
 			return context.Status(fiber.StatusUnauthorized).JSON(
 				api.ResponseError{
 					Error:         errCompare.Error(),
-					FriendlyError: "The email or password provided is incorrect.",
+					FriendlyError: "The email or password provided is incorrect",
 				})
 		}
 
-		return serverError(context, errCompare.Error())
+		return serverError(context, errCompare, "login")
 	}
 
 	accessToken, errCreate := auth.CreateAccessToken(user)
 	if errCreate != nil {
-		return serverError(context, errCreate.Error())
+		return serverError(context, errCreate, "login")
 	}
 
 	refreshToken, errCreate := auth.CreateRefreshToken(user.Email)
 	if errCreate != nil {
-		return serverError(context, errCreate.Error())
+		return serverError(context, errCreate, "login")
 	}
 
 	return context.Status(fiber.StatusOK).JSON(
@@ -71,12 +71,4 @@ func Login(context *fiber.Ctx) error {
 			"refreshToken": refreshToken,
 		},
 	)
-}
-
-func serverError(context *fiber.Ctx, err string) error {
-	return context.Status(fiber.StatusInternalServerError).JSON(
-		api.ResponseError{
-			Error:         err,
-			FriendlyError: "The system has encountered an error while checking the data",
-		})
 }
