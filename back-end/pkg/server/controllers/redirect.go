@@ -16,6 +16,7 @@ func Redirect(context *fiber.Ctx) error {
 		return serverError(context, errGetInstance, "login")
 	}
 
+	//? Get original URL's infos from the given shorten one
 	originalURL, errRetrieve := model.RetrieveOriginalURL(shortURL, database.TableURLs)
 	if errRetrieve != nil {
 		return context.Status(fiber.StatusNotFound).JSON(
@@ -30,6 +31,7 @@ func Redirect(context *fiber.Ctx) error {
 			"The requested resource needs the password to be returned")
 	}
 
+	//? Check if the shorten URL has been expired
 	if originalURL.ExpirationTime.Before(time.Now()) {
 		return context.Status(fiber.StatusNotFound).JSON(
 			api.ResponseError{

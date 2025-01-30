@@ -11,6 +11,7 @@ import (
 func main() {
 	utils.LoadEnv()
 
+	//? Database initialization
 	model, err := database.GetInstance()
 	if err != nil {
 		fmt.Println(err)

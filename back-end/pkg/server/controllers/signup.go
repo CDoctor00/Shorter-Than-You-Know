@@ -26,7 +26,8 @@ func SignUp(context *fiber.Ctx) error {
 			})
 	}
 
-	if check, err := checkEmail(requestBody.Email); !check {
+	//? Verify the correctness of the given email
+	if check, err := checkEmailSintax(requestBody.Email); !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Unacceptable Email",
@@ -39,6 +40,7 @@ func SignUp(context *fiber.Ctx) error {
 		return serverError(context, errGetInstance, "signup")
 	}
 
+	//? Verify if the given email is already used
 	check, errCheck := model.CheckEmail(requestBody.Email, database.TableUsers)
 	if errCheck != nil {
 		return serverError(context, errCheck, "signup")
@@ -79,7 +81,7 @@ It returns false if the email doesn't respect length rules or
 doesn't match the regex. Otherwise, it returns true.
 In addition, it returns a string that explains the problem.
 */
-func checkEmail(email string) (bool, string) {
+func checkEmailSintax(email string) (bool, string) {
 	if email == "" {
 		return false, "The system does not accept an empty email"
 	}

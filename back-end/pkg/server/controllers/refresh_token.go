@@ -29,6 +29,7 @@ func RefreshToken(context *fiber.Ctx) error {
 		return serverError(context, errGetInstance, "refresh token")
 	}
 
+	//? Get user's infos from the given email
 	user, errGet := model.GetUserFromEmail(userEmail, database.TableUsers)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {

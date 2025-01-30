@@ -29,6 +29,7 @@ func Login(context *fiber.Ctx) error {
 		return serverError(context, errGetInstance, "login")
 	}
 
+	//? Get user's infos from the given email
 	user, errGet := model.GetUserFromEmail(requestBody.Email, database.TableUsers)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
@@ -42,6 +43,7 @@ func Login(context *fiber.Ctx) error {
 		return serverError(context, errGet, "login")
 	}
 
+	//? Check if the given password corresponds with the stored one
 	errCompare := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestBody.Password))
 	if errCompare != nil {
 		if errors.Is(errCompare, bcrypt.ErrMismatchedHashAndPassword) {

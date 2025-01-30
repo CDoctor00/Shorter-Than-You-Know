@@ -26,7 +26,8 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
-	if check, err := checkURL(requestBody.URL); !check {
+	//? Verify the correctness of the given URL
+	if check, err := checkURLSintax(requestBody.URL); !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Unacceptable URL",
@@ -39,6 +40,7 @@ func Shorten(context *fiber.Ctx) error {
 		return serverError(context, errGetInstance, "URL shortening")
 	}
 
+	//? Verify if the chosen custom URL is already used
 	check, errCheck := model.CheckCustomURL(requestBody.CustomURL, database.TableURLs)
 	if errCheck != nil {
 		return serverError(context, errCheck, "URL shortening")
@@ -51,6 +53,7 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
+	//? Verify the validity of the given expirationTimes
 	if !checkExpirationTime(requestBody.ExpirationTime) {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
@@ -59,6 +62,7 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
+	//? Verify if the 'note' field respects the max limit (500 chars)
 	if len(requestBody.Note) > 500 {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
@@ -67,6 +71,7 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
+	//? Get the userUUID from the JWT, if the user is logged, to link the new URL with the owner
 	userUUID, errGetClaim := getUserUUIDFromToken(context)
 	if errGetClaim != nil {
 		return serverError(context, errGetClaim, "URL shortening")
@@ -104,7 +109,7 @@ It returns false if the URL doesn't respect length rules or
 doesn't match the regex. Otherwise, it returns true.
 In addition, it returns a string that explains the problem.
 */
-func checkURL(url string) (bool, string) {
+func checkURLSintax(url string) (bool, string) {
 	if url == "" {
 		return false, "The system does not accept an empty URL"
 	}
@@ -136,6 +141,12 @@ func checkExpirationTime(expirationTime int64) bool {
 	return true
 }
 
+/*
+This function retrieves the UUID claim from the Authorization header JWT.
+
+It returns the UUID or an error if encounters a problem to retrieve the claims from the JWT
+or during the parsing the UUID claim (string) into an uuid.UUID type.
+*/
 func getUserUUIDFromToken(context *fiber.Ctx) (uuid.UUID, error) {
 	var userUUID uuid.UUID
 

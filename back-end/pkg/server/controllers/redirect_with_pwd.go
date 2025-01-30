@@ -28,6 +28,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 		return serverError(context, errGetInstance, "login")
 	}
 
+	//? Get original URL's infos from the given shorten one
 	originalURL, errRetrieve := model.RetrieveOriginalURL(
 		requestBody.ShortURL, database.TableURLs)
 	if errRetrieve != nil {
@@ -38,6 +39,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 			})
 	}
 
+	//? Check if the given password corresponds with the stored one
 	errCompare := bcrypt.CompareHashAndPassword([]byte(originalURL.Password), []byte(requestBody.Password))
 	if errCompare != nil {
 		if errors.Is(errCompare, bcrypt.ErrMismatchedHashAndPassword) {
@@ -51,6 +53,7 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 		return serverError(context, errCompare, "redirect")
 	}
 
+	//? Check if the shorten URL has been expired
 	if originalURL.ExpirationTime.Before(time.Now()) {
 		return context.Status(fiber.StatusNotFound).JSON(
 			api.ResponseError{
