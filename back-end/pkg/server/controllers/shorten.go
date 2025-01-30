@@ -27,11 +27,21 @@ func Shorten(context *fiber.Ctx) error {
 	}
 
 	//? Verify the correctness of the given URL
-	if check, err := checkURLSintax(requestBody.URL); !check {
+	check, errCheckSintax := checkURLSintax(requestBody.URL)
+	if !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Unacceptable URL",
-				FriendlyError: err,
+				FriendlyError: errCheckSintax,
+			})
+	}
+
+	//? Verify if the 'customURL' field respects the max limit (20 chars)
+	if len(requestBody.CustomURL) > 20 {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(
+			api.ResponseError{
+				Error:         "Unacceptable Custom URL",
+				FriendlyError: "The system does not accept a custom URL longer than 20 characters",
 			})
 	}
 
