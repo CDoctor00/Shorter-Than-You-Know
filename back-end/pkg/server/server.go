@@ -2,7 +2,7 @@ package server
 
 import (
 	"styk/pkg/server/controllers"
-	"styk/pkg/server/middleware"
+	"styk/pkg/server/middlewares"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,7 +15,7 @@ func Start() {
 
 	var server = fiber.New(config)
 	server.Server().MaxConnsPerIP = 2
-	server.Use(middleware.GetCorsMiddleware())
+	server.Use(middlewares.GetCors())
 	setupRoutes(server)
 
 	server.Listen(":10000")
@@ -28,7 +28,7 @@ func setupRoutes(server *fiber.App) {
 	server.Post("/signup", controllers.SignUp)
 	server.Post("/login", controllers.Login)
 
-	authGroup := server.Group("auth", middleware.GetJWTMiddleware())
+	authGroup := server.Group("auth", middlewares.GetJWT())
 	authGroup.Get("/refreshToken", controllers.RefreshToken)
 
 	server.Get("/*", controllers.Redirect)

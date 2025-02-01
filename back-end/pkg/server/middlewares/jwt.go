@@ -1,4 +1,4 @@
-package middleware
+package middlewares
 
 import (
 	"os"
@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetJWTMiddleware() func(*fiber.Ctx) error {
+func GetJWT() func(*fiber.Ctx) error {
 	key := os.Getenv("JWT_KEY")
 
 	return jwtware.New(
