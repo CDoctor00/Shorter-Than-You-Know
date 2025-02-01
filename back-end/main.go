@@ -24,13 +24,13 @@ func main() {
 		os.Exit(-1)
 	}
 
-	err = model.CreateTable(database.TableURLs)
+	err = model.CreateTable(database.TableUsers)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
 
-	err = model.CreateTable(database.TableUsers)
+	err = model.CreateTable(database.TableURLs)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
