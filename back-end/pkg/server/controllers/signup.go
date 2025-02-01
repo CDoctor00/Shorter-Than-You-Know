@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"regexp"
@@ -109,11 +110,30 @@ func createNewUser(requestBody api.SignUpRequest) (dbType.User, error) {
 		errCreate = errGenerate
 	}
 
+	var (
+		name    sql.NullString
+		surname sql.NullString
+	)
+
+	if len(requestBody.Name) > 0 {
+		name = sql.NullString{
+			Valid:  true,
+			String: requestBody.Name,
+		}
+	}
+
+	if len(requestBody.Surname) > 0 {
+		surname = sql.NullString{
+			Valid:  true,
+			String: requestBody.Surname,
+		}
+	}
+
 	return dbType.User{
 		ID:           uuid.New().String()[:8],
 		Email:        requestBody.Email,
-		Name:         requestBody.Name,
-		Surname:      requestBody.Surname,
+		Name:         name,
+		Surname:      surname,
 		Password:     password,
 		CreationTime: time.Now(),
 	}, errCreate

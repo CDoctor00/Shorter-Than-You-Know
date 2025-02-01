@@ -40,7 +40,8 @@ func RedirectWithPwd(context *fiber.Ctx) error {
 	}
 
 	//? Check if the given password corresponds with the stored one
-	errCompare := bcrypt.CompareHashAndPassword([]byte(originalURL.Password), []byte(requestBody.Password))
+	errCompare := bcrypt.CompareHashAndPassword([]byte(
+		originalURL.Password.String), []byte(requestBody.Password))
 	if errCompare != nil {
 		if errors.Is(errCompare, bcrypt.ErrMismatchedHashAndPassword) {
 			return context.Status(fiber.StatusUnauthorized).JSON(

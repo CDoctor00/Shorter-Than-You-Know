@@ -26,7 +26,7 @@ func Redirect(context *fiber.Ctx) error {
 			})
 	}
 
-	if len(originalURL.Password) > 0 {
+	if originalURL.Password.Valid {
 		return context.Status(fiber.StatusOK).SendString(
 			"The requested resource needs the password to be returned")
 	}

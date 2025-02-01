@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"regexp"
@@ -82,7 +83,7 @@ func Shorten(context *fiber.Ctx) error {
 	}
 
 	//? Get the userID from the JWT, if the user is logged, to link the new URL with the owner
-	var userID string
+	var userID sql.NullString
 
 	tokenString := string(context.Request().Header.Peek("Authorization"))
 	if tokenString != "" {
@@ -91,8 +92,14 @@ func Shorten(context *fiber.Ctx) error {
 		if errGetClaim != nil {
 			return serverError(context, errGetClaim, "URL shortening")
 		}
+		claim, _ := claims[auth.UserID].(string)
 
-		userID, _ = claims[auth.UserID].(string)
+		if claim != "" {
+			userID = sql.NullString{
+				Valid:  true,
+				String: claim,
+			}
+		}
 	}
 
 	var newURL, errCreate = createNewURL(requestBody, userID)
@@ -159,25 +166,33 @@ func checkExpirationTime(expirationTime int64) bool {
 	return true
 }
 
-func createNewURL(requestBody api.ShortenRequest, userID string) (dbType.URL, error) {
+func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType.URL, error) {
 	var (
 		urlUUID  = uuid.New()
-		password string
 		shortURL = urlUUID.String()[:8]
+		password sql.NullString
+		note     sql.NullString
 	)
 
 	if len(requestBody.Password) > 0 {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
 			[]byte(requestBody.Password), bcrypt.DefaultCost)
-		password = string(hash)
-
 		if errGenerate != nil {
 			return dbType.URL{}, fmt.Errorf("controllers.createNewURL: %w", errGenerate)
 		}
+
+		password = sql.NullString{Valid: true, String: string(hash)}
 	}
 
 	if len(requestBody.CustomURL) > 0 {
 		shortURL = requestBody.CustomURL
+	}
+
+	if len(requestBody.Note) > 0 {
+		note = sql.NullString{
+			Valid:  true,
+			String: requestBody.Note,
+		}
 	}
 
 	return dbType.URL{
@@ -188,6 +203,6 @@ func createNewURL(requestBody api.ShortenRequest, userID string) (dbType.URL, er
 		OwnerID:        userID,
 		InsertTime:     time.Now(),
 		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
-		Note:           requestBody.Note,
+		Note:           note,
 	}, nil
 }
