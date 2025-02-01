@@ -5,14 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"styk/pkg/database"
-	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Login(context *fiber.Ctx) error {
+func DeleteUser(context *fiber.Ctx) error {
 	var requestBody = api.UserRequest{}
 
 	errParser := context.BodyParser(&requestBody)
@@ -26,7 +25,7 @@ func Login(context *fiber.Ctx) error {
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "login")
+		return serverError(context, errGetInstance, "delete user")
 	}
 
 	//? Get user's infos from the given email
@@ -40,7 +39,7 @@ func Login(context *fiber.Ctx) error {
 				})
 		}
 
-		return serverError(context, errGet, "login")
+		return serverError(context, errGet, "delete user")
 	}
 
 	//? Check if the given password corresponds with the stored one
@@ -54,23 +53,13 @@ func Login(context *fiber.Ctx) error {
 				})
 		}
 
-		return serverError(context, errCompare, "login")
+		return serverError(context, errCompare, "delete user")
 	}
 
-	accessToken, errCreate := auth.CreateToken(user.ID, auth.AccessToken)
-	if errCreate != nil {
-		return serverError(context, errCreate, "login")
+	errDelete := model.DeleteUser(user.ID, database.TableUsers)
+	if errDelete != nil {
+		return serverError(context, errDelete, "delete user")
 	}
 
-	refreshToken, errCreate := auth.CreateToken(user.ID, auth.RefreshToken)
-	if errCreate != nil {
-		return serverError(context, errCreate, "login")
-	}
-
-	return context.Status(fiber.StatusOK).JSON(
-		map[string]interface{}{
-			auth.AccessToken:  accessToken,
-			auth.RefreshToken: refreshToken,
-		},
-	)
+	return context.Status(fiber.StatusOK).SendString("User deleted")
 }

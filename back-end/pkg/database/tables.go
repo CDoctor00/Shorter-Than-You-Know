@@ -7,7 +7,7 @@ var TableURLs = dbType.Table{
 	Schema:    "styk",
 	Structure: dbType.URL{},
 	Constraints: `UNIQUE(uuid), UNIQUE(short), 
-	FOREIGN KEY(owner_id) REFERENCES styk.users(id)`,
+	FOREIGN KEY(owner_id) REFERENCES styk.users(id) ON DELETE CASCADE`,
 	AddIndex: true,
 }
 
