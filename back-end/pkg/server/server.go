@@ -31,6 +31,7 @@ func setupRoutes(server *fiber.App) {
 	authGroup := server.Group("auth", middlewares.GetJWT())
 	authGroup.Get("/refreshToken", controllers.RefreshToken)
 	authGroup.Put("/deleteUser", controllers.DeleteUser)
+	authGroup.Put("/changeURLStatus", controllers.ChangeURLStatus)
 
 	server.Get("/*", controllers.Redirect)
 }

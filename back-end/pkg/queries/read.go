@@ -91,3 +91,28 @@ func (m Model) GetUserFromEmail(email string, table database.Table) (database.Us
 
 	return user, nil
 }
+
+/*
+This function does a SELECT query on the database of the specific table,
+to get the url infos based on the shortURL given parameter and returns it.
+*/
+func (m Model) GetURLMainInfos(shortURL string, table database.Table) (database.URL, error) {
+	var url database.URL
+
+	var query = fmt.Sprintf("SELECT short, original, password, owner_id, enabled FROM %s.%s WHERE short = $1",
+		table.Schema, table.Name)
+
+	result := m.DB.QueryRow(query, shortURL)
+	errQuery := result.Scan(
+		&url.Short,
+		&url.Original,
+		&url.Password,
+		&url.OwnerID,
+		&url.Enabled,
+	)
+	if errQuery != nil {
+		return url, fmt.Errorf("queries.GetURLMainInfos: %w", errQuery)
+	}
+
+	return url, nil
+}

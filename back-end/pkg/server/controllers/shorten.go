@@ -201,6 +201,7 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 		Short:          shortURL,
 		Password:       password,
 		OwnerID:        userID,
+		Enabled:        true,
 		InsertTime:     time.Now(),
 		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
 		Note:           note,

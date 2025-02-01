@@ -13,6 +13,7 @@ type URL struct {
 	Short          string         `db_name:"short" db_type:"VARCHAR(20) NOT NULL"`
 	Password       sql.NullString `db_name:"password" db_type:"VARCHAR(60)"`
 	OwnerID        sql.NullString `db_name:"owner_id" db_type:"CHAR(8)"`
+	Enabled        bool           `db_name:"enabled" db_type:"BOOLEAN"`
 	InsertTime     time.Time      `db_name:"insert_time" db_type:"TIMESTAMPTZ NOT NULL"`
 	ExpirationTime time.Time      `db_name:"expiration_time" db_type:"TIMESTAMPTZ NOT NULL"`
 	Note           sql.NullString `db_name:"note" db_type:"VARCHAR(500)"`

@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"database/sql"
+	"errors"
 	"styk/pkg/database"
 	"styk/pkg/types/api"
 	"time"
@@ -13,22 +15,35 @@ func Redirect(context *fiber.Ctx) error {
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "login")
+		return serverError(context, errGetInstance, "redirect")
 	}
 
 	//? Get original URL's infos from the given shorten one
 	originalURL, errRetrieve := model.RetrieveOriginalURL(shortURL, database.TableURLs)
 	if errRetrieve != nil {
-		return context.Status(fiber.StatusNotFound).JSON(
-			api.ResponseError{
-				Error:         errRetrieve.Error(),
-				FriendlyError: "The system did not found the specified resource asked",
-			})
+		if errors.Is(errors.Unwrap(errRetrieve), sql.ErrNoRows) {
+			return context.Status(fiber.StatusNotFound).JSON(
+				api.ResponseError{
+					Error:         errRetrieve.Error(),
+					FriendlyError: "The system did not found the specified resource asked",
+				})
+		}
+
+		return serverError(context, errRetrieve, "redirect")
 	}
 
 	if originalURL.Password.Valid {
 		return context.Status(fiber.StatusOK).SendString(
 			"The requested resource needs the password to be returned")
+	}
+
+	//? Check if the shorten URL is enabled
+	if originalURL.Enabled {
+		return context.Status(fiber.StatusNotFound).JSON(
+			api.ResponseError{
+				Error:         "Resource disabled",
+				FriendlyError: "The system found the resource but it is disabled",
+			})
 	}
 
 	//? Check if the shorten URL has been expired

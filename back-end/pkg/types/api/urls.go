@@ -12,3 +12,13 @@ type ShortenResponse struct {
 	OriginalURL string `json:"originalURL"`
 	ShortURL    string `json:"shortURL"`
 }
+
+type RedirectRequest struct {
+	ShortURL string `json:"ShortURL"`
+	Password string `json:"Password"`
+}
+
+type StatusRequest struct {
+	ShortURL string `json:"ShortURL"`
+	Enabled  bool   `json:"Enabled"`
+}
