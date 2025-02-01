@@ -32,6 +32,7 @@ func setupRoutes(server *fiber.App) {
 	authGroup.Get("/refreshToken", controllers.RefreshToken)
 	authGroup.Put("/deleteUser", controllers.DeleteUser)
 	authGroup.Put("/changeURLStatus", controllers.ChangeURLStatus)
+	authGroup.Put("/changeURLExp", controllers.ChangeExpirationTime)
 
 	server.Get("/*", controllers.Redirect)
 }

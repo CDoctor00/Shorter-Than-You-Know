@@ -7,12 +7,13 @@ import (
 	"styk/pkg/database"
 	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func ChangeURLStatus(context *fiber.Ctx) error {
-	var requestBody = api.StatusRequest{}
+func ChangeExpirationTime(context *fiber.Ctx) error {
+	var requestBody = api.ExpirationRequest{}
 
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
@@ -25,7 +26,7 @@ func ChangeURLStatus(context *fiber.Ctx) error {
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "change status")
+		return serverError(context, errGetInstance, "change expiration time")
 	}
 
 	//? Get url's infos from the given shortURL
@@ -39,7 +40,16 @@ func ChangeURLStatus(context *fiber.Ctx) error {
 				})
 		}
 
-		return serverError(context, errGet, "change status")
+		return serverError(context, errGet, "change expiration time")
+	}
+
+	//? Verify the validity of the given expirationTimes
+	if !checkExpirationTime(requestBody.NewExp) {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(
+			api.ResponseError{
+				Error:         "Wrong expiration time",
+				FriendlyError: "The system accepts only timestamp greater than actual time and less than 9999999999 (2286/11/20 05:46:39 GMT) in seconds",
+			})
 	}
 
 	//? Retrieving user email from the JWT
@@ -48,7 +58,7 @@ func ChangeURLStatus(context *fiber.Ctx) error {
 
 	claims, errClaims := auth.GetClaimsFromToken(tokenString)
 	if errClaims != nil {
-		return serverError(context, errClaims, "change status")
+		return serverError(context, errClaims, "change expiration time")
 	}
 	userID, _ := claims[auth.UserID].(string)
 
@@ -61,11 +71,12 @@ func ChangeURLStatus(context *fiber.Ctx) error {
 			})
 	}
 
-	errUpdate := model.UpdateURLStatus(
-		requestBody.ShortURL, requestBody.Enabled, database.TableURLs)
+	newExp := time.Unix(requestBody.NewExp, 0)
+
+	errUpdate := model.UpdateURLExp(url.Short, newExp, database.TableURLs)
 	if errUpdate != nil {
-		return serverError(context, errUpdate, "change status")
+		return serverError(context, errUpdate, "change expiration time")
 	}
 
-	return context.Status(fiber.StatusOK).SendString("Status updated")
+	return context.Status(fiber.StatusOK).SendString("Expiration time updated")
 }

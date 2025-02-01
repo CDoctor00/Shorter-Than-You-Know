@@ -150,22 +150,6 @@ func checkURLSintax(url string) (bool, string) {
 	return regex.MatchString(url), "The system does not accept an URL with invalid syntax"
 }
 
-/*
-This function checks the correctness of the given expiration time.
-
-It returns true if the given time is after current time and before
-the 9999999999 (2286/11/20 05:46:39 GMT), else it returns false.
-*/
-func checkExpirationTime(expirationTime int64) bool {
-	//? Accept only timestamp in seconds and not in milliseconds
-
-	if time.Now().Unix() > expirationTime || expirationTime > 9999999999 {
-		return false
-	}
-
-	return true
-}
-
 func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType.URL, error) {
 	var (
 		urlUUID  = uuid.New()

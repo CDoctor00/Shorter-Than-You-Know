@@ -22,3 +22,8 @@ type StatusRequest struct {
 	ShortURL string `json:"ShortURL"`
 	Enabled  bool   `json:"Enabled"`
 }
+
+type ExpirationRequest struct {
+	ShortURL string `json:"ShortURL"`
+	NewExp   int64  `json:"NewExpirationTime"`
+}
