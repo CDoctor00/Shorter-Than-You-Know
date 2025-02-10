@@ -22,17 +22,19 @@ func Start() {
 }
 
 func setupRoutes(server *fiber.App) {
-	server.Get("/greet/:value", controllers.Greet)
-	server.Post("/redirect", controllers.RedirectWithPwd)
-	server.Post("/shorten", controllers.Shorten)
-	server.Post("/signup", controllers.SignUp)
-	server.Post("/login", controllers.Login)
+	api := server.Group("api")
 
-	authGroup := server.Group("auth", middlewares.GetJWT())
+	api.Get("/greet/:value", controllers.Greet)
+	api.Post("/redirect", controllers.RedirectWithPwd)
+	api.Post("/shorten", controllers.Shorten)
+	api.Post("/signup", controllers.SignUp)
+	api.Post("/login", controllers.Login)
+
+	authGroup := api.Group("auth", middlewares.GetJWT())
 	authGroup.Get("/refreshToken", controllers.RefreshToken)
 	authGroup.Put("/deleteUser", controllers.DeleteUser)
 	authGroup.Put("/changeURLStatus", controllers.ChangeURLStatus)
 	authGroup.Put("/changeURLExp", controllers.ChangeExpirationTime)
 
-	server.Get("/*", controllers.Redirect)
+	api.Get("/*", controllers.Redirect)
 }
