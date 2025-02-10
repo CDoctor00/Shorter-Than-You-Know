@@ -3,15 +3,26 @@ package controllers
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"styk/pkg/database"
 	"styk/pkg/types/api"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Redirect(context *fiber.Ctx) error {
-	var shortURL = context.Path()[1:]
+	var requestBody = api.RedirectRequest{}
+
+	errParser := context.BodyParser(&requestBody)
+	if errParser != nil {
+		return context.Status(fiber.StatusNotAcceptable).JSON(
+			api.ResponseError{
+				Error:         errParser.Error(),
+				FriendlyError: fmt.Sprintf("The system could not process the '%v' entity sended in the request", requestBody),
+			})
+	}
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
@@ -19,7 +30,8 @@ func Redirect(context *fiber.Ctx) error {
 	}
 
 	//? Get original URL's infos from the given shorten one
-	originalURL, errRetrieve := model.RetrieveOriginalURL(shortURL, database.TableURLs)
+	originalURL, errRetrieve := model.RetrieveOriginalURL(
+		requestBody.ShortURL, database.TableURLs)
 	if errRetrieve != nil {
 		if errors.Is(errors.Unwrap(errRetrieve), sql.ErrNoRows) {
 			return context.Status(fiber.StatusNotFound).JSON(
@@ -32,9 +44,23 @@ func Redirect(context *fiber.Ctx) error {
 		return serverError(context, errRetrieve, "redirect")
 	}
 
+	//? Check if the asked URL has a password
 	if originalURL.Password.Valid {
-		return context.Status(fiber.StatusOK).SendString(
-			"The requested resource needs the password to be returned")
+
+		//? Check if the given password corresponds with the stored one
+		errCompare := bcrypt.CompareHashAndPassword([]byte(
+			originalURL.Password.String), []byte(requestBody.Password))
+		if errCompare != nil {
+			if errors.Is(errCompare, bcrypt.ErrMismatchedHashAndPassword) {
+				return context.Status(fiber.StatusUnauthorized).JSON(
+					api.ResponseError{
+						Error:         errCompare.Error(),
+						FriendlyError: "The password provided is incorrect",
+					})
+			}
+
+			return serverError(context, errCompare, "redirect")
+		}
 	}
 
 	//? Check if the shorten URL is enabled

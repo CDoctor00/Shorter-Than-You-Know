@@ -25,7 +25,7 @@ func setupRoutes(server *fiber.App) {
 	api := server.Group("api")
 
 	api.Get("/greet/:value", controllers.Greet)
-	api.Post("/redirect", controllers.RedirectWithPwd)
+	api.Post("/redirect", controllers.Redirect)
 	api.Post("/shorten", controllers.Shorten)
 	api.Post("/signup", controllers.SignUp)
 	api.Post("/login", controllers.Login)
@@ -35,6 +35,4 @@ func setupRoutes(server *fiber.App) {
 	authGroup.Put("/deleteUser", controllers.DeleteUser)
 	authGroup.Put("/changeURLStatus", controllers.ChangeURLStatus)
 	authGroup.Put("/changeURLExp", controllers.ChangeExpirationTime)
-
-	api.Get("/*", controllers.Redirect)
 }
