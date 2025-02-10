@@ -30,25 +30,6 @@ func (m Model) RetrieveOriginalURL(shortURL string, table database.Table) (datab
 
 /*
 This function does a SELECT query on the database of the specific table,
-to check if exists another short URL with the same value of the given string.
-*/
-func (m Model) CheckCustomURL(customURL string, table database.Table) (bool, error) {
-	var check bool
-
-	var query = fmt.Sprintf("SELECT EXISTS (SELECT 1 FROM %s.%s WHERE short = $1)",
-		table.Schema, table.Name)
-
-	result := m.DB.QueryRow(query, customURL)
-	errQuery := result.Scan(&check)
-	if errQuery != nil {
-		return false, fmt.Errorf("queries.CheckCustomURL: %w", errQuery)
-	}
-
-	return check, nil
-}
-
-/*
-This function does a SELECT query on the database of the specific table,
 to check if exists another user with the same email.
 */
 func (m Model) CheckEmail(customURL string, table database.Table) (bool, error) {

@@ -38,30 +38,17 @@ func Shorten(context *fiber.Ctx) error {
 	}
 
 	//? Verify if the 'customURL' field respects the max limit (20 chars)
-	if len(requestBody.CustomURL) > 20 {
+	if len(requestBody.CustomURL) > 10 {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Unacceptable Custom URL",
-				FriendlyError: "The system does not accept a custom URL longer than 20 characters",
+				FriendlyError: "The system does not accept a custom URL longer than 10 characters",
 			})
 	}
 
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
 		return serverError(context, errGetInstance, "URL shortening")
-	}
-
-	//? Verify if the chosen custom URL is already used
-	check, errCheck := model.CheckCustomURL(requestBody.CustomURL, database.TableURLs)
-	if errCheck != nil {
-		return serverError(context, errCheck, "URL shortening")
-	}
-	if check {
-		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			api.ResponseError{
-				Error:         "Unacceptable Custom URL",
-				FriendlyError: "The chosen URL is already used",
-			})
 	}
 
 	//? Verify the validity of the given expirationTimes
@@ -167,7 +154,7 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 	}
 
 	if len(requestBody.CustomURL) > 0 {
-		shortURL = requestBody.CustomURL
+		shortURL = fmt.Sprintf("%s-%s", requestBody.CustomURL, shortURL)
 	}
 
 	if len(requestBody.Note) > 0 {
