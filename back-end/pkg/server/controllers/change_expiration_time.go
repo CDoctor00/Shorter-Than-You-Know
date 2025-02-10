@@ -52,15 +52,6 @@ func ChangeExpirationTime(context *fiber.Ctx) error {
 		return serverError(context, errGet, "change expiration time")
 	}
 
-	//? Verify the validity of the given expirationTimes
-	if !checkExpirationTime(requestBody.NewExp) {
-		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			api.ResponseError{
-				Error:         "Wrong expiration time",
-				FriendlyError: "The system accepts only timestamp greater than actual time and less than 9999999999 (2286/11/20 05:46:39 GMT) in seconds",
-			})
-	}
-
 	//? Retrieving user email from the JWT
 	tokenString := string(context.Request().Header.Peek("Authorization"))
 	tokenString = tokenString[len("Bearer "):]

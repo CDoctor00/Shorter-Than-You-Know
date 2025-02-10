@@ -73,7 +73,7 @@ func Redirect(context *fiber.Ctx) error {
 	}
 
 	//? Check if the shorten URL has been expired
-	if originalURL.ExpirationTime.Before(time.Now()) {
+	if originalURL.ExpirationTime.Time.Before(time.Now()) {
 		return context.Status(fiber.StatusNotFound).JSON(
 			api.ResponseError{
 				Error:         "Resource expired",

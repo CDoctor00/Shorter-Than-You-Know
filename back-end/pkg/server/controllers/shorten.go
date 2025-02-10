@@ -52,12 +52,14 @@ func Shorten(context *fiber.Ctx) error {
 	}
 
 	//? Verify the validity of the given expirationTimes
-	if !checkExpirationTime(requestBody.ExpirationTime) {
-		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			api.ResponseError{
-				Error:         "Wrong expiration time",
-				FriendlyError: "The system accepts only timestamp greater than actual time and less than 9999999999 (2286/11/20 05:46:39 GMT) in seconds",
-			})
+	if requestBody.ExpirationTime > 0 {
+		if !checkExpirationTime(requestBody.ExpirationTime) {
+			return context.Status(fiber.StatusUnprocessableEntity).JSON(
+				api.ResponseError{
+					Error:         "Wrong expiration time",
+					FriendlyError: "The system accepts only timestamp greater than actual time and less than 9999999999 (2286/11/20 05:46:39 GMT) in seconds",
+				})
+		}
 	}
 
 	//? Verify if the 'note' field respects the max limit (500 chars)
@@ -141,6 +143,7 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 		shortURL = urlUUID.String()[:8]
 		password sql.NullString
 		note     sql.NullString
+		exp      sql.NullTime
 	)
 
 	if len(requestBody.Password) > 0 {
@@ -164,6 +167,13 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 		}
 	}
 
+	if requestBody.ExpirationTime > 0 {
+		exp = sql.NullTime{
+			Valid: true,
+			Time:  time.Unix(requestBody.ExpirationTime, 0),
+		}
+	}
+
 	return dbType.URL{
 		UUID:           urlUUID,
 		Original:       requestBody.URL,
@@ -172,7 +182,7 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 		OwnerID:        userID,
 		Enabled:        true,
 		InsertTime:     time.Now(),
-		ExpirationTime: time.Unix(requestBody.ExpirationTime, 0),
+		ExpirationTime: exp,
 		Note:           note,
 	}, nil
 }
