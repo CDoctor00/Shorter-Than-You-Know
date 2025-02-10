@@ -86,19 +86,17 @@ func Shorten(context *fiber.Ctx) error {
 	var userID sql.NullString
 
 	tokenString := string(context.Request().Header.Peek("Authorization"))
-	if tokenString != "" {
+	if len(tokenString) > 0 {
 		tokenString = tokenString[len("Bearer "):]
 		claims, errGetClaim := auth.GetClaimsFromToken(tokenString)
 		if errGetClaim != nil {
 			return serverError(context, errGetClaim, "URL shortening")
 		}
-		claim, _ := claims[auth.UserID].(string)
 
-		if claim != "" {
-			userID = sql.NullString{
-				Valid:  true,
-				String: claim,
-			}
+		claim, _ := claims[auth.UserID].(string)
+		userID = sql.NullString{
+			Valid:  true,
+			String: claim,
 		}
 	}
 

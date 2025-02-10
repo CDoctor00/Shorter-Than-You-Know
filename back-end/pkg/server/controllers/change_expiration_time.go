@@ -24,6 +24,15 @@ func ChangeExpirationTime(context *fiber.Ctx) error {
 			})
 	}
 
+	//? Verify the validity of the given expirationTimes
+	if !checkExpirationTime(requestBody.NewExp) {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(
+			api.ResponseError{
+				Error:         "Wrong expiration time",
+				FriendlyError: "The system accepts only timestamp greater than actual time and less than 9999999999 (2286/11/20 05:46:39 GMT) in seconds",
+			})
+	}
+
 	model, errGetInstance := database.GetInstance()
 	if errGetInstance != nil {
 		return serverError(context, errGetInstance, "change expiration time")
