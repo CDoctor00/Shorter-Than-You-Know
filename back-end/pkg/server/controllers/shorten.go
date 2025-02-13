@@ -37,8 +37,8 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
-	//? Verify if the 'customURL' field respects the max limit (20 chars)
-	if len(requestBody.CustomURL) > 10 {
+	//? Verify if the 'prefix' field respects the max limit (10 chars)
+	if len(requestBody.Prefix) > 10 {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Unacceptable Custom URL",
@@ -156,8 +156,8 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 		password = sql.NullString{Valid: true, String: string(hash)}
 	}
 
-	if len(requestBody.CustomURL) > 0 {
-		shortURL = fmt.Sprintf("%s-%s", requestBody.CustomURL, shortURL)
+	if len(requestBody.Prefix) > 0 {
+		shortURL = fmt.Sprintf("%s-%s", requestBody.Prefix, shortURL)
 	}
 
 	if len(requestBody.Note) > 0 {
