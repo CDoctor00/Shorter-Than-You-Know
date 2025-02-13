@@ -25,7 +25,8 @@ func ChangeExpirationTime(context *fiber.Ctx) error {
 	}
 
 	//? Verify the validity of the given expirationTimes
-	if !checkExpirationTime(requestBody.NewExp) {
+	var newExp, errParse = time.Parse(time.RFC3339, requestBody.NewExp)
+	if errParse != nil || time.Now().Before(newExp) {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Wrong expiration time",
@@ -70,8 +71,6 @@ func ChangeExpirationTime(context *fiber.Ctx) error {
 				FriendlyError: "The user isn't the url's owner",
 			})
 	}
-
-	newExp := time.Unix(requestBody.NewExp, 0)
 
 	errUpdate := model.UpdateURLExp(url.Short, newExp, database.TableURLs)
 	if errUpdate != nil {
