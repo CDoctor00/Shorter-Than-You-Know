@@ -1,9 +1,9 @@
-import FormInput from "./components/FormInput/FormInput";
+import FormUrl from "./components/FormUrl/FormUrl.tsx";
 
 function App() {
   return (
     <div className="App">
-      <FormInput />
+      <FormUrl />
     </div>
   );
 }
