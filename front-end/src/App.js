@@ -1,9 +1,9 @@
-import FormUrl from "./components/FormUrl/FormUrl.tsx";
+import UrlPage from "./components/UrlPage/UrlPage.tsx";
 
 function App() {
   return (
     <div className="App">
-      <FormUrl />
+      <UrlPage />
     </div>
   );
 }

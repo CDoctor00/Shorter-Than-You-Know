@@ -23,7 +23,7 @@ input {
 }
 
 form > input[type="submit"] {
-  margin-left: auto;
+  cursor: pointer;
 }
 
 .advanced-button {

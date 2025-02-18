@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { z } from "zod";
 import "./FormUrl.css";
 import { ShortenRequestBody } from "./utils";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
+import UrlContext from "../../contexts/UrlContext/UrlContext.tsx";
 
 function FormUrl() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setShortenURL } = useContext(UrlContext);
+
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -65,12 +69,10 @@ function FormUrl() {
       return;
     }
 
-    console.log(resultsResponse.data);
+    setShortenURL(`${window.location.origin}/${resultsResponse.data.shortURL}`);
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  let component = (
+  return (
     <>
       <form onSubmit={onSubmit}>
         <div className="input-container">
@@ -134,8 +136,6 @@ function FormUrl() {
       </form>
     </>
   );
-
-  return component;
 }
 
 export default FormUrl;

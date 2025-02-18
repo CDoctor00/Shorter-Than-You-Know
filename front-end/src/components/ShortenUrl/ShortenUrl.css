@@ -1,0 +1,54 @@
+.container {
+  display: grid;
+  gap: 1rem;
+  width: 20rem;
+  max-width: 50rem;
+  padding: 0.5rem;
+  border: solid 1px blue;
+  border-radius: 1rem;
+}
+
+.container a {
+  padding-bottom: 0.5rem;
+  width: fit-content;
+  position: relative;
+  text-decoration: none;
+  &:before {
+    content: "";
+    position: absolute;
+    border-bottom: 5px solid green;
+    width: 5%;
+    height: 1px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition-duration: 300ms;
+  }
+  &:hover {
+    &:before {
+      width: 100%;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+  border: solid 1px yellow;
+}
+
+button {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  width: fit-content;
+  border-radius: 1rem;
+  &:active {
+    color: aqua;
+  }
+}
