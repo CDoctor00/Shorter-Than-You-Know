@@ -23,13 +23,10 @@ func DeleteUser(context *fiber.Ctx) error {
 			})
 	}
 
-	model, errGetInstance := database.GetInstance()
-	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "delete user")
-	}
+	var usersDTO = database.NewUsersDTO()
 
 	//? Get user's infos from the given email
-	user, errGet := model.GetUserFromEmail(requestBody.Email, database.TableUsers)
+	user, errGet := usersDTO.GetUserFromEmail(requestBody.Email)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
 			return context.Status(fiber.StatusUnauthorized).JSON(
@@ -56,7 +53,7 @@ func DeleteUser(context *fiber.Ctx) error {
 		return serverError(context, errCompare, "delete user")
 	}
 
-	errDelete := model.DeleteUser(user.ID, database.TableUsers)
+	errDelete := usersDTO.DeleteUser(user.ID)
 	if errDelete != nil {
 		return serverError(context, errDelete, "delete user")
 	}

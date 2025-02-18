@@ -12,27 +12,9 @@ func main() {
 	utils.LoadEnv()
 
 	//? Database initialization
-	model, err := database.GetInstance()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
-	}
-
-	err = model.CreateSchema(database.TableURLs.Schema)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
-	}
-
-	err = model.CreateTable(database.TableUsers)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
-	}
-
-	err = model.CreateTable(database.TableURLs)
-	if err != nil {
-		fmt.Println(err)
+	var errDB = database.Initialize()
+	if errDB != nil {
+		fmt.Println(errDB)
 		os.Exit(-1)
 	}
 

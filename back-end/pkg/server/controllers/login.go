@@ -24,13 +24,10 @@ func Login(context *fiber.Ctx) error {
 			})
 	}
 
-	model, errGetInstance := database.GetInstance()
-	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "login")
-	}
+	var usersDTO = database.NewUsersDTO()
 
 	//? Get user's infos from the given email
-	user, errGet := model.GetUserFromEmail(requestBody.Email, database.TableUsers)
+	user, errGet := usersDTO.GetUserFromEmail(requestBody.Email)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
 			return context.Status(fiber.StatusUnauthorized).JSON(

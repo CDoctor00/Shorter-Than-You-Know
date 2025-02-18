@@ -46,15 +46,9 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
-	model, errGetInstance := database.GetInstance()
-	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "URL shortening")
-	}
-
 	//? Verify the validity of the given expirationTimes
 	if len(requestBody.Exp) > 0 {
 		date, errParse := time.Parse(time.RFC3339, requestBody.Exp)
-		fmt.Println(date, date.Local())
 
 		if errParse != nil || time.Now().After(date) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -105,7 +99,8 @@ func Shorten(context *fiber.Ctx) error {
 		return serverError(context, errCreate, "URL shortening")
 	}
 
-	errStoring := model.InsertData(newURL, database.TableURLs)
+	var urlsDTO = database.NewUrlsDTO()
+	errStoring := urlsDTO.InsertData(newURL)
 	if errStoring != nil {
 		return serverError(context, errStoring, "URL shortening")
 	}

@@ -9,13 +9,13 @@ import (
 This function does a SELECT query on the database of the specific table,
 to get the original URL path from the 'shortURL' given parameter and returns it.
 */
-func (m Model) RetrieveOriginalURL(shortURL string, table database.Table) (database.URL, error) {
+func (dto DTO) RetrieveOriginalURL(shortURL string) (database.URL, error) {
 	var originalURL database.URL
 
 	var query = fmt.Sprintf("SELECT original, expiration_time, password FROM %s.%s WHERE short = $1",
-		table.Schema, table.Name)
+		dto.Table.Schema, dto.Table.Name)
 
-	result := m.DB.QueryRow(query, shortURL)
+	result := dto.DB.QueryRow(query, shortURL)
 	errQuery := result.Scan(
 		&originalURL.Original,
 		&originalURL.ExpirationTime,
@@ -32,13 +32,13 @@ func (m Model) RetrieveOriginalURL(shortURL string, table database.Table) (datab
 This function does a SELECT query on the database of the specific table,
 to check if exists another user with the same email.
 */
-func (m Model) CheckEmail(customURL string, table database.Table) (bool, error) {
+func (dto DTO) CheckEmail(customURL string) (bool, error) {
 	var check bool
 
 	var query = fmt.Sprintf("SELECT EXISTS (SELECT 1 FROM %s.%s WHERE email = $1)",
-		table.Schema, table.Name)
+		dto.Table.Schema, dto.Table.Name)
 
-	result := m.DB.QueryRow(query, customURL)
+	result := dto.DB.QueryRow(query, customURL)
 	errQuery := result.Scan(&check)
 	if errQuery != nil {
 		return false, fmt.Errorf("queries.CheckEmail: %w", errQuery)
@@ -51,13 +51,13 @@ func (m Model) CheckEmail(customURL string, table database.Table) (bool, error) 
 This function does a SELECT query on the database of the specific table,
 to get the all user informations of the given email.
 */
-func (m Model) GetUserFromEmail(email string, table database.Table) (database.User, error) {
+func (dto DTO) GetUserFromEmail(email string) (database.User, error) {
 	var user database.User
 
 	var query = fmt.Sprintf("SELECT id, email, password, name, surname, created_at FROM %s.%s WHERE email = $1",
-		table.Schema, table.Name)
+		dto.Table.Schema, dto.Table.Name)
 
-	result := m.DB.QueryRow(query, email)
+	result := dto.DB.QueryRow(query, email)
 	errQuery := result.Scan(
 		&user.ID,
 		&user.Email,
@@ -77,13 +77,13 @@ func (m Model) GetUserFromEmail(email string, table database.Table) (database.Us
 This function does a SELECT query on the database of the specific table,
 to get the url infos based on the shortURL given parameter and returns it.
 */
-func (m Model) GetURLMainInfos(shortURL string, table database.Table) (database.URL, error) {
+func (dto DTO) GetURLMainInfos(shortURL string) (database.URL, error) {
 	var url database.URL
 
 	var query = fmt.Sprintf("SELECT short, original, password, owner_id, enabled FROM %s.%s WHERE short = $1",
-		table.Schema, table.Name)
+		dto.Table.Schema, dto.Table.Name)
 
-	result := m.DB.QueryRow(query, shortURL)
+	result := dto.DB.QueryRow(query, shortURL)
 	errQuery := result.Scan(
 		&url.Short,
 		&url.Original,

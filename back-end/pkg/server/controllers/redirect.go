@@ -24,14 +24,10 @@ func Redirect(context *fiber.Ctx) error {
 			})
 	}
 
-	model, errGetInstance := database.GetInstance()
-	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "redirect")
-	}
+	var urlsDTO = database.NewUrlsDTO()
 
 	//? Get original URL's infos from the given shorten one
-	originalURL, errRetrieve := model.RetrieveOriginalURL(
-		requestBody.ShortURL, database.TableURLs)
+	originalURL, errRetrieve := urlsDTO.RetrieveOriginalURL(requestBody.ShortURL)
 	if errRetrieve != nil {
 		if errors.Is(errors.Unwrap(errRetrieve), sql.ErrNoRows) {
 			return context.Status(fiber.StatusNotFound).JSON(

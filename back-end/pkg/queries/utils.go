@@ -7,8 +7,9 @@ import (
 	dbType "styk/pkg/types/database"
 )
 
-type Model struct {
-	DB *sql.DB
+type DTO struct {
+	DB    *sql.DB
+	Table dbType.Table
 }
 
 /*
@@ -63,9 +64,8 @@ func generateTableStructure(table dbType.Table) string {
 		query = query[2:]
 	}
 
-	if table.Constraints != "" {
-		query = fmt.Sprintf("%s,\n%s", query, table.Constraints)
-		//TODO: check if change the Constraints type from string to []string
+	for _, c := range table.Constraints {
+		query = fmt.Sprintf("%s,\n%s", query, c)
 	}
 
 	return query

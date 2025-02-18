@@ -4,7 +4,7 @@ type Table struct {
 	Name        string
 	Schema      string
 	Structure   interface{}
-	Constraints string
+	Constraints []string
 	AddIndex    bool
 }
 

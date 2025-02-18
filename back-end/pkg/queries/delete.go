@@ -2,13 +2,13 @@ package queries
 
 import (
 	"fmt"
-	"styk/pkg/types/database"
 )
 
-func (m Model) DeleteUser(userID string, table database.Table) error {
-	var query = fmt.Sprintf("DELETE FROM %s.%s WHERE id = $1;", table.Schema, table.Name)
+func (dto DTO) DeleteUser(userID string) error {
+	var query = fmt.Sprintf("DELETE FROM %s.%s WHERE id = $1;",
+		dto.Table.Schema, dto.Table.Name)
 
-	_, errExec := m.DB.Exec(query, userID)
+	_, errExec := dto.DB.Exec(query, userID)
 	if errExec != nil {
 		return fmt.Errorf("queries.DeleteUser: %w", errExec)
 	}
@@ -16,10 +16,11 @@ func (m Model) DeleteUser(userID string, table database.Table) error {
 	return nil
 }
 
-func (m Model) DeleteURL(shortURL string, table database.Table) error {
-	var query = fmt.Sprintf("DELETE FROM %s.%s WHERE short = $1;", table.Schema, table.Name)
+func (dto DTO) DeleteURL(shortURL string) error {
+	var query = fmt.Sprintf("DELETE FROM %s.%s WHERE short = $1;",
+		dto.Table.Schema, dto.Table.Name)
 
-	_, errExec := m.DB.Exec(query, shortURL)
+	_, errExec := dto.DB.Exec(query, shortURL)
 	if errExec != nil {
 		return fmt.Errorf("queries.DeleteURL: %w", errExec)
 	}

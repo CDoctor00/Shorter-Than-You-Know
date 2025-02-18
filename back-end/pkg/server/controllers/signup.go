@@ -36,13 +36,10 @@ func SignUp(context *fiber.Ctx) error {
 			})
 	}
 
-	model, errGetInstance := database.GetInstance()
-	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "signup")
-	}
+	var usersDTO = database.NewUsersDTO()
 
 	//? Verify if the given email is already used
-	check, errCheck := model.CheckEmail(requestBody.Email, database.TableUsers)
+	check, errCheck := usersDTO.CheckEmail(requestBody.Email)
 	if errCheck != nil {
 		return serverError(context, errCheck, "signup")
 	}
@@ -67,7 +64,7 @@ func SignUp(context *fiber.Ctx) error {
 		return serverError(context, errCreate, "signup")
 	}
 
-	errStoring := model.InsertData(newUser, database.TableUsers)
+	errStoring := usersDTO.InsertData(newUser)
 	if errStoring != nil {
 		return serverError(context, errStoring, "signup")
 	}

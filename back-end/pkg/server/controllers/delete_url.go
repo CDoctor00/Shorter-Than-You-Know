@@ -24,13 +24,10 @@ func DeleteURL(context *fiber.Ctx) error {
 			})
 	}
 
-	model, errGetInstance := database.GetInstance()
-	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "delete url")
-	}
+	var urlsDTO = database.NewUrlsDTO()
 
 	//? Get url's infos from the given shortURL
-	url, errGet := model.GetURLMainInfos(requestBody.ShortURL, database.TableURLs)
+	url, errGet := urlsDTO.GetURLMainInfos(requestBody.ShortURL)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
 			return context.Status(fiber.StatusNotFound).JSON(
@@ -81,7 +78,7 @@ func DeleteURL(context *fiber.Ctx) error {
 		}
 	}
 
-	errDelete := model.DeleteURL(url.Short, database.TableURLs)
+	errDelete := urlsDTO.DeleteURL(url.Short)
 	if errDelete != nil {
 		return serverError(context, errDelete, "delete url")
 	}

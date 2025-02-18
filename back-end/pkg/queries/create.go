@@ -2,15 +2,14 @@ package queries
 
 import (
 	"fmt"
-	dbType "styk/pkg/types/database"
 )
 
 // ---------- CREATE FUNCTIONS ----------
 
-func (m Model) CreateSchema(schemaName string) error {
-	var query = fmt.Sprintf("CREATE SCHEMA IF NOT EXISTS %s;", schemaName)
+func (dto DTO) CreateSchema() error {
+	var query = fmt.Sprintf("CREATE SCHEMA IF NOT EXISTS %s;", dto.Table.Schema)
 
-	_, errExec := m.DB.Exec(query)
+	_, errExec := dto.DB.Exec(query)
 	if errExec != nil {
 		return fmt.Errorf("queries.CreateSchema: %w", errExec)
 	}
@@ -18,11 +17,11 @@ func (m Model) CreateSchema(schemaName string) error {
 	return nil
 }
 
-func (m Model) CreateTable(table dbType.Table) error {
+func (dto DTO) CreateTable() error {
 	var query = fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (%s);",
-		table.Schema, table.Name, generateTableStructure(table))
+		dto.Table.Schema, dto.Table.Name, generateTableStructure(dto.Table))
 
-	_, errExec := m.DB.Exec(query)
+	_, errExec := dto.DB.Exec(query)
 	if errExec != nil {
 		return fmt.Errorf("queries.CreateTable: %w", errExec)
 	}
@@ -32,13 +31,13 @@ func (m Model) CreateTable(table dbType.Table) error {
 
 // ---------- INSERT FUNCTIONS ----------
 
-func (m Model) InsertData(item interface{}, table dbType.Table) error {
+func (dto DTO) InsertData(item interface{}) error {
 	var (
-		query = generateInsertQuery(table)
+		query = generateInsertQuery(dto.Table)
 		args  = generateInsertArgs(item)
 	)
 
-	_, errExec := m.DB.Exec(query, args...)
+	_, errExec := dto.DB.Exec(query, args...)
 	if errExec != nil {
 		return fmt.Errorf("queries.InsertData: %w", errExec)
 	}

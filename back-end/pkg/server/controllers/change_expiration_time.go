@@ -34,13 +34,10 @@ func ChangeExpirationTime(context *fiber.Ctx) error {
 			})
 	}
 
-	model, errGetInstance := database.GetInstance()
-	if errGetInstance != nil {
-		return serverError(context, errGetInstance, "change expiration time")
-	}
+	var urlsDTO = database.NewUrlsDTO()
 
 	//? Get url's infos from the given shortURL
-	url, errGet := model.GetURLMainInfos(requestBody.ShortURL, database.TableURLs)
+	url, errGet := urlsDTO.GetURLMainInfos(requestBody.ShortURL)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
 			return context.Status(fiber.StatusNotFound).JSON(
@@ -72,7 +69,7 @@ func ChangeExpirationTime(context *fiber.Ctx) error {
 			})
 	}
 
-	errUpdate := model.UpdateURLExp(url.Short, newExp, database.TableURLs)
+	errUpdate := urlsDTO.UpdateURLExp(url.Short, newExp)
 	if errUpdate != nil {
 		return serverError(context, errUpdate, "change expiration time")
 	}

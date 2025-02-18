@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"styk/pkg/queries"
 	"sync"
 
 	_ "github.com/lib/pq" //PostgreSQL driver
@@ -15,7 +14,7 @@ var (
 	once     sync.Once
 )
 
-func GetInstance() (queries.Model, error) {
+func connect() error {
 	var err error
 
 	once.Do(func() {
@@ -27,15 +26,13 @@ func GetInstance() (queries.Model, error) {
 		instance = db
 	})
 	if err != nil {
-		return queries.Model{},
-			fmt.Errorf("database.GetInstance: %w", err)
+		return fmt.Errorf("database.connect: %w", err)
 	}
 
 	err = instance.Ping()
 	if err != nil {
-		return queries.Model{},
-			fmt.Errorf("database.GetInstance: %w", err)
+		return fmt.Errorf("database.connect: %w", err)
 	}
 
-	return queries.Model{DB: instance}, nil
+	return nil
 }
