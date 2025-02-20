@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { z } from "zod";
 import "./FormUrl.css";
-import { ShortenRequestBody } from "./utils";
+import { ShortenRequestBody } from "./utils.ts";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
 import UrlContext from "../../contexts/UrlContext/UrlContext.tsx";
 

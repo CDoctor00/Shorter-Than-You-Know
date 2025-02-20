@@ -1,17 +1,34 @@
-import React, { useContext } from "react";
+import { useContext, useState } from "react";
 import { FaCopy, FaQrcode, FaRedo, FaShare } from "react-icons/fa";
 import "./ShortenUrl.css";
 import UrlContext from "../../contexts/UrlContext/UrlContext.tsx";
+import QRCode from "../QRCode/QRCode.tsx";
 
 function ShortenUrl() {
   const { shortenURL, setShortenURL } = useContext(UrlContext);
+  const [showQR, setShowQR] = useState(false);
+
+  const copyToClipboard = () => {
+    try {
+      navigator.clipboard
+        .writeText(shortenURL)
+        .then(() => {
+          console.log("Copied");
+        })
+        .catch((err) => {
+          console.error("Error: ", err);
+        });
+    } catch (err) {
+      console.error("Error: ", err);
+    }
+  };
 
   return (
     <div className="container">
       <h3>Get your shorten link:</h3>
       <a href={shortenURL}>{shortenURL}</a>
       <div className="buttons">
-        <button>
+        <button onClick={copyToClipboard}>
           {/* <span> Copy </span> */}
           <FaCopy />
         </button>
@@ -19,7 +36,11 @@ function ShortenUrl() {
           {/* <span> Share </span> */}
           <FaShare />
         </button>
-        <button>
+        <button
+          onClick={() => {
+            setShowQR(true);
+          }}
+        >
           {/* <span> QR </span> */}
           <FaQrcode />
         </button>
@@ -32,6 +53,7 @@ function ShortenUrl() {
           <FaRedo />
         </button>
       </div>
+      {showQR && <QRCode value={shortenURL} />}
     </div>
   );
 }
