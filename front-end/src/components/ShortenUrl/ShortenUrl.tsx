@@ -24,7 +24,7 @@ function ShortenUrl() {
   };
 
   return (
-    <div className="container">
+    <div className="url-container">
       <h3>Get your shorten link:</h3>
       <a href={shortenURL}>{shortenURL}</a>
       <div className="buttons">

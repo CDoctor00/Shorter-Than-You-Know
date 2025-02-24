@@ -1,4 +1,4 @@
-.container {
+.url-container {
   display: grid;
   gap: 1rem;
   width: 20rem;
@@ -8,7 +8,7 @@
   border-radius: 1rem;
 }
 
-.container a {
+.url-container a {
   padding-bottom: 0.5rem;
   width: fit-content;
   position: relative;
@@ -48,7 +48,4 @@ button {
   cursor: pointer;
   width: fit-content;
   border-radius: 1rem;
-  &:active {
-    color: aqua;
-  }
 }
