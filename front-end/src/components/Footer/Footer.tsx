@@ -6,10 +6,10 @@ function Footer() {
     <div className="footer">
       <h5>Made with blood and sweat</h5>
       <div className="icons">
-        <FaGithub />
-        <FaLinkedin />
-        <FaInstagram />
-        <FaPaypal />
+        <FaGithub className="icon" />
+        <FaLinkedin className="icon" />
+        <FaInstagram className="icon" />
+        <FaPaypal className="icon" />
       </div>
     </div>
   );

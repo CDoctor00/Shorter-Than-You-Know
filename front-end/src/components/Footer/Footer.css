@@ -6,12 +6,12 @@
   height: 5rem;
   width: 100%;
   padding: 0.5rem;
-  border: solid 1px yellow;
-}
+  border-top: solid 2px rgb(from var(--text) r g b / 0.5);
+  margin-top: auto;
 
-.icons {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  width: 7rem;
+  .icons {
+    display: flex;
+    justify-content: space-evenly;
+    width: 10rem;
+  }
 }

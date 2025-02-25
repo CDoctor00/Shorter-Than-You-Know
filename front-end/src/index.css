@@ -78,3 +78,18 @@ h6 {
 #__next {
   isolation: isolate;
 }
+
+:root[data-theme="light"] {
+  --text: #0b1910;
+  --background: #f4fbf6;
+  --primary: #41d878;
+  --secondary: #7ff0a9;
+  --accent: #50f78d;
+}
+:root[data-theme="dark"] {
+  --text: #e6f4eb;
+  --background: #040b06;
+  --primary: #27be5f;
+  --secondary: #0f8038;
+  --accent: #08af46;
+}

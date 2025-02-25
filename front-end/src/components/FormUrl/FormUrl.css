@@ -7,13 +7,6 @@ form {
   border: solid 1px red;
 }
 
-.input-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-
 input {
   padding: 1rem;
   border-radius: 1rem;
@@ -33,6 +26,7 @@ form > input[type="submit"] {
   background: none;
   width: fit-content;
   cursor: pointer;
+  margin-left: auto;
 }
 
 .advanced {

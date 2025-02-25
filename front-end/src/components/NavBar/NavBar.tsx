@@ -1,24 +1,17 @@
 import "./NavBar.css";
 import Logo from "../Logo/Logo";
-import Menu from "../Menu/Menu";
-import { MdMenu, MdClose } from "react-icons/md";
-import { useState } from "react";
+import { FaSun, FaUser } from "react-icons/fa6";
 
 function NavBar() {
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuVisible(!isMenuVisible);
-  };
   return (
     <>
       <div className="navbar">
         <Logo />
-        <button className="menu-button" onClick={toggleMenu}>
-          {isMenuVisible ? <MdClose /> : <MdMenu />}
-        </button>
+        <div className="icons">
+          <FaSun className="icon" />
+          <FaUser className="icon" />
+        </div>
       </div>
-      <Menu isVisible={isMenuVisible}></Menu>
     </>
   );
 }
