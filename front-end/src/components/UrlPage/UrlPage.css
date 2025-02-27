@@ -1,3 +1,84 @@
-.urlPage {
-  width: 100%;
+.url-page {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.new-url-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3rem;
+  width: 15rem;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  background: rgb(from var(--primary) r g b / 0.8);
+
+  &:hover {
+    background: var(--primary);
+
+    .new-url-icon {
+      transform: translatex(0);
+    }
+
+    .new-url-text {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.new-url-icon {
+  width: 2rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 0 50% 50% 0;
+  background: rgb(from var(--background) r g b / 0.5);
+  transform: translatex(-2rem);
+  transition: all 0.25s ease-in-out;
+  z-index: 1;
+}
+
+.new-url-text {
+  transition: all 0.25s ease-in-out;
+}
+
+.url-label {
+  padding-top: 2rem;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  transition: 0.75s ease-in-out;
+}
+
+.url-label.close {
+  padding-top: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.url-label.shorten {
+  height: 4rem;
+}
+
+.url-label.shorten.close {
+  height: 4rem;
+  padding-top: 0rem;
+  z-index: 1;
+  border-radius: 0 0 50% 50%;
+  background: var(--secondary);
+
+  &:hover {
+    background: var(--primary);
+  }
 }
