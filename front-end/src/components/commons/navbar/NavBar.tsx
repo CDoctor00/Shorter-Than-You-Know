@@ -1,5 +1,5 @@
 import "./NavBar.css";
-import Logo from "../Logo/Logo";
+import Logo from "../logo/Logo";
 import { FaSun, FaUser } from "react-icons/fa6";
 
 function NavBar() {

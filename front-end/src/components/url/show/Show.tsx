@@ -1,7 +1,8 @@
 import { useState } from "react";
-import "./ShowUrl.css";
-import ShortenUrl from "../ShortenUrl/ShortenUrl";
-import QRCode from "../QRCode/QRCode";
+import ShortenUrl from "../shorten/Shorten";
+import QRCode from "../qrcode/QRCode";
+import "./Show.css";
+
 function ShowUrl() {
   const [isOpenQR, setIsOpenQR] = useState(false);
 

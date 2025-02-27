@@ -1,9 +1,9 @@
 import { useState } from "react";
-import FormUrl from "../FormUrl/FormUrl.tsx";
-import UrlContext from "../../contexts/UrlContext/UrlContext.tsx";
-import "./UrlPage.css";
-import ShowUrl from "../ShowUrl/ShowUrl.tsx";
 import { FaPlus } from "react-icons/fa6";
+import FormUrl from "../form/Form.tsx";
+import ShowUrl from "../show/Show.tsx";
+import UrlContext from "../../../contexts/url/UrlContext.tsx";
+import "./Page.css";
 
 function UrlPage() {
   const [shortenURL, setShortenURL] = useState("");

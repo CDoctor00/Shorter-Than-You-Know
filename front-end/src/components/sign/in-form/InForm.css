@@ -1,0 +1,18 @@
+.sign-container.in {
+  transition: 0.75s ease-in-out;
+}
+
+.sign-container.in.close {
+  border-radius: 80% 80% 0 0/ 10% 10% 0 0;
+  transform: translateY(-4rem);
+  background: var(--secondary);
+
+  &:hover {
+    background: var(--primary);
+  }
+}
+
+.sign-container.in.open {
+  padding-top: 5rem;
+  transform: translateY(-38rem);
+}

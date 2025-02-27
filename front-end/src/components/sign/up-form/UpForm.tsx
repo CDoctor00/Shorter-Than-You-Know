@@ -1,4 +1,5 @@
 import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
+import "./UpForm.css";
 
 function SignUpForm({
   isOpen,

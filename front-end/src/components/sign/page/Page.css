@@ -22,25 +22,6 @@
   background: var(--card-bg);
 }
 
-.sign-container.in {
-  transition: 0.75s ease-in-out;
-}
-
-.sign-container.in.close {
-  border-radius: 80% 80% 0 0/ 10% 10% 0 0;
-  transform: translateY(-4rem);
-  background: var(--secondary);
-
-  &:hover {
-    background: var(--primary);
-  }
-}
-
-.sign-container.in.open {
-  padding-top: 5rem;
-  transform: translateY(-38rem);
-}
-
 .sign-label {
   padding-top: 2rem;
   font-size: 2rem;
@@ -55,20 +36,4 @@
   padding-top: 1rem;
   font-size: 1.5rem;
   cursor: pointer;
-}
-
-.sign-label.up {
-  height: 4rem;
-}
-
-.sign-label.up.close {
-  height: 4rem;
-  padding-top: 0rem;
-  z-index: 1;
-  border-radius: 0 0 70% 70%;
-  background: var(--secondary);
-
-  &:hover {
-    background: var(--primary);
-  }
 }

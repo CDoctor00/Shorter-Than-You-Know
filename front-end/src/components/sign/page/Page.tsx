@@ -1,7 +1,7 @@
 import { useState } from "react";
-import SignInForm from "../SignInForm/SignInForm";
-import SignUpForm from "../SignUpForm/SignUpForm";
-import "./SignPage.css";
+import SignInForm from "../in-form/InForm";
+import SignUpForm from "../up-form/UpForm";
+import "./Page.css";
 
 function SignPage() {
   const [isSignUp, setIsSignUp] = useState(true);
