@@ -1,7 +1,7 @@
 .shorten-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 2.5rem 1rem;
   gap: 2rem;
 }
 

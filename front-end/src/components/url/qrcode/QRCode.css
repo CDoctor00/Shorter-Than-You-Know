@@ -11,12 +11,18 @@
   height: 8rem;
   justify-content: space-around;
   align-items: center;
+  height: 15rem;
 
   .buttons {
     flex-direction: column;
   }
+}
 
-  svg {
-    border-radius: 0.5rem;
-  }
+#qrcode {
+  border-radius: 0.5rem;
+}
+
+#qr-container.card-container.down.open {
+  padding-top: 3rem;
+  transform: translateY(-20rem);
 }

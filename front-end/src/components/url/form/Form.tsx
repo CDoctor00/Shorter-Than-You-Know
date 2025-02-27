@@ -102,7 +102,7 @@ function FormUrl() {
 
   return (
     <div className="form-url-container">
-      <label className="url-label">Shorten your URL</label>
+      <label className="card-label">Shorten your URL</label>
       <form onSubmit={onSubmit}>
         <input
           type="text"

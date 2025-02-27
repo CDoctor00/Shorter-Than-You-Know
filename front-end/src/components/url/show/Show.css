@@ -4,35 +4,6 @@
   border-radius: 1rem;
 }
 
-.url-container {
-  position: relative;
-  display: flex;
-  gap: 1rem;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  background: var(--card-bg);
-}
-
-.url-container.qr {
-  transition: 0.75s ease-in-out;
-}
-
-.url-container.qr.close {
-  border-radius: 70% 70% 0 0/ 10% 10% 0 0;
-  transform: translateY(-4rem);
-  background: var(--secondary);
-
-  &:hover {
-    background: var(--primary);
-  }
-}
-
-.url-container.qr.open {
-  padding-top: 3rem;
-  transform: translateY(-20rem);
-}
-
 .buttons {
   display: flex;
   flex-direction: row;

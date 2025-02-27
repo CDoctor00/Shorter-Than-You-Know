@@ -75,11 +75,12 @@ function QRCode({
 
   return (
     <div
-      className={`url-container qr ${isOpen ? "open" : "close"}`}
+      className={`card-container down ${isOpen ? "open" : "close"}`}
+      id="qr-container"
       ref={refQR}
     >
       <label
-        className={`url-label qr ${isOpen ? "" : "close"}`}
+        className={`card-label down ${isOpen ? "" : "close"}`}
         onClick={isOpen ? undefined : toggleUrl}
       >
         Get your QR
@@ -89,6 +90,7 @@ function QRCode({
           value={shortenURL}
           size={128} //pixels
           level={"M"}
+          id="qrcode"
         />
         <div className="buttons">
           <button onClick={copyToClipboard}>

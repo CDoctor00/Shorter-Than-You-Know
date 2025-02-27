@@ -1,7 +1,7 @@
 import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
-import "./InForm.css";
+import "./Login.css";
 
-function SignInForm({
+function LoginForm({
   isOpen,
   toggleForm,
 }: {
@@ -9,10 +9,13 @@ function SignInForm({
   toggleForm: () => void;
 }) {
   return (
-    <div className={`sign-container in ${isOpen ? "open" : "close"}`}>
+    <div
+      className={`card-container down ${isOpen ? "open" : "close"}`}
+      id="login-container"
+    >
       <label
         onClick={isOpen ? undefined : toggleForm}
-        className={`sign-label in ${isOpen ? "" : "close"}`}
+        className={`card-label down ${isOpen ? "" : "close"}`}
       >
         Sign In
       </label>
@@ -33,4 +36,4 @@ function SignInForm({
   );
 }
 
-export default SignInForm;
+export default LoginForm;

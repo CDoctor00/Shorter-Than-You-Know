@@ -49,36 +49,5 @@
 
 .new-url-text {
   transition: all 0.25s ease-in-out;
-}
-
-.url-label {
-  padding-top: 2rem;
-  font-size: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-weight: bold;
-  transition: 0.75s ease-in-out;
-}
-
-.url-label.close {
-  padding-top: 1rem;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.url-label.shorten {
-  height: 4rem;
-}
-
-.url-label.shorten.close {
-  height: 4rem;
-  padding-top: 0rem;
-  z-index: 1;
-  border-radius: 0 0 50% 50%;
-  background: var(--secondary);
-
-  &:hover {
-    background: var(--primary);
-  }
 }

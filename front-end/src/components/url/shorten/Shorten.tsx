@@ -34,9 +34,9 @@ function ShortenUrl({
   );
 
   return (
-    <div className={`url-container shorten ${isOpen ? "open" : "close"}`}>
+    <div className={`card-container shorten ${isOpen ? "open" : "close"}`}>
       <label
-        className={`url-label shorten ${isOpen ? "" : "close"}`}
+        className={`card-label up ${isOpen ? "" : "close"}`}
         onClick={isOpen ? undefined : toggleUrl}
       >
         Get your shorten link

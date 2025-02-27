@@ -1,6 +1,6 @@
 import { useState } from "react";
-import SignInForm from "../in-form/InForm";
-import SignUpForm from "../up-form/UpForm";
+import LoginForm from "../login/Login";
+import SignUp from "../signup/Signup";
 import "./Page.css";
 
 function SignPage() {
@@ -12,8 +12,8 @@ function SignPage() {
 
   return (
     <div className="sign-page">
-      <SignUpForm isOpen={isSignUp} toggleForm={toggleForm} />
-      <SignInForm isOpen={!isSignUp} toggleForm={toggleForm} />
+      <SignUp isOpen={isSignUp} toggleForm={toggleForm} />
+      <LoginForm isOpen={!isSignUp} toggleForm={toggleForm} />
     </div>
   );
 }

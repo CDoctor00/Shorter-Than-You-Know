@@ -12,28 +12,3 @@
     margin: 1rem auto;
   }
 }
-
-.sign-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  background: var(--card-bg);
-}
-
-.sign-label {
-  padding-top: 2rem;
-  font-size: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  transition: 0.75s ease-in-out;
-}
-
-.sign-label.close {
-  padding-top: 1rem;
-  font-size: 1.5rem;
-  cursor: pointer;
-}

@@ -1,7 +1,7 @@
 import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
-import "./UpForm.css";
+import "./Signup.css";
 
-function SignUpForm({
+function SignUp({
   isOpen,
   toggleForm,
 }: {
@@ -9,10 +9,10 @@ function SignUpForm({
   toggleForm: () => void;
 }) {
   return (
-    <div className="sign-container">
+    <div className="card-container">
       <label
         onClick={isOpen ? undefined : toggleForm}
-        className={`sign-label up ${isOpen ? "" : "close"}`}
+        className={`card-label up ${isOpen ? "" : "close"}`}
       >
         Create Account
       </label>
@@ -40,4 +40,4 @@ function SignUpForm({
   );
 }
 
-export default SignUpForm;
+export default SignUp;
