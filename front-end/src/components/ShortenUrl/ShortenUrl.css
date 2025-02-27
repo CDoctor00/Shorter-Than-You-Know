@@ -1,51 +1,52 @@
-.url-container {
-  display: grid;
-  gap: 1rem;
-  width: 20rem;
-  max-width: 50rem;
-  padding: 0.5rem;
-  border: solid 1px blue;
-  border-radius: 1rem;
+.shorten-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 2rem;
 }
 
-.url-container a {
-  padding-bottom: 0.5rem;
-  width: fit-content;
-  position: relative;
+.shorten-url {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3rem;
+  width: 100%;
   text-decoration: none;
-  &:before {
-    content: "";
-    position: absolute;
-    border-bottom: 5px solid green;
-    width: 5%;
-    height: 1px;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    transition-duration: 300ms;
-  }
+  border-radius: 0.5rem;
+  background: var(--secondary);
+  color: var(--text);
+  overflow: hidden;
+  position: relative;
+
   &:hover {
-    &:before {
-      width: 100%;
+    background: var(--primary);
+
+    .redirect-icon {
+      transform: translatex(0);
+    }
+
+    .redirect-url {
+      font-size: 1.1rem;
     }
   }
 }
 
-.buttons {
+.redirect-icon {
+  width: 2rem;
+  height: 3rem;
   display: flex;
-  flex-direction: row;
   justify-content: center;
-  gap: 1rem;
-  border: solid 1px yellow;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 0 50% 50% 0;
+  background: rgb(from var(--background) r g b / 0.5);
+  transform: translatex(-2rem);
+  transition: all 0.25s ease-in-out;
+  z-index: 1;
 }
 
-button {
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  width: fit-content;
-  border-radius: 1rem;
+.redirect-url {
+  transition: all 0.25s ease-in-out;
 }

@@ -1,13 +1,27 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+  useContext,
+} from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { FaCopy, FaDownload } from "react-icons/fa";
 import "./QRCode.css";
+import UrlContext from "../../contexts/UrlContext/UrlContext";
 
-function QRCode({ value }: { value: string }) {
+function QRCode({
+  isOpen,
+  toggleUrl,
+}: {
+  isOpen: boolean;
+  toggleUrl: () => void;
+}) {
   const refQR = useRef<HTMLDivElement | null>(null);
+  const { shortenURL } = useContext(UrlContext);
   const [blob, setBlob] = useState<Blob | null>(null);
   const [dataURL, setDataURL] = useState<string>("");
-  // const [img, setImg] = useState(new Image());
   const img = useMemo(() => new Image(), []);
 
   const createBlob = useCallback(() => {
@@ -60,20 +74,32 @@ function QRCode({ value }: { value: string }) {
   };
 
   return (
-    <div className="container-qr" ref={refQR}>
-      <QRCodeSVG
-        value={value}
-        size={128} //pixels
-      />
-      <div className="buttons-qr">
-        <button onClick={copyToClipboard}>
-          {/* <span> Copy </span> */}
-          <FaCopy />
-        </button>
-        <button onClick={downdload}>
-          {/* <span> Share </span> */}
-          <FaDownload />
-        </button>
+    <div
+      className={`url-container qr ${isOpen ? "open" : "close"}`}
+      ref={refQR}
+    >
+      <label
+        className={`url-label qr ${isOpen ? "" : "close"}`}
+        onClick={isOpen ? undefined : toggleUrl}
+      >
+        Get your QR
+      </label>
+      <div className="qr-wrapper">
+        <QRCodeSVG
+          value={shortenURL}
+          size={128} //pixels
+          level={"M"}
+        />
+        <div className="buttons">
+          <button onClick={copyToClipboard}>
+            <span> Copy </span>
+            <FaCopy />
+          </button>
+          <button onClick={downdload}>
+            <span> Download </span>
+            <FaDownload />
+          </button>
+        </div>
       </div>
     </div>
   );

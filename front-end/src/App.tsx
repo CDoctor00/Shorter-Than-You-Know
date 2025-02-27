@@ -5,7 +5,7 @@ import UrlPage from "./components/UrlPage/UrlPage";
 
 function App() {
   return (
-    <div className="container">
+    <div className="app-container">
       <NavBar />
       <main>
         <UrlPage />

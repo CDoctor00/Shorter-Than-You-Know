@@ -1,4 +1,4 @@
-.container {
+.app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -30,30 +30,26 @@ main {
 form {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 1.5rem 2rem;
-}
-
-.input-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
+  gap: 1rem;
+  padding: 1.5rem;
 }
 
 input {
-  background-color: #eee;
+  background: var(--input-bg);
   border: none;
-  padding: 0.7rem;
+  padding: 0 1rem;
   width: 100%;
   border-radius: 0.5rem;
   height: 3rem;
 }
 
 form > input[type="submit"] {
-  height: 3.3rem;
+  padding: 0;
+  height: 3rem;
   font-size: 1.1em;
   font-weight: bold;
   cursor: pointer;
+  margin-top: 1rem;
   background: var(--secondary);
 
   &:hover {
@@ -70,5 +66,38 @@ form > input[type="submit"] {
   &:hover {
     transform: scale(1.5);
     color: var(--accent);
+  }
+}
+
+button {
+  height: 2.5rem;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: var(--secondary);
+  color: var(--text);
+
+  &:hover {
+    background: var(--primary);
+  }
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@keyframes fadeLoad {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

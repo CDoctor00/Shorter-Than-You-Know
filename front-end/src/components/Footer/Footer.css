@@ -6,7 +6,7 @@
   height: 5rem;
   width: 100%;
   padding: 0.5rem;
-  border-top: solid 2px rgb(from var(--text) r g b / 0.5);
+  border-top: solid 1px rgb(from var(--text) r g b / 0.5);
   margin-top: auto;
 
   .icons {

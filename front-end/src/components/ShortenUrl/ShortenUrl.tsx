@@ -1,12 +1,16 @@
-import { useContext, useState } from "react";
-import { FaCopy, FaQrcode, FaRedo, FaShare } from "react-icons/fa";
+import { useContext } from "react";
+import { FaCopy, FaExternalLinkAlt, FaShare } from "react-icons/fa";
 import "./ShortenUrl.css";
 import UrlContext from "../../contexts/UrlContext/UrlContext.tsx";
-import QRCode from "../QRCode/QRCode.tsx";
 
-function ShortenUrl() {
-  const { shortenURL, setShortenURL } = useContext(UrlContext);
-  const [showQR, setShowQR] = useState(false);
+function ShortenUrl({
+  isOpen,
+  toggleUrl,
+}: {
+  isOpen: boolean;
+  toggleUrl: () => void;
+}) {
+  const { shortenURL } = useContext(UrlContext);
 
   const copyToClipboard = () => {
     try {
@@ -23,37 +27,38 @@ function ShortenUrl() {
     }
   };
 
+  //? remove protocol from URL
+  const shorten = shortenURL.slice(
+    shortenURL.indexOf("//") + 2,
+    shortenURL.length
+  );
+
   return (
-    <div className="url-container">
-      <h3>Get your shorten link:</h3>
-      <a href={shortenURL}>{shortenURL}</a>
-      <div className="buttons">
-        <button onClick={copyToClipboard}>
-          {/* <span> Copy </span> */}
-          <FaCopy />
-        </button>
-        <button>
-          {/* <span> Share </span> */}
-          <FaShare />
-        </button>
-        <button
-          onClick={() => {
-            setShowQR(true);
-          }}
-        >
-          {/* <span> QR </span> */}
-          <FaQrcode />
-        </button>
-        <button
-          onClick={() => {
-            setShortenURL("");
-          }}
-        >
-          {/* <span> QR </span> */}
-          <FaRedo />
-        </button>
+    <div className={`url-container shorten ${isOpen ? "open" : "close"}`}>
+      <label
+        className={`url-label shorten ${isOpen ? "" : "close"}`}
+        onClick={isOpen ? undefined : toggleUrl}
+      >
+        Get your shorten link
+      </label>
+      <div className="shorten-wrapper">
+        <a href={shortenURL} className="shorten-url">
+          <span className="redirect-icon">
+            <FaExternalLinkAlt />
+          </span>
+          <span className="redirect-url">{shorten}</span>
+        </a>
+        <div className="buttons">
+          <button onClick={copyToClipboard}>
+            <span> Copy </span>
+            <FaCopy />
+          </button>
+          <button>
+            <span> Share </span>
+            <FaShare />
+          </button>
+        </div>
       </div>
-      {showQR && <QRCode value={shortenURL} />}
     </div>
   );
 }

@@ -1,13 +1,41 @@
 import React, { useState, useContext } from "react";
 import { z } from "zod";
 import "./FormUrl.css";
-import { ShortenRequestBody } from "./utils.ts";
-import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
+import { FaArrowDown } from "react-icons/fa6";
 import UrlContext from "../../contexts/UrlContext/UrlContext.tsx";
+
+type ShortenRequestBody = {
+  url: string;
+  customURL: string;
+  expirationTime: string;
+  //   note: string;
+  password: string;
+};
 
 function FormUrl() {
   const [isOpen, setIsOpen] = useState(false);
   const { setShortenURL } = useContext(UrlContext);
+
+  const createExpDate = (
+    date: string | null | undefined,
+    time: string | null | undefined
+  ): string => {
+    if (!date) {
+      return "";
+    }
+
+    if (!time) {
+      time = "00:00";
+    }
+
+    const datetime = new Date(`${date}T${time}`);
+    if (isNaN(datetime.getTime())) {
+      return "";
+    }
+
+    //RFC3339 format: 2006-01-02T15:04:05-07:00
+    return datetime.toISOString().replace(".000", "");
+  };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,12 +69,12 @@ function FormUrl() {
     const data: ShortenRequestBody = {
       url: resultsForm.data.url,
       customURL: resultsForm.data.prefix,
-      expirationTime: Date.parse(
-        `${resultsForm.data.date} ${resultsForm.data.time}`
+      expirationTime: createExpDate(
+        resultsForm.data.date,
+        resultsForm.data.time
       ),
       password: resultsForm.data.password,
     };
-
     const response = await fetch("http://localhost:10000/api/shorten", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -73,17 +101,15 @@ function FormUrl() {
   };
 
   return (
-    <>
+    <div className="form-url-container">
+      <label className="url-label">Shorten your URL</label>
       <form onSubmit={onSubmit}>
-        <div className="input-container">
-          <label htmlFor="url">Paste your long url here</label>
-          <input
-            type="text"
-            id="url"
-            name="url"
-            placeholder="https://example.com/long-url"
-          />
-        </div>
+        <input
+          type="text"
+          id="url"
+          name="url"
+          placeholder="https://example.com/long-url"
+        />
         <button
           className="advanced-button"
           onClick={(e) => {
@@ -92,16 +118,16 @@ function FormUrl() {
           }}
         >
           <span>Advanced</span>
-          {isOpen ? <FaArrowUp /> : <FaArrowDown />}
+          <FaArrowDown className={`arrow ${isOpen ? "open" : ""}`} />
         </button>
-        <div className="advanced" style={{ display: isOpen ? "grid" : "none" }}>
+        <div className={`advanced ${isOpen ? "" : "close"}`}>
           <div className="input-container">
             <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
               name="password"
-              placeholder="password"
+              placeholder="Password"
             />
           </div>
           <div className="input-container">
@@ -110,31 +136,23 @@ function FormUrl() {
               type="text"
               id="prefix"
               name="prefix"
-              placeholder="custom_url"
+              placeholder="Custom prefix of shorten URL"
             />
           </div>
-          <div className="input-container">
-            <label htmlFor="date">Date</label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              // placeholder="https://example.com/long-url"
-            />
-          </div>
-          <div className="input-container">
-            <label htmlFor="time">Time</label>
-            <input
-              type="time"
-              id="time"
-              name="time"
-              // placeholder="https://example.com/long-url"
-            />
+          <div className="timestamp-input-container">
+            <div className="input-container" id="date-input">
+              <label htmlFor="date">Date</label>
+              <input type="date" id="date" name="date" />
+            </div>
+            <div className="input-container" id="time-input">
+              <label htmlFor="time">Time</label>
+              <input type="time" id="time" name="time" />
+            </div>
           </div>
         </div>
         <input type="submit" value="Shorten" />
       </form>
-    </>
+    </div>
   );
 }
 

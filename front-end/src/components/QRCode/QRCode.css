@@ -1,17 +1,22 @@
-.container-qr {
+.qr-container {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  width: 20rem;
-  max-width: 50rem;
-  border: solid 1px blue;
+  flex-direction: column;
+  height: 10rem;
+  align-items: center;
   border-radius: 1rem;
 }
 
-.buttons-qr {
+.qr-wrapper {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-  border: solid 1px yellow;
+  height: 8rem;
+  justify-content: space-around;
+  align-items: center;
+
+  .buttons {
+    flex-direction: column;
+  }
+
+  svg {
+    border-radius: 0.5rem;
+  }
 }

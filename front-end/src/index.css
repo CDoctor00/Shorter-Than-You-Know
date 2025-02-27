@@ -80,16 +80,36 @@ h6 {
 }
 
 :root[data-theme="light"] {
-  --text: #0b1910;
-  --background: #f4fbf6;
-  --primary: #41d878;
-  --secondary: #7ff0a9;
-  --accent: #50f78d;
+  --text: rgb(6, 9, 6);
+  --background: rgb(245, 250, 245);
+  --primary: rgb(73, 202, 73);
+  --secondary: rgb(142, 236, 142);
+  --accent: rgb(78, 244, 78);
+
+  --card-bg: rgb(210, 241, 210);
+  --input-bg: rgb(from var(--text) r g b / 0.1);
 }
 :root[data-theme="dark"] {
-  --text: #e6f4eb;
-  --background: #040b06;
-  --primary: #27be5f;
-  --secondary: #0f8038;
-  --accent: #08af46;
+  --text: rgb(246, 249, 246);
+  --background: rgb(5, 10, 5);
+  --primary: rgb(53, 182, 53);
+  --secondary: rgb(19, 114, 19);
+  --accent: rgb(11, 177, 11);
+
+  --card-bg: rgb(9, 28, 9);
+  --input-bg: rgb(from var(--text) r g b / 0.6);
 }
+/* :root[data-theme="light"] {
+  --text: #05060a;
+  --background: #f5f7fa;
+  --primary: #4a75bf;
+  --secondary: #88a7dd;
+  --accent: #6a94dc;
+}
+:root[data-theme="dark"] {
+  --text: #f5f6fa;
+  --background: #05070a;
+  --primary: #406bb5;
+  --secondary: #224177;
+  --accent: #234d95;
+} */
