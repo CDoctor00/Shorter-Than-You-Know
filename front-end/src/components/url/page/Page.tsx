@@ -1,18 +1,16 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { FaPlus } from "react-icons/fa6";
-import FormUrl from "../form/Form.tsx";
-import ShowUrl from "../show/Show.tsx";
-import UrlContext from "../../../contexts/url/UrlContext.tsx";
+import FormUrl from "../form/Form";
+import ShowUrl from "../show/Show";
+import { UrlContext } from "../../../contexts/url/Context";
 import "./Page.css";
 
 function UrlPage() {
-  const [shortenURL, setShortenURL] = useState("");
+  const { shortenURL, setShortenURL } = useContext(UrlContext);
 
   return (
     <div className="url-page">
-      <UrlContext.Provider value={{ shortenURL, setShortenURL }}>
-        {shortenURL === "" ? <FormUrl /> : <ShowUrl />}
-      </UrlContext.Provider>
+      {shortenURL === "" ? <FormUrl /> : <ShowUrl />}
 
       {shortenURL !== "" && (
         <button

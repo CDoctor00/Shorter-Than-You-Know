@@ -5,9 +5,7 @@ interface context {
   setShortenURL: (newUrl: string) => void;
 }
 
-const UrlContext = createContext<context>({
+export const UrlContext = createContext<context>({
   shortenURL: "",
   setShortenURL: () => {},
 });
-
-export default UrlContext;

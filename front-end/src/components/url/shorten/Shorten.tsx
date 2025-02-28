@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { FaCopy, FaExternalLinkAlt, FaShare } from "react-icons/fa";
-import UrlContext from "../../../contexts/url/UrlContext";
+import { UrlContext } from "../../../contexts/url/Context";
 import "./Shorten.css";
 
 function ShortenUrl({

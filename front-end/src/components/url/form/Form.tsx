@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { z } from "zod";
 import { FaArrowDown } from "react-icons/fa6";
-import UrlContext from "../../../contexts/url/UrlContext";
+import { UrlContext } from "../../../contexts/url/Context";
 import "./Form.css";
 
 type ShortenRequestBody = {

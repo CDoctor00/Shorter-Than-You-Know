@@ -8,7 +8,7 @@ import {
 } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { FaCopy, FaDownload } from "react-icons/fa";
-import UrlContext from "../../../contexts/url/UrlContext";
+import { UrlContext } from "../../../contexts/url/Context";
 import "./QRCode.css";
 
 function QRCode({
