@@ -99,17 +99,3 @@ h6 {
   --card-bg: rgb(9, 28, 9);
   --input-bg: rgb(from var(--text) r g b / 0.6);
 }
-/* :root[data-theme="light"] {
-  --text: #05060a;
-  --background: #f5f7fa;
-  --primary: #4a75bf;
-  --secondary: #88a7dd;
-  --accent: #6a94dc;
-}
-:root[data-theme="dark"] {
-  --text: #f5f6fa;
-  --background: #05070a;
-  --primary: #406bb5;
-  --secondary: #224177;
-  --accent: #234d95;
-} */
