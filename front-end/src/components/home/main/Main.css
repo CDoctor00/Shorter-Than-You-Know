@@ -1,0 +1,29 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 3rem;
+}
+
+.main-image {
+  height: fit-content;
+  width: 75%;
+}
+
+.main-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+
+  .title {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    color: var(--title);
+  }
+
+  .text {
+    line-height: 1.625;
+  }
+}

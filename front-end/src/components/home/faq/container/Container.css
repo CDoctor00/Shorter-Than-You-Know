@@ -1,0 +1,11 @@
+.faq-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+
+  .title {
+    font-size: 1.5rem;
+    color: var(--title);
+  }
+}

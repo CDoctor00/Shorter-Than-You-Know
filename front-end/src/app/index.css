@@ -1,9 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Inter", sans-serif;
 }
 
 code {
@@ -88,14 +87,16 @@ h6 {
 
   --card-bg: rgb(210, 241, 210);
   --input-bg: rgb(from var(--text) r g b / 0.1);
+  --title: rgb(50, 120, 50);
 }
 :root[data-theme="dark"] {
   --text: rgb(246, 249, 246);
-  --background: rgb(5, 10, 5);
+  --background: rgb(7, 14, 7);
   --primary: rgb(53, 182, 53);
   --secondary: rgb(19, 114, 19);
   --accent: rgb(11, 177, 11);
 
-  --card-bg: rgb(9, 28, 9);
+  --card-bg: rgb(11, 33, 11);
   --input-bg: rgb(from var(--text) r g b / 0.6);
+  --title: rgb(50, 200, 50);
 }
