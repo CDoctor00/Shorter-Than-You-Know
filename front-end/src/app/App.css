@@ -27,35 +27,7 @@ main {
   margin: auto 0;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
-}
-
-input {
-  background: var(--input-bg);
-  border: none;
-  padding: 0 1rem;
-  width: 100%;
-  border-radius: 0.5rem;
-  height: 3rem;
-}
-
-form > input[type="submit"] {
-  padding: 0;
-  height: 3rem;
-  font-size: 1.1em;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 1rem;
-  background: var(--secondary);
-
-  &:hover {
-    background: var(--primary);
-  }
-}
+/*---------- COMMONS ----------*/
 
 .icon {
   height: 1.5rem;
@@ -84,6 +56,41 @@ button {
 
   &:hover {
     background: var(--primary);
+  }
+}
+
+/*---------- FORM ----------*/
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+input {
+  background: var(--input-bg);
+  border: none;
+  padding: 0 1rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  height: 3rem;
+}
+
+form > input[type="submit"] {
+  padding: 0;
+  height: 3rem;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+  background: var(--secondary);
+  color: var(--text);
+  transition: all 0.25s ease-in-out;
+
+  &:hover {
+    background: var(--primary);
+    font-size: 1.2rem;
   }
 }
 

@@ -10,10 +10,10 @@
 
 .arrow {
   transition: all ease-in-out 0.3s;
-}
 
-.arrow.open {
-  transform: rotatez(180deg);
+  &.open {
+    transform: rotatez(180deg);
+  }
 }
 
 .advanced {
@@ -30,10 +30,10 @@
     column-gap: 1rem;
     row-gap: 1rem;
   }
-}
 
-.advanced.close {
-  height: 0;
+  &.close {
+    height: 0;
+  }
 }
 
 .timestamp-input-container {
