@@ -1,19 +1,29 @@
 import { useState } from "react";
-import ShortenUrl from "../shorten/Shorten";
+import UrlData from "../data/Data";
 import QRCode from "../qrcode/QRCode";
 import "./Show.css";
 
-function ShowUrl() {
+interface props {
+  isNewURL: boolean;
+  toggleForm: () => void;
+}
+
+function ShowUrl({ isNewURL, toggleForm }: props) {
   const [isOpenQR, setIsOpenQR] = useState(false);
 
-  const toggleUrl = () => {
+  const toggleQR = () => {
     setIsOpenQR(!isOpenQR);
   };
 
   return (
-    <div className="show-url">
-      <ShortenUrl isOpen={!isOpenQR} toggleUrl={toggleUrl} />
-      <QRCode isOpen={isOpenQR} toggleUrl={toggleUrl} />
+    <div className={`show-url ${isNewURL ? "small" : "big"}`}>
+      <UrlData
+        isOpen={!isOpenQR}
+        isNewURL={isNewURL}
+        toggleQR={toggleQR}
+        toggleForm={toggleForm}
+      />
+      <QRCode isOpen={isOpenQR} toggleQR={toggleQR} isNewURL={isNewURL} />
     </div>
   );
 }

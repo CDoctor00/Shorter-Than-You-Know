@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { UrlContext } from "./Context";
+import { url, UrlContext } from "./Context";
 
 interface props {
   children: React.ReactNode;
 }
 
 const UrlContextProvider = (props: props) => {
-  const [shortenURL, setShortenURL] = useState("");
+  const [url, setURL] = useState<url>();
 
   return (
-    <UrlContext.Provider value={{ shortenURL, setShortenURL }}>
+    <UrlContext.Provider value={{ url, setURL }}>
       {props.children}
     </UrlContext.Provider>
   );

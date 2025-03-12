@@ -8,13 +8,38 @@
 
 .qr-wrapper {
   display: flex;
-  height: 8rem;
-  justify-content: space-around;
   align-items: center;
-  height: 15rem;
+  justify-content: space-evenly;
+}
 
-  .buttons {
+.big {
+  .qr-wrapper {
     flex-direction: column;
+    height: 20rem;
+
+    .buttons {
+      flex-direction: row;
+    }
+
+    #qrcode {
+      width: 12rem;
+      height: 12rem;
+    }
+  }
+}
+
+.small {
+  .qr-wrapper {
+    height: 16rem;
+
+    .buttons {
+      flex-direction: column;
+    }
+
+    #qrcode {
+      width: 8rem;
+      height: 8rem;
+    }
   }
 }
 
@@ -23,6 +48,13 @@
 }
 
 #qr-container.card-container.down.open {
-  padding-top: 3rem;
-  transform: translateY(-20rem);
+  padding-top: 4rem;
+
+  &.small {
+    transform: translateY(-20rem);
+  }
+
+  &.big {
+    transform: translateY(-35rem);
+  }
 }

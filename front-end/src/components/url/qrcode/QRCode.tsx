@@ -11,15 +11,15 @@ import { FaCopy, FaDownload } from "react-icons/fa";
 import { UrlContext } from "../../../contexts/url/Context";
 import "./QRCode.css";
 
-function QRCode({
-  isOpen,
-  toggleUrl,
-}: {
+interface props {
   isOpen: boolean;
-  toggleUrl: () => void;
-}) {
+  toggleQR: () => void;
+  isNewURL: boolean;
+}
+
+function QRCode({ isOpen, toggleQR, isNewURL }: props) {
   const refQR = useRef<HTMLDivElement | null>(null);
-  const { shortenURL } = useContext(UrlContext);
+  const { url } = useContext(UrlContext);
   const [blob, setBlob] = useState<Blob | null>(null);
   const [dataURL, setDataURL] = useState<string>("");
   const img = useMemo(() => new Image(), []);
@@ -73,25 +73,26 @@ function QRCode({
     console.log("download start");
   };
 
+  if (!url) {
+    return null;
+  }
+
   return (
     <div
-      className={`card-container down ${isOpen ? "open" : "close"}`}
+      className={`card-container down ${isNewURL ? "small" : "big"} ${
+        isOpen ? "open" : "close"
+      }`}
       id="qr-container"
       ref={refQR}
     >
       <label
         className={`card-label down ${isOpen ? "" : "close"}`}
-        onClick={isOpen ? undefined : toggleUrl}
+        onClick={isOpen ? undefined : toggleQR}
       >
-        Get your QR
+        {`${isNewURL ? "Get" : "See"} your QR code`}
       </label>
       <div className="qr-wrapper">
-        <QRCodeSVG
-          value={shortenURL}
-          size={128} //pixels
-          level={"M"}
-          id="qrcode"
-        />
+        <QRCodeSVG value={url.shortenURL} level={"M"} id="qrcode" />
         <div className="buttons">
           <button onClick={copyToClipboard}>
             <span> Copy </span>

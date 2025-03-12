@@ -9,13 +9,13 @@ interface props {
 }
 
 function UrlButton(props: props) {
-  const { setShortenURL } = useContext(UrlContext);
+  const { setURL } = useContext(UrlContext);
 
   return (
     <button
       className="url-button"
       onClick={() => {
-        setShortenURL("");
+        setURL(undefined);
       }}
     >
       <span className="url-icon">

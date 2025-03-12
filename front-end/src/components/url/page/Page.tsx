@@ -1,18 +1,21 @@
-import { useContext } from "react";
-import FormUrl from "../form/Form";
-import ShowUrl from "../show/Show";
+import { useContext, useEffect } from "react";
 import { UrlContext } from "../../../contexts/url/Context";
 import UrlButton from "../../commons/url-button/UrlButton";
+import UrlContainer from "../container/Container";
 import "./Page.css";
 
 function UrlPage() {
-  const { shortenURL } = useContext(UrlContext);
+  const { url, setURL } = useContext(UrlContext);
+
+  useEffect(() => {
+    setURL(undefined);
+  }, [setURL]);
 
   return (
     <div className="url-page">
-      {shortenURL === "" ? <FormUrl /> : <ShowUrl />}
+      <UrlContainer isNewURL={true} />
 
-      {shortenURL !== "" && <UrlButton />}
+      {url && <UrlButton />}
     </div>
   );
 }

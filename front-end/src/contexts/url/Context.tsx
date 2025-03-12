@@ -1,11 +1,24 @@
 import { createContext } from "react";
 
-interface context {
+export interface url {
+  longURL: string;
   shortenURL: string;
-  setShortenURL: (newUrl: string) => void;
+  status?: string;
+  createdTime?: string;
+  lastUpdateTime?: string;
+  prefix?: string;
+  expirationTime?: string;
+  password?: string;
+  note?: string;
+  clicks?: number;
+}
+
+interface context {
+  url: url | undefined;
+  setURL: (newUrl: url | undefined) => void;
 }
 
 export const UrlContext = createContext<context>({
-  shortenURL: "",
-  setShortenURL: () => {},
+  url: undefined,
+  setURL: () => {},
 });

@@ -2,42 +2,27 @@ import React, { useState, useContext } from "react";
 import { z } from "zod";
 import { FaArrowDown } from "react-icons/fa6";
 import { UrlContext } from "../../../contexts/url/Context";
+import { createExpDate } from "./utils";
 import "./Form.css";
 
 type ShortenRequestBody = {
   url: string;
   customURL: string;
   expirationTime: string;
-  //   note: string;
+  //  note: string;
   password: string;
 };
 
-function FormUrl() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { setShortenURL } = useContext(UrlContext);
+interface props {
+  isNewURL: boolean;
+  toggleForm: () => void;
+}
 
-  const createExpDate = (
-    date: string | null | undefined,
-    time: string | null | undefined
-  ): string => {
-    if (!date) {
-      return "";
-    }
+function FormUrl({ isNewURL, toggleForm }: props) {
+  const [isOpen, setIsOpen] = useState(!isNewURL);
+  const { url, setURL } = useContext(UrlContext);
 
-    if (!time) {
-      time = "00:00";
-    }
-
-    const datetime = new Date(`${date}T${time}`);
-    if (isNaN(datetime.getTime())) {
-      return "";
-    }
-
-    //RFC3339 format: 2006-01-02T15:04:05-07:00
-    return datetime.toISOString().replace(".000", "");
-  };
-
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const createShortenURL = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -97,29 +82,68 @@ function FormUrl() {
       return;
     }
 
-    setShortenURL(`${window.location.origin}/${resultsResponse.data.shortURL}`);
+    setURL({
+      longURL: resultsForm.data.url,
+      shortenURL: `${window.location.origin}/${resultsResponse.data.shortURL}`,
+    });
+    toggleForm();
+  };
+
+  const updateURL = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const formValues = Object.fromEntries(formData);
+
+    const formSchema = z.object({
+      url: z
+        .string({ message: "URL error" })
+        .nullish()
+        .transform((s) => s ?? ""),
+      password: z
+        .string({ message: "password error" })
+        .nullish()
+        .transform((s) => s ?? ""),
+      prefix: z
+        .string({ message: "prefix error" })
+        .nullish()
+        .transform((s) => s ?? ""),
+      date: z.string({ message: "date error" }).nullish(),
+      time: z.string({ message: "time error" }).nullish(),
+    });
+
+    const resultsForm = formSchema.safeParse(formValues);
+    if (!resultsForm.success) {
+      console.error(resultsForm.error);
+      return;
+    }
+
+    //TODO Continue with update API
   };
 
   return (
     <div className="form-url-container">
       <label className="card-label">Shorten your URL</label>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={isNewURL ? createShortenURL : updateURL}>
         <input
           type="text"
           id="url"
           name="url"
           placeholder="https://example.com/long-url"
+          defaultValue={url?.longURL}
         />
-        <button
-          className="advanced-button"
-          onClick={(e) => {
-            e.preventDefault();
-            setIsOpen((previous) => !previous);
-          }}
-        >
-          <span>Advanced</span>
-          <FaArrowDown className={`arrow ${isOpen ? "open" : ""}`} />
-        </button>
+        {isNewURL && (
+          <button
+            className="advanced-button"
+            onClick={(e) => {
+              e.preventDefault();
+              setIsOpen((previous) => !previous);
+            }}
+          >
+            <span>Advanced</span>
+            <FaArrowDown className={`arrow ${isOpen ? "open" : ""}`} />
+          </button>
+        )}
         <div className={`advanced ${isOpen ? "" : "close"}`}>
           <div className="input-container">
             <label htmlFor="password">Password</label>
@@ -128,6 +152,7 @@ function FormUrl() {
               id="password"
               name="password"
               placeholder="Password"
+              defaultValue={url?.password}
             />
           </div>
           <div className="input-container">
@@ -137,20 +162,33 @@ function FormUrl() {
               id="prefix"
               name="prefix"
               placeholder="Custom prefix of shorten URL"
+              defaultValue={url?.prefix}
             />
           </div>
           <div className="timestamp-input-container">
             <div className="input-container" id="date-input">
               <label htmlFor="date">Date</label>
-              <input type="date" id="date" name="date" />
+              <input
+                type="date"
+                id="date"
+                name="date"
+                defaultValue={url?.expirationTime}
+              />{" "}
+              {/* TODO aggiornare in base al formato di data */}
             </div>
             <div className="input-container" id="time-input">
               <label htmlFor="time">Time</label>
-              <input type="time" id="time" name="time" />
+              <input
+                type="time"
+                id="time"
+                name="time"
+                defaultValue={url?.expirationTime}
+              />
+              {/* TODO aggiornare in base al formato di data */}
             </div>
           </div>
         </div>
-        <input type="submit" value="Shorten" />
+        <input type="submit" value={isNewURL ? "Shorten" : "Apply changes"} />
       </form>
     </div>
   );
