@@ -1,5 +1,7 @@
 package api
 
+import "github.com/google/uuid"
+
 type ShortenRequest struct {
 	URL      string `json:"URL"`            //a correct url like: 'https://www.google.com' or 'www.google.com'
 	Prefix   string `json:"Prefix"`         //a string representing the new shorten URL: 'short'
@@ -18,12 +20,17 @@ type RedirectRequest struct {
 	Password string `json:"Password"`
 }
 
-type StatusRequest struct {
-	ShortURL string `json:"ShortURL"`
-	Enabled  bool   `json:"Enabled"`
+type DeleteRequest struct {
+	UUID     uuid.UUID `json:"UUID"`
+	Password string    `json:"Password"`
 }
 
-type ExpirationRequest struct {
-	ShortURL string `json:"ShortURL"`
-	NewExp   string `json:"NewExpirationTime"`
+type UpdateRequest struct {
+	UUID      uuid.UUID `json:"UUID"`
+	URL       string    `json:"URL"`
+	Prefix    string    `json:"Prefix"`
+	IsEnabled *bool     `json:"IsEnabled"`
+	Exp       string    `json:"ExpirationTime"`
+	Password  string    `json:"Password"`
+	Note      string    `json:"Note"`
 }

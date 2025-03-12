@@ -1,5 +1,7 @@
 package database
 
+import "database/sql"
+
 type Table struct {
 	Name        string
 	Schema      string
@@ -14,3 +16,8 @@ const (
 	TagCTValue string = "db_type" //Tag that represents the type of the column
 	TagCTIndex int    = 1         //Tag that represents the column type tag's position in the array of tags
 )
+
+type UrlSecurityInfos struct {
+	OwnerID  sql.NullString
+	Password sql.NullString
+}

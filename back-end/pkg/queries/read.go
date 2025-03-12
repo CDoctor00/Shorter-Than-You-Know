@@ -1,8 +1,11 @@
 package queries
 
 import (
+	"database/sql"
 	"fmt"
 	"styk/pkg/types/database"
+
+	"github.com/google/uuid"
 )
 
 /*
@@ -75,25 +78,41 @@ func (dto DTO) GetUserFromEmail(email string) (database.User, error) {
 
 /*
 This function does a SELECT query on the database of the specific table,
-to get the url infos based on the shortURL given parameter and returns it.
+to get the url OwnerID based on the uuid given parameter and returns it.
 */
-func (dto DTO) GetURLMainInfos(shortURL string) (database.URL, error) {
-	var url database.URL
+func (dto DTO) GetUrlOwnerID(uuid uuid.UUID) (sql.NullString, error) {
+	var ownerID sql.NullString
 
-	var query = fmt.Sprintf("SELECT short, original, password, owner_id, enabled FROM %s.%s WHERE short = $1",
+	var query = fmt.Sprintf("SELECT owner_id FROM %s.%s WHERE uuid = $1",
 		dto.Table.Schema, dto.Table.Name)
 
-	result := dto.DB.QueryRow(query, shortURL)
-	errQuery := result.Scan(
-		&url.Short,
-		&url.Original,
-		&url.Password,
-		&url.OwnerID,
-		&url.Enabled,
-	)
+	result := dto.DB.QueryRow(query, uuid)
+	errQuery := result.Scan(&ownerID)
 	if errQuery != nil {
-		return url, fmt.Errorf("queries.GetURLMainInfos: %w", errQuery)
+		return ownerID, fmt.Errorf("queries.GetUrlOwnerID: %w", errQuery)
 	}
 
-	return url, nil
+	return ownerID, nil
+}
+
+/*
+This function does a SELECT query on the database of the specific table,
+to get the url OwnerID and passowrd based on the uuid given parameter and returns them.
+*/
+func (dto DTO) GetUrlSecurityInfos(uuid uuid.UUID) (database.UrlSecurityInfos, error) {
+	var data database.UrlSecurityInfos
+
+	var query = fmt.Sprintf("SELECT owner_id, password FROM %s.%s WHERE uuid = $1",
+		dto.Table.Schema, dto.Table.Name)
+
+	result := dto.DB.QueryRow(query, uuid)
+	errQuery := result.Scan(
+		&data.OwnerID,
+		&data.Password,
+	)
+	if errQuery != nil {
+		return data, fmt.Errorf("queries.GetUrlSecurityInfos: %w", errQuery)
+	}
+
+	return data, nil
 }

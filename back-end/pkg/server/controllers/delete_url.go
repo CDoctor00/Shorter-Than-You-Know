@@ -13,7 +13,7 @@ import (
 )
 
 func DeleteURL(context *fiber.Ctx) error {
-	var requestBody = api.RedirectRequest{}
+	var requestBody = api.DeleteRequest{}
 
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
@@ -26,8 +26,8 @@ func DeleteURL(context *fiber.Ctx) error {
 
 	var urlsDTO = database.NewUrlsDTO()
 
-	//? Get url's infos from the given shortURL
-	url, errGet := urlsDTO.GetURLMainInfos(requestBody.ShortURL)
+	//? Get url's infos from the given UUID
+	urlInfo, errGet := urlsDTO.GetUrlSecurityInfos(requestBody.UUID)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
 			return context.Status(fiber.StatusNotFound).JSON(
@@ -51,7 +51,7 @@ func DeleteURL(context *fiber.Ctx) error {
 	userID, _ := claims[auth.UserID].(string)
 
 	//? Check if the request's user is the url's owner
-	if !url.OwnerID.Valid || userID != url.OwnerID.String {
+	if !urlInfo.OwnerID.Valid || userID != urlInfo.OwnerID.String {
 		return context.Status(fiber.StatusUnauthorized).JSON(
 			api.ResponseError{
 				Error:         "The user can't update the asked resource",
@@ -60,11 +60,11 @@ func DeleteURL(context *fiber.Ctx) error {
 	}
 
 	//? Check if the asked URL has a password
-	if url.Password.Valid {
+	if urlInfo.Password.Valid {
 
 		//? Check if the given password corresponds with the stored one
 		errCompare := bcrypt.CompareHashAndPassword([]byte(
-			url.Password.String), []byte(requestBody.Password))
+			urlInfo.Password.String), []byte(requestBody.Password))
 		if errCompare != nil {
 			if errors.Is(errCompare, bcrypt.ErrMismatchedHashAndPassword) {
 				return context.Status(fiber.StatusUnauthorized).JSON(
@@ -78,7 +78,7 @@ func DeleteURL(context *fiber.Ctx) error {
 		}
 	}
 
-	errDelete := urlsDTO.DeleteURL(url.Short)
+	errDelete := urlsDTO.DeleteUrl(requestBody.UUID)
 	if errDelete != nil {
 		return serverError(context, errDelete, "delete url")
 	}

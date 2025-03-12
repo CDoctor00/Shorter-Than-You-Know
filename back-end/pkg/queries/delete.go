@@ -2,6 +2,8 @@ package queries
 
 import (
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 func (dto DTO) DeleteUser(userID string) error {
@@ -16,11 +18,11 @@ func (dto DTO) DeleteUser(userID string) error {
 	return nil
 }
 
-func (dto DTO) DeleteURL(shortURL string) error {
-	var query = fmt.Sprintf("DELETE FROM %s.%s WHERE short = $1;",
+func (dto DTO) DeleteUrl(uuid uuid.UUID) error {
+	var query = fmt.Sprintf("DELETE FROM %s.%s WHERE uuid = $1;",
 		dto.Table.Schema, dto.Table.Name)
 
-	_, errExec := dto.DB.Exec(query, shortURL)
+	_, errExec := dto.DB.Exec(query, uuid)
 	if errExec != nil {
 		return fmt.Errorf("queries.DeleteURL: %w", errExec)
 	}

@@ -11,18 +11,52 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Shorten(context *fiber.Ctx) error {
-	var requestBody = api.ShortenRequest{}
+func UpdateURL(context *fiber.Ctx) error {
+	var requestBody api.UpdateRequest
+
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
 		return context.Status(fiber.StatusNotAcceptable).JSON(
 			api.ResponseError{
 				Error:         errParser.Error(),
 				FriendlyError: fmt.Sprintf("The system could not process the '%v' entity sended in the request", requestBody),
+			})
+	}
+
+	var urlsDTO = database.NewUrlsDTO()
+
+	ownerID, errGet := urlsDTO.GetUrlOwnerID(requestBody.UUID)
+	if errGet != nil {
+		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
+			return context.Status(fiber.StatusNotFound).JSON(
+				api.ResponseError{
+					Error:         errGet.Error(),
+					FriendlyError: "The system did not found the specified resource asked",
+				})
+		}
+
+		return serverError(context, errGet, "update url")
+	}
+
+	//? Retrieving user email from the JWT
+	tokenString := string(context.Request().Header.Peek("Authorization"))
+	tokenString = tokenString[len("Bearer "):]
+
+	claims, errClaims := auth.GetClaimsFromToken(tokenString)
+	if errClaims != nil {
+		return serverError(context, errClaims, "update url")
+	}
+	userID, _ := claims[auth.UserID].(string)
+
+	//? Check if the request's user is the url's owner
+	if !ownerID.Valid || userID != ownerID.String {
+		return context.Status(fiber.StatusUnauthorized).JSON(
+			api.ResponseError{
+				Error:         "The user can't update the asked resource",
+				FriendlyError: "The user isn't the url's owner",
 			})
 	}
 
@@ -68,25 +102,7 @@ func Shorten(context *fiber.Ctx) error {
 			})
 	}
 
-	//? Get the userID from the JWT, if the user is logged, to link the new URL with the owner
-	var userID sql.NullString
-
-	tokenString := string(context.Request().Header.Peek("Authorization"))
-	if len(tokenString) > 0 {
-		tokenString = tokenString[len("Bearer "):]
-		claims, errGetClaim := auth.GetClaimsFromToken(tokenString)
-		if errGetClaim != nil {
-			return serverError(context, errGetClaim, "URL shortening")
-		}
-
-		claim, _ := claims[auth.UserID].(string)
-		userID = sql.NullString{
-			Valid:  true,
-			String: claim,
-		}
-	}
-
-	var newURL, errCreate = createNewURL(requestBody, userID)
+	var url, errCreate = createUrl(requestBody)
 	if errCreate != nil {
 		if errors.Is(errors.Unwrap(errCreate), bcrypt.ErrPasswordTooLong) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -96,31 +112,25 @@ func Shorten(context *fiber.Ctx) error {
 				})
 		}
 
-		return serverError(context, errCreate, "URL shortening")
+		return serverError(context, errCreate, "update url")
 	}
 
-	var urlsDTO = database.NewUrlsDTO()
-	errStoring := urlsDTO.InsertData(newURL)
-	if errStoring != nil {
-		return serverError(context, errStoring, "URL shortening")
+	errUpdate := urlsDTO.UpdateUrl(url)
+	if errUpdate != nil {
+		return serverError(context, errUpdate, "update url")
 	}
 
-	return context.Status(fiber.StatusCreated).JSON(
-		api.ShortenResponse{
-			OriginalURL: requestBody.URL,
-			ShortURL:    newURL.Short,
-		})
+	return context.Status(fiber.StatusOK).SendString("Url updated")
 }
 
-func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType.URL, error) {
-	var (
-		urlUUID  = uuid.New()
-		shortURL = urlUUID.String()[:8]
-		prefix   sql.NullString
-		password sql.NullString
-		note     sql.NullString
-		exp      sql.NullTime
-	)
+func createUrl(requestBody api.UpdateRequest) (dbType.URL, error) {
+	var url = dbType.URL{
+		UUID:       requestBody.UUID,
+		Original:   requestBody.URL,
+		Short:      requestBody.UUID.String()[:8],
+		UpdateTime: time.Now(),
+		Enabled:    true,
+	}
 
 	if len(requestBody.Password) > 0 {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
@@ -129,45 +139,33 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 			return dbType.URL{}, fmt.Errorf("controllers.createNewURL: %w", errGenerate)
 		}
 
-		password = sql.NullString{Valid: true, String: string(hash)}
+		url.Password = sql.NullString{Valid: true, String: string(hash)}
 	}
 
 	if len(requestBody.Prefix) > 0 {
-		shortURL = fmt.Sprintf("%s-%s", requestBody.Prefix, shortURL)
-		prefix = sql.NullString{
+		url.Short = fmt.Sprintf("%s-%s", requestBody.Prefix, url.Short)
+		url.Prefix = sql.NullString{
 			Valid:  true,
 			String: requestBody.Prefix,
 		}
 	}
 
-	if len(requestBody.Note) > 0 {
-		note = sql.NullString{
-			Valid:  true,
-			String: requestBody.Note,
-		}
-	}
-
 	if len(requestBody.Exp) > 0 {
 		date, _ := time.Parse(time.RFC3339, requestBody.Exp)
-		exp = sql.NullTime{
+		url.ExpirationTime = sql.NullTime{
 			Valid: true,
 			Time:  date,
 		}
 	}
 
-	var actualTime = time.Now()
+	if requestBody.IsEnabled != nil {
+		url.Enabled = *requestBody.IsEnabled
+	}
 
-	return dbType.URL{
-		UUID:           urlUUID,
-		Original:       requestBody.URL,
-		Short:          shortURL,
-		Prefix:         prefix,
-		Password:       password,
-		OwnerID:        userID,
-		Enabled:        true,
-		InsertTime:     actualTime,
-		UpdateTime:     actualTime,
-		ExpirationTime: exp,
-		Note:           note,
-	}, nil
+	url.Note = sql.NullString{
+		Valid:  len(requestBody.Note) > 0,
+		String: requestBody.Note,
+	}
+
+	return url, nil
 }

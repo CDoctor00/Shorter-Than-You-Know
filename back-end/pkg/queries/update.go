@@ -2,28 +2,29 @@ package queries
 
 import (
 	"fmt"
-	"time"
+	"styk/pkg/types/database"
 )
 
-func (dto DTO) UpdateURLStatus(shortURL string, enabled bool) error {
-	var query = fmt.Sprintf("UPDATE %s.%s SET enabled = $1 WHERE short = $2;",
+func (dto DTO) UpdateUrl(url database.URL) error {
+	var query = fmt.Sprintf(`UPDATE %s.%s 
+	SET original = $1, short = $2, prefix = $3, password = $4,
+	enabled = $5, update_time = $6, expiration_time = $7, 
+	note = $8 WHERE uuid = $9;`,
 		dto.Table.Schema, dto.Table.Name)
 
-	_, errExec := dto.DB.Exec(query, enabled, shortURL)
+	_, errExec := dto.DB.Exec(
+		query,
+		url.Original,
+		url.Short,
+		url.Prefix,
+		url.Password,
+		url.Enabled,
+		url.UpdateTime,
+		url.ExpirationTime,
+		url.Note,
+		url.UUID)
 	if errExec != nil {
-		return fmt.Errorf("queries.UpdateURLStatus: %w", errExec)
-	}
-
-	return nil
-}
-
-func (dto DTO) UpdateURLExp(shortURL string, newEXP time.Time) error {
-	var query = fmt.Sprintf("UPDATE %s.%s SET expiration_time = $1 WHERE short = $2;",
-		dto.Table.Schema, dto.Table.Name)
-
-	_, errExec := dto.DB.Exec(query, newEXP, shortURL)
-	if errExec != nil {
-		return fmt.Errorf("queries.UpdateURLExp: %w", errExec)
+		return fmt.Errorf("queries.UpdateUrl: %w", errExec)
 	}
 
 	return nil
