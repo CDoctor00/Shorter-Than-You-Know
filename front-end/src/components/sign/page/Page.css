@@ -1,9 +1,16 @@
 .sign-page {
-  overflow: hidden;
-  height: 38rem;
-  width: 90%;
-  margin: auto;
-  border-radius: 1rem;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .sign-container {
+    overflow: hidden;
+    height: 38rem;
+    width: 90vw;
+    border-radius: 1rem;
+  }
 
   .icons {
     display: flex;

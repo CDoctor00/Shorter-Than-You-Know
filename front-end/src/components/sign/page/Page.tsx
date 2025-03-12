@@ -12,8 +12,10 @@ function SignPage() {
 
   return (
     <div className="sign-page">
-      <SignUp isOpen={isSignUp} toggleForm={toggleForm} />
-      <LoginForm isOpen={!isSignUp} toggleForm={toggleForm} />
+      <div className="sign-container">
+        <SignUp isOpen={isSignUp} toggleForm={toggleForm} />
+        <LoginForm isOpen={!isSignUp} toggleForm={toggleForm} />
+      </div>
     </div>
   );
 }

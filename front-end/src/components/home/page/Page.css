@@ -1,9 +1,15 @@
 .home-page {
   height: 100%;
-  width: 90%;
-  margin: 5rem auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 90vw;
+  margin: 5rem 0;
   gap: 4rem;
 }

@@ -4,7 +4,9 @@ import "./Page.css";
 function ErrorPage() {
   return (
     <div className="error-page">
-      <Image />
+      <div className="error-container">
+        <Image />
+      </div>
     </div>
   );
 }

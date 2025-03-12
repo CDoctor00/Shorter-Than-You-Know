@@ -1,8 +1,11 @@
 .error-page {
   height: 100%;
-  width: 90%;
-  margin: auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.error-container {
+  width: 90vw;
 }

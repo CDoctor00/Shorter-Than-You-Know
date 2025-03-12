@@ -6,9 +6,11 @@ import "./Page.css";
 function HomePage() {
   return (
     <div className="home-page">
-      <Main />
-      <Table />
-      <FaqContainer />
+      <div className="home-container">
+        <Main />
+        <Table />
+        <FaqContainer />
+      </div>
     </div>
   );
 }

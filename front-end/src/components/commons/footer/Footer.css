@@ -7,7 +7,6 @@
   width: 100%;
   padding: 0.5rem;
   border-top: solid 1px rgb(from var(--text) r g b / 0.5);
-  margin-top: auto;
 
   .icons {
     display: flex;
