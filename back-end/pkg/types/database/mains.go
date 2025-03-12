@@ -11,10 +11,12 @@ type URL struct {
 	UUID           uuid.UUID      `db_name:"uuid" db_type:"UUID NOT NULL"`
 	Original       string         `db_name:"original" db_type:"VARCHAR(2100) NOT NULL"`
 	Short          string         `db_name:"short" db_type:"VARCHAR(20) NOT NULL"`
-	Password       sql.NullString `db_name:"password" db_type:"VARCHAR(60)"`
 	OwnerID        sql.NullString `db_name:"owner_id" db_type:"CHAR(8)"`
+	Prefix         sql.NullString `db_name:"prefix" db_type:"VARCHAR(10)"`
+	Password       sql.NullString `db_name:"password" db_type:"VARCHAR(60)"`
 	Enabled        bool           `db_name:"enabled" db_type:"BOOLEAN"`
 	InsertTime     time.Time      `db_name:"insert_time" db_type:"TIMESTAMPTZ NOT NULL"`
+	UpdateTime     time.Time      `db_name:"update_time" db_type:"TIMESTAMPTZ NOT NULL"`
 	ExpirationTime sql.NullTime   `db_name:"expiration_time" db_type:"TIMESTAMPTZ"`
 	Note           sql.NullString `db_name:"note" db_type:"VARCHAR(500)"`
 }

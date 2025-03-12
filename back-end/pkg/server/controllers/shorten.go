@@ -16,6 +16,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	prefixMaxLength = 10
+	urlMaxLength    = 2100
+	noteMaxLength   = 500
+)
+
 func Shorten(context *fiber.Ctx) error {
 	var requestBody = api.ShortenRequest{}
 	errParser := context.BodyParser(&requestBody)
@@ -28,21 +34,22 @@ func Shorten(context *fiber.Ctx) error {
 	}
 
 	//? Verify the correctness of the given URL
-	check, errCheckSintax := checkURLSintax(requestBody.URL)
+	check, errCheck := checkURL(requestBody.URL)
 	if !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Unacceptable URL",
-				FriendlyError: errCheckSintax,
+				FriendlyError: errCheck,
 			})
 	}
 
-	//? Verify if the 'prefix' field respects the max limit (10 chars)
-	if len(requestBody.Prefix) > 10 {
+	//? Verify the correctness of the given 'prefix' field
+	check, errCheck = checkPrefix(requestBody.Prefix)
+	if !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Unacceptable Custom URL",
-				FriendlyError: "The system does not accept a custom URL longer than 10 characters",
+				FriendlyError: errCheck,
 			})
 	}
 
@@ -59,8 +66,8 @@ func Shorten(context *fiber.Ctx) error {
 		}
 	}
 
-	//? Verify if the 'note' field respects the max limit (500 chars)
-	if len(requestBody.Note) > 500 {
+	//? Verify if the 'note' field respects the max limit
+	if len(requestBody.Note) > noteMaxLength {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
 				Error:         "Unacceptable Note",
@@ -119,26 +126,50 @@ It returns false if the URL doesn't respect length rules or
 doesn't match the regex. Otherwise, it returns true.
 In addition, it returns a string that explains the problem.
 */
-func checkURLSintax(url string) (bool, string) {
+func checkURL(url string) (bool, string) {
 	if url == "" {
 		return false, "The system does not accept an empty URL"
 	}
 
-	if len(url) > 2100 {
-		return false, "The system does not accept an URL longer than 2100 characters"
+	if len(url) > urlMaxLength {
+		return false, fmt.Sprintf(
+			"The system does not accept an URL longer than %d characters", urlMaxLength)
 	}
 
-	var expression = `^(https?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$`
-
+	const expression = `^(https?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$`
 	regex, _ := regexp.Compile(expression)
 
 	return regex.MatchString(url), "The system does not accept an URL with invalid syntax"
+}
+
+/*
+This function check the correctness of the given Prefix.
+
+It returns false only if the Prefix contains special characters or
+respect length rules.
+In addition, it returns a string that explains the problem.
+*/
+func checkPrefix(prefix string) (bool, string) {
+	if prefix == "" {
+		return true, ""
+	}
+
+	if len(prefix) > prefixMaxLength {
+		return false, fmt.Sprintf(
+			"The system does not accept an prefix longer than %d characters", prefixMaxLength)
+	}
+
+	const expression = `[\W]` //Only alphanumeric characters
+	regex, _ := regexp.Compile(expression)
+
+	return !regex.MatchString(prefix), "The system does not accept a prefix with special characters"
 }
 
 func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType.URL, error) {
 	var (
 		urlUUID  = uuid.New()
 		shortURL = urlUUID.String()[:8]
+		prefix   sql.NullString
 		password sql.NullString
 		note     sql.NullString
 		exp      sql.NullTime
@@ -156,6 +187,10 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 
 	if len(requestBody.Prefix) > 0 {
 		shortURL = fmt.Sprintf("%s-%s", requestBody.Prefix, shortURL)
+		prefix = sql.NullString{
+			Valid:  true,
+			String: requestBody.Prefix,
+		}
 	}
 
 	if len(requestBody.Note) > 0 {
@@ -173,14 +208,18 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 		}
 	}
 
+	var actualTime = time.Now()
+
 	return dbType.URL{
 		UUID:           urlUUID,
 		Original:       requestBody.URL,
 		Short:          shortURL,
+		Prefix:         prefix,
 		Password:       password,
 		OwnerID:        userID,
 		Enabled:        true,
-		InsertTime:     time.Now(),
+		InsertTime:     actualTime,
+		UpdateTime:     actualTime,
 		ExpirationTime: exp,
 		Note:           note,
 	}, nil
