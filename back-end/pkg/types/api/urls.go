@@ -34,3 +34,15 @@ type UpdateRequest struct {
 	Password  string    `json:"Password"`
 	Note      string    `json:"Note"`
 }
+
+type UrlData struct {
+	UUID           uuid.UUID `json:"UUID"`
+	LongURL        string    `json:"LongUrl"`
+	ShortURL       string    `json:"ShortUrl"`
+	IsEnabled      bool      `json:"IsEnabled"`
+	CreateTime     string    `json:"CreateTime"`
+	UpdateTime     string    `json:"UpdateTime"`
+	Prefix         *string   `json:"Prefix,omitempty"`
+	ExpirationTime *string   `json:"ExpirationTime,omitempty"`
+	Note           *string   `json:"Note,omitempty"`
+}

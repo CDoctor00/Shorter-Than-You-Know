@@ -116,3 +116,44 @@ func (dto DTO) GetUrlSecurityInfos(uuid uuid.UUID) (database.UrlSecurityInfos, e
 
 	return data, nil
 }
+
+/*
+This function does a SELECT query on the database of the specific table,
+to get the all urls created by the given userID parameter and returns them.
+*/
+func (dto DTO) GetUserUrls(userID string) ([]database.URL, error) {
+	var rows = []database.URL{}
+
+	var query = fmt.Sprintf(`SELECT 
+	uuid, original, short, prefix, enabled,
+	 insert_time, update_time, expiration_time, note 
+	FROM %s.%s WHERE owner_id = $1
+	ORDER BY update_time DESC`,
+		dto.Table.Schema, dto.Table.Name)
+
+	results, errQuery := dto.DB.Query(query, userID)
+	if errQuery != nil {
+		return rows, fmt.Errorf("queries.GetUserUrls: %w", errQuery)
+	}
+
+	var row database.URL
+	for results.Next() {
+		errScan := results.Scan(
+			&row.UUID,
+			&row.Original,
+			&row.Short,
+			&row.Prefix,
+			&row.Enabled,
+			&row.InsertTime,
+			&row.UpdateTime,
+			&row.ExpirationTime,
+			&row.Note,
+		)
+		if errScan != nil {
+			return rows, fmt.Errorf("queries.GetUserUrls: %w", errScan)
+		}
+		rows = append(rows, row)
+	}
+
+	return rows, nil
+}

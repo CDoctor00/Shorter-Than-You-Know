@@ -32,6 +32,7 @@ func setupRoutes(server *fiber.App) {
 
 	authGroup := api.Group("auth", middlewares.GetJWT())
 	authGroup.Get("/refreshToken", controllers.RefreshToken)
+	authGroup.Get("/userHistory", controllers.UserHistory)
 	authGroup.Put("/deleteUser", controllers.DeleteUser)
 	authGroup.Put("/deleteUrl", controllers.DeleteURL)
 	authGroup.Put("/updateUrl", controllers.UpdateURL)
