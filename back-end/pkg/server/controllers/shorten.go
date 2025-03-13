@@ -107,15 +107,15 @@ func Shorten(context *fiber.Ctx) error {
 
 	return context.Status(fiber.StatusCreated).JSON(
 		api.ShortenResponse{
-			OriginalURL: requestBody.URL,
-			ShortURL:    newURL.Short,
+			LongUrl: requestBody.URL,
+			ShortID: newURL.ShortID,
 		})
 }
 
 func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType.URL, error) {
 	var (
 		urlUUID  = uuid.New()
-		shortURL = urlUUID.String()[:8]
+		shortID  = urlUUID.String()[:8]
 		prefix   sql.NullString
 		password sql.NullString
 		note     sql.NullString
@@ -133,7 +133,7 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 	}
 
 	if len(requestBody.Prefix) > 0 {
-		shortURL = fmt.Sprintf("%s-%s", requestBody.Prefix, shortURL)
+		shortID = fmt.Sprintf("%s-%s", requestBody.Prefix, shortID)
 		prefix = sql.NullString{
 			Valid:  true,
 			String: requestBody.Prefix,
@@ -159,8 +159,8 @@ func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType
 
 	return dbType.URL{
 		UUID:           urlUUID,
-		Original:       requestBody.URL,
-		Short:          shortURL,
+		LongUrl:        requestBody.URL,
+		ShortID:        shortID,
 		Prefix:         prefix,
 		Password:       password,
 		OwnerID:        userID,

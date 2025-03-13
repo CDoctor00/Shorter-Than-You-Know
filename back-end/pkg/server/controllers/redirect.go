@@ -78,7 +78,7 @@ func Redirect(context *fiber.Ctx) error {
 			})
 	}
 
-	errRedirect := context.Redirect(addProtocolIfNotExists(originalURL.Original))
+	errRedirect := context.Redirect(addProtocolIfNotExists(originalURL.LongUrl))
 	if errRedirect != nil {
 		return serverError(context, errRedirect, "redirect")
 	}

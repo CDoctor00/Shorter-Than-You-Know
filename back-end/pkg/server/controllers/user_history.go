@@ -33,8 +33,8 @@ func UserHistory(context *fiber.Ctx) error {
 	for _, row := range rows {
 		var url = api.UrlData{
 			UUID:       row.UUID,
-			LongURL:    row.Original,
-			ShortURL:   row.Short,
+			LongUrl:    row.LongUrl,
+			ShortID:    row.ShortID,
 			IsEnabled:  row.Enabled,
 			CreateTime: row.InsertTime.Format(time.RFC3339),
 			UpdateTime: row.UpdateTime.Format(time.RFC3339),

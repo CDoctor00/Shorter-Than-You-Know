@@ -9,8 +9,8 @@ import (
 
 type URL struct {
 	UUID           uuid.UUID      `db_name:"uuid" db_type:"UUID NOT NULL"`
-	Original       string         `db_name:"original" db_type:"VARCHAR(2100) NOT NULL"`
-	Short          string         `db_name:"short" db_type:"VARCHAR(20) NOT NULL"`
+	LongUrl        string         `db_name:"long_url" db_type:"VARCHAR(2100) NOT NULL"`
+	ShortID        string         `db_name:"short_id" db_type:"VARCHAR(20) NOT NULL"`
 	OwnerID        sql.NullString `db_name:"owner_id" db_type:"CHAR(8)"`
 	Prefix         sql.NullString `db_name:"prefix" db_type:"VARCHAR(10)"`
 	Password       sql.NullString `db_name:"password" db_type:"VARCHAR(60)"`

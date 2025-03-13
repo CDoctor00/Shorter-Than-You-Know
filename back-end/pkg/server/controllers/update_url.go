@@ -126,8 +126,8 @@ func UpdateURL(context *fiber.Ctx) error {
 func createUrl(requestBody api.UpdateRequest) (dbType.URL, error) {
 	var url = dbType.URL{
 		UUID:       requestBody.UUID,
-		Original:   requestBody.URL,
-		Short:      requestBody.UUID.String()[:8],
+		LongUrl:    requestBody.URL,
+		ShortID:    requestBody.UUID.String()[:8],
 		UpdateTime: time.Now(),
 		Enabled:    true,
 	}
@@ -143,7 +143,7 @@ func createUrl(requestBody api.UpdateRequest) (dbType.URL, error) {
 	}
 
 	if len(requestBody.Prefix) > 0 {
-		url.Short = fmt.Sprintf("%s-%s", requestBody.Prefix, url.Short)
+		url.ShortID = fmt.Sprintf("%s-%s", requestBody.Prefix, url.ShortID)
 		url.Prefix = sql.NullString{
 			Valid:  true,
 			String: requestBody.Prefix,

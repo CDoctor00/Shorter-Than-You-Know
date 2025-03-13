@@ -15,12 +15,12 @@ to get the original URL path from the 'shortURL' given parameter and returns it.
 func (dto DTO) RetrieveOriginalURL(shortURL string) (database.URL, error) {
 	var originalURL database.URL
 
-	var query = fmt.Sprintf("SELECT original, expiration_time, password FROM %s.%s WHERE short = $1",
+	var query = fmt.Sprintf("SELECT long_url, expiration_time, password FROM %s.%s WHERE short = $1",
 		dto.Table.Schema, dto.Table.Name)
 
 	result := dto.DB.QueryRow(query, shortURL)
 	errQuery := result.Scan(
-		&originalURL.Original,
+		&originalURL.LongUrl,
 		&originalURL.ExpirationTime,
 		&originalURL.Password,
 	)
@@ -125,8 +125,8 @@ func (dto DTO) GetUserUrls(userID string) ([]database.URL, error) {
 	var rows = []database.URL{}
 
 	var query = fmt.Sprintf(`SELECT 
-	uuid, original, short, prefix, enabled,
-	 insert_time, update_time, expiration_time, note 
+	uuid, long_url, short_id, prefix, enabled,
+	insert_time, update_time, expiration_time, note 
 	FROM %s.%s WHERE owner_id = $1
 	ORDER BY update_time DESC`,
 		dto.Table.Schema, dto.Table.Name)
@@ -140,8 +140,8 @@ func (dto DTO) GetUserUrls(userID string) ([]database.URL, error) {
 	for results.Next() {
 		errScan := results.Scan(
 			&row.UUID,
-			&row.Original,
-			&row.Short,
+			&row.LongUrl,
+			&row.ShortID,
 			&row.Prefix,
 			&row.Enabled,
 			&row.InsertTime,

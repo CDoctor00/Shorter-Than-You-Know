@@ -11,8 +11,8 @@ type ShortenRequest struct {
 }
 
 type ShortenResponse struct {
-	OriginalURL string `json:"originalURL"`
-	ShortURL    string `json:"shortURL"`
+	LongUrl string `json:"longUrl"`
+	ShortID string `json:"shortID"`
 }
 
 type RedirectRequest struct {
@@ -36,13 +36,13 @@ type UpdateRequest struct {
 }
 
 type UrlData struct {
-	UUID           uuid.UUID `json:"UUID"`
-	LongURL        string    `json:"LongUrl"`
-	ShortURL       string    `json:"ShortUrl"`
-	IsEnabled      bool      `json:"IsEnabled"`
-	CreateTime     string    `json:"CreateTime"`
-	UpdateTime     string    `json:"UpdateTime"`
-	Prefix         *string   `json:"Prefix,omitempty"`
-	ExpirationTime *string   `json:"ExpirationTime,omitempty"`
-	Note           *string   `json:"Note,omitempty"`
+	UUID           uuid.UUID `json:"uuid"`
+	LongUrl        string    `json:"longUrl"`
+	ShortID        string    `json:"shortID"`
+	IsEnabled      bool      `json:"isEnabled"`
+	CreateTime     string    `json:"createTime"`
+	UpdateTime     string    `json:"updateTime"`
+	Prefix         *string   `json:"prefix,omitempty"`
+	ExpirationTime *string   `json:"expirationTime,omitempty"`
+	Note           *string   `json:"note,omitempty"`
 }
