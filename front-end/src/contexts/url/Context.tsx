@@ -11,7 +11,6 @@ export interface url {
   updateTime?: Date;
   expirationTime?: Date;
   prefix?: string;
-  password?: string;
   note?: string;
   clicks?: number;
 }

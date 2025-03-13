@@ -4,12 +4,22 @@ import { FaArrowDown } from "react-icons/fa6";
 import { UrlContext } from "../../../contexts/url/Context";
 import { createExpDate } from "./utils";
 import "./Form.css";
+import { getStatus, mockToken } from "../../user/history/container/utils";
 
 type ShortenRequestBody = {
   url: string;
-  customURL: string;
+  prefix: string;
   expirationTime: string;
-  //  note: string;
+  password: string;
+};
+// TODO add note
+
+type UpdateRequestBody = {
+  uuid: string;
+  url: string;
+  prefix: string;
+  isEnabled: boolean;
+  expirationTime: string;
   password: string;
 };
 
@@ -53,7 +63,7 @@ function FormUrl({ isNewURL, toggleForm }: props) {
 
     const data: ShortenRequestBody = {
       url: resultsForm.data.url,
-      customURL: resultsForm.data.prefix,
+      prefix: resultsForm.data.prefix,
       expirationTime: createExpDate(
         resultsForm.data.date,
         resultsForm.data.time
@@ -93,6 +103,10 @@ function FormUrl({ isNewURL, toggleForm }: props) {
   const updateURL = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!url) {
+      return;
+    }
+
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData);
 
@@ -109,9 +123,12 @@ function FormUrl({ isNewURL, toggleForm }: props) {
         .string({ message: "prefix error" })
         .nullish()
         .transform((s) => s ?? ""),
+      enable: z.string({ message: "enable error" }).nullish(),
       date: z.string({ message: "date error" }).nullish(),
       time: z.string({ message: "time error" }).nullish(),
     });
+
+    console.log(formValues);
 
     const resultsForm = formSchema.safeParse(formValues);
     if (!resultsForm.success) {
@@ -119,7 +136,58 @@ function FormUrl({ isNewURL, toggleForm }: props) {
       return;
     }
 
-    //TODO Continue with update API
+    const requestBody: UpdateRequestBody = {
+      url: resultsForm.data.url,
+      prefix: resultsForm.data.prefix,
+      expirationTime: createExpDate(
+        resultsForm.data.date,
+        resultsForm.data.time
+      ),
+      password: resultsForm.data.password,
+      isEnabled: resultsForm.data.enable === "on",
+      uuid: url.uuid!,
+    };
+    const response = await fetch("http://localhost:10000/api/auth/updateUrl", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${mockToken}`,
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const responseData = await response.json();
+    if (!response.ok) {
+      console.error(response);
+    }
+
+    const responseSchema = z.object({
+      longUrl: z.string({ message: "longUrl error" }),
+      shortID: z.string({ message: "shortID error" }),
+    });
+
+    const resultsResponse = responseSchema.safeParse(responseData);
+    if (!resultsResponse.success) {
+      console.error(resultsResponse.error);
+      return;
+    }
+
+    setURL({
+      longUrl: resultsResponse.data.longUrl,
+      shortID: resultsResponse.data.shortID,
+      shortUrl: `${window.location.origin}/${resultsResponse.data.shortID}`,
+      createTime: url.createTime,
+      uuid: url.uuid,
+      updateTime: new Date(),
+      expirationTime: new Date(requestBody.expirationTime),
+      isEnabled: requestBody.isEnabled,
+      prefix: requestBody.prefix,
+      status: getStatus(
+        requestBody.isEnabled,
+        new Date(requestBody.expirationTime)
+      ),
+    });
+    toggleForm();
   };
 
   return (
@@ -153,20 +221,30 @@ function FormUrl({ isNewURL, toggleForm }: props) {
               id="password"
               name="password"
               placeholder="Password"
-              defaultValue={url?.password}
             />
           </div>
-          <div className="input-container">
-            <label htmlFor="prefix">Prefix</label>
-            <input
-              type="text"
-              id="prefix"
-              name="prefix"
-              placeholder="Custom prefix of shorten URL"
-              defaultValue={url?.prefix}
-            />
+          <div className="split-inputs">
+            <div className="input-container" id="prefix-input">
+              <label htmlFor="prefix">Prefix</label>
+              <input
+                type="text"
+                id="prefix"
+                name="prefix"
+                placeholder="Custom prefix of shorten URL"
+                defaultValue={url?.prefix}
+              />
+            </div>
+            <div className="input-container" id="enable-input">
+              <label htmlFor="enable">Enable</label>
+              <input
+                type="checkbox"
+                id="enable"
+                name="enable"
+                defaultChecked={url?.isEnabled}
+              />
+            </div>
           </div>
-          <div className="timestamp-input-container">
+          <div className="split-inputs timestamp">
             <div className="input-container" id="date-input">
               <label htmlFor="date">Date</label>
               <input

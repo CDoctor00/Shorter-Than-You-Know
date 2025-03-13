@@ -36,19 +36,34 @@
   }
 }
 
-.timestamp-input-container {
+.split-inputs {
   display: flex;
   gap: 1rem;
 
-  input {
-    text-align: center;
+  #prefix-input {
+    width: 80%;
   }
 
-  #date-input {
-    width: 60%;
+  #enable-input {
+    width: 20%;
+    align-items: center;
+
+    #enable {
+      width: 1.5rem;
+    }
   }
 
-  #time-input {
-    width: 40%;
+  &.timestamp {
+    input {
+      text-align: center;
+    }
+
+    #date-input {
+      width: 60%;
+    }
+
+    #time-input {
+      width: 40%;
+    }
   }
 }

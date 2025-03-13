@@ -2,25 +2,11 @@ import { useEffect, useState } from "react";
 import ListItem from "../list_item/ListItem";
 import { url } from "../../../../contexts/url/Context";
 import { z } from "zod";
+import { getStatus, mockToken } from "./utils";
 import "./Container.css";
-
-const mockToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDE4OTA2MDgsImlhdCI6MTc0MTg4ODgwOCwidXNlcklEIjoiMTNhYWEyOGUifQ.R_Xjz6EXnGnMr29Sp6XqE4jwq5BRDG-SDKBu93TL-qs";
 
 function HistoryContainer() {
   const [urls, setUrls] = useState<url[]>([]);
-
-  const getStatus = (isEnabled: boolean, exp: Date | undefined): string => {
-    if (!isEnabled) {
-      return "Disabled";
-    }
-    const now = new Date();
-    if (exp && exp < now) {
-      return "Expired";
-    }
-
-    return "Active";
-  };
 
   const getHistory = async () => {
     const response = await fetch(
