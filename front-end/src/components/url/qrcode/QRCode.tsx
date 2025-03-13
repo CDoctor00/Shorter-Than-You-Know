@@ -92,7 +92,12 @@ function QRCode({ isOpen, toggleQR, isNewURL }: props) {
         {`${isNewURL ? "Get" : "See"} your QR code`}
       </label>
       <div className="qr-wrapper">
-        <QRCodeSVG value={url.shortenURL} level={"M"} id="qrcode" />
+        <QRCodeSVG
+          value={url.shortUrl}
+          level={"M"}
+          id="qrcode"
+          marginSize={1}
+        />
         <div className="buttons">
           <button onClick={copyToClipboard}>
             <span> Copy </span>

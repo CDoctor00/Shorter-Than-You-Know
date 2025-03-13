@@ -1,4 +1,5 @@
-import { FaCheckCircle, FaCopy, FaInfo } from "react-icons/fa";
+import { FaCopy, FaInfo } from "react-icons/fa";
+import { MdOutlineBlock, MdOutlineCheckCircle } from "react-icons/md";
 import { useContext } from "react";
 import { ModalContext } from "../../../../contexts/modal/Context";
 import { url, UrlContext } from "../../../../contexts/url/Context";
@@ -19,11 +20,15 @@ function ListItem({ url }: { url: url }) {
     <div className="item-container">
       <div className="main-area">
         <div className="row first">
-          <FaCheckCircle />
-          <h4 className="label">{url.longURL}</h4>
+          {url.status == "Active" ? (
+            <MdOutlineCheckCircle />
+          ) : (
+            <MdOutlineBlock />
+          )}
+          <h4 className="label">{url.longUrl}</h4>
         </div>
         <div className="row second">
-          <p className="date">{url.lastUpdateTime}</p>
+          <p className="date">{url.updateTime!.toLocaleDateString()}</p>
           <div className="buttons">
             <button>
               <FaCopy />

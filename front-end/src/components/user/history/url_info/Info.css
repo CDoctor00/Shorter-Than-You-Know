@@ -7,7 +7,7 @@
   .row {
     width: 100%;
     display: grid;
-    grid-template-columns: 4fr 7fr;
+    grid-template-columns: 3fr 7fr;
     font-size: 0.9rem;
     padding-bottom: 0.1rem;
     border-bottom: 1px solid var(--input-bg);

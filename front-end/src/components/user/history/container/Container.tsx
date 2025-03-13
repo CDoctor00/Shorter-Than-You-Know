@@ -1,66 +1,95 @@
+import { useEffect, useState } from "react";
 import ListItem from "../list_item/ListItem";
+import { url } from "../../../../contexts/url/Context";
+import { z } from "zod";
 import "./Container.css";
 
+const mockToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDE4OTA2MDgsImlhdCI6MTc0MTg4ODgwOCwidXNlcklEIjoiMTNhYWEyOGUifQ.R_Xjz6EXnGnMr29Sp6XqE4jwq5BRDG-SDKBu93TL-qs";
+
 function HistoryContainer() {
+  const [urls, setUrls] = useState<url[]>([]);
+
+  const getStatus = (isEnabled: boolean, exp: Date | undefined): string => {
+    if (!isEnabled) {
+      return "Disabled";
+    }
+    const now = new Date();
+    if (exp && exp < now) {
+      return "Expired";
+    }
+
+    return "Active";
+  };
+
+  const getHistory = async () => {
+    const response = await fetch(
+      "http://localhost:10000/api/auth/userHistory",
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${mockToken}` },
+      }
+    );
+
+    const responseData = await response.json();
+    if (!response.ok) {
+      console.error(response);
+    }
+
+    const singleSchema = z.object({
+      longUrl: z.string({ message: "longUrl error" }),
+      shortID: z.string({ message: "shortID error" }),
+      uuid: z.string({ message: "uuid error" }),
+      isEnabled: z.boolean({ message: "status error" }),
+      createTime: z.string({ message: "createdTime error" }),
+      updateTime: z.string({ message: "lastUpdateTime error" }),
+      prefix: z.string({ message: "prefix error" }).optional(),
+      expirationTime: z.string({ message: "expirationTime error" }).optional(),
+      password: z.string({ message: "password error" }).optional(),
+      note: z.string({ message: "note error" }).optional(),
+      clicks: z.number({ message: "clicks error" }).optional(),
+    });
+    const responseSchema = z.array(singleSchema);
+
+    const resultsResponse = responseSchema.safeParse(responseData);
+    if (!resultsResponse.success) {
+      console.error(resultsResponse.error);
+      return;
+    }
+
+    const data: url[] = [];
+
+    resultsResponse.data.map((item) => {
+      const exp = item.expirationTime
+        ? new Date(item.expirationTime)
+        : undefined;
+
+      const newURL: url = {
+        ...item,
+        shortUrl: `${window.location.origin}/${item.shortID}`,
+        createTime: new Date(item.createTime),
+        updateTime: new Date(item.updateTime),
+        expirationTime: exp,
+        status: getStatus(item.isEnabled, exp),
+      };
+
+      data.push(newURL);
+    });
+
+    setUrls(data);
+  };
+
+  useEffect(() => {
+    getHistory();
+  }, []);
+
   return (
     <div className="history-container">
       <h2 className="title">History</h2>
-      {/* TODO get all datas with API and loop them to show */}
       <div className="history-list">
-        <ListItem
-          url={{
-            longURL:
-              "https://www.google.com/search?q=react+modals+with+portals&client=firefox-b-d&sca_esv=4ace2edab23664d2&ei=DxHOZ9i2FKmIi-gPoPPbuQU&ved=0ahUKEwiY-sCegf6LAxUpxAIHHaD5NlcQ4dUDCBA&uact=5&oq=react+modals+with+portals&gs_lp=Egxnd3Mtd2l6LXNlcnAiGXJlYWN0IG1vZGFscyB3aXRoIHBvcnRhbHMyBRAhGKABMgUQIRigAUjJM1ChHVjtMnAEeAGQAQCYAd8BoAHCC6oBBTMuOC4xuAEDyAEA-AEBmAIQoALlC8ICChAAGLADGNYEGEfCAgcQABiABBgTwgIIEAAYExgWGB7CAgoQABgTGBYYChgewgIGEAAYFhgewgIFEAAY7wXCAggQABiABBiiBJgDAIgGAZAGCJIHBTcuOC4xoAeWJw&sclient=gws-wiz-serp",
-            shortenURL: "http://192.168.0.113:5173/86255bbf",
-            clicks: 111,
-            createdTime: new Date().toLocaleDateString("en-US", {
-              month: "short",
-              year: "numeric",
-              day: "numeric",
-            }),
-            expirationTime: new Date().toLocaleDateString("en-US", {
-              month: "short",
-              year: "numeric",
-              day: "numeric",
-            }),
-            lastUpdateTime: new Date().toLocaleDateString("en-US", {
-              month: "short",
-              year: "numeric",
-              day: "numeric",
-            }),
-            note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla non dignissim augue. Proin malesuada sollicitudin dictum. Nulla vel ipsum dictum, faucibus odio eget, cursus ipsum. Sed turpis nibh, maximus in dolor a, dignissim ullamcorper eros. Maecenas ut mattis enim. Etiam vitae dui ante. Mauris aliquet sem non justo congue sagittis ut eu velit. Phasellus interdum congue urna commodo laoreet. Proin sed sapien vel lectus luctus luctus non a lacus. Nulla augue enim, pharetra eget sollicitudin.",
-            password: "Password",
-            prefix: "CDoctor",
-            status: "active",
-          }}
-        />
-        <ListItem
-          url={{
-            longURL:
-              "https://www.google.com/search?q=react+modals+with+portals&client=firefox-b-d&sca_esv=4ace2edab23664d2&ei=DxHOZ9i2FKmIi-gPoPPbuQU&ved=0ahUKEwiY-sCegf6LAxUpxAIHHaD5NlcQ4dUDCBA&uact=5&oq=react+modals+with+portals&gs_lp=Egxnd3Mtd2l6LXNlcnAiGXJlYWN0IG1vZGFscyB3aXRoIHBvcnRhbHMyBRAhGKABMgUQIRigAUjJM1ChHVjtMnAEeAGQAQCYAd8BoAHCC6oBBTMuOC4xuAEDyAEA-AEBmAIQoALlC8ICChAAGLADGNYEGEfCAgcQABiABBgTwgIIEAAYExgWGB7CAgoQABgTGBYYChgewgIGEAAYFhgewgIFEAAY7wXCAggQABiABBiiBJgDAIgGAZAGCJIHBTcuOC4xoAeWJw&sclient=gws-wiz-serp",
-            shortenURL: "http://192.168.0.113:5173/86255bbf",
-            clicks: 111,
-            createdTime: new Date().toLocaleDateString("en-US", {
-              month: "short",
-              year: "numeric",
-              day: "numeric",
-            }),
-            expirationTime: new Date().toLocaleDateString("en-US", {
-              month: "short",
-              year: "numeric",
-              day: "numeric",
-            }),
-            lastUpdateTime: new Date().toLocaleDateString("en-US", {
-              month: "short",
-              year: "numeric",
-              day: "numeric",
-            }),
-            note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla non dignissim augue. Proin malesuada sollicitudin dictum. Nulla vel ipsum dictum, faucibus odio eget, cursus ipsum. Sed turpis nibh, maximus in dolor a, dignissim ullamcorper eros. Maecenas ut mattis enim. Etiam vitae dui ante. Mauris aliquet sem non justo congue sagittis ut eu velit. Phasellus interdum congue urna commodo laoreet. Proin sed sapien vel lectus luctus luctus non a lacus. Nulla augue enim, pharetra eget sollicitudin.",
-            password: "Password",
-            prefix: "CDoctor",
-            status: "active",
-          }}
-        />
+        {urls.map((item: url, id: number) => {
+          return <ListItem url={item} key={id} />;
+        })}
       </div>
     </div>
   );

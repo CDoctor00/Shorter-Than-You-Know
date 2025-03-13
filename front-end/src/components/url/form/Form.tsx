@@ -72,8 +72,8 @@ function FormUrl({ isNewURL, toggleForm }: props) {
     }
 
     const responseSchema = z.object({
-      originalURL: z.string({ message: "originalURL error" }),
-      shortURL: z.string({ message: "shortURL error" }),
+      longUrl: z.string({ message: "longUrl error" }),
+      shortID: z.string({ message: "shortID error" }),
     });
 
     const resultsResponse = responseSchema.safeParse(responseData);
@@ -83,8 +83,9 @@ function FormUrl({ isNewURL, toggleForm }: props) {
     }
 
     setURL({
-      longURL: resultsForm.data.url,
-      shortenURL: `${window.location.origin}/${resultsResponse.data.shortURL}`,
+      longUrl: resultsResponse.data.longUrl,
+      shortID: resultsResponse.data.shortID,
+      shortUrl: `${window.location.origin}/${resultsResponse.data.shortID}`,
     });
     toggleForm();
   };
@@ -130,7 +131,7 @@ function FormUrl({ isNewURL, toggleForm }: props) {
           id="url"
           name="url"
           placeholder="https://example.com/long-url"
-          defaultValue={url?.longURL}
+          defaultValue={url?.longUrl}
         />
         {isNewURL && (
           <button
@@ -172,9 +173,10 @@ function FormUrl({ isNewURL, toggleForm }: props) {
                 type="date"
                 id="date"
                 name="date"
-                defaultValue={url?.expirationTime}
-              />{" "}
-              {/* TODO aggiornare in base al formato di data */}
+                defaultValue={
+                  url?.expirationTime?.toISOString().split("T", 1)[0]
+                }
+              />
             </div>
             <div className="input-container" id="time-input">
               <label htmlFor="time">Time</label>
@@ -182,9 +184,10 @@ function FormUrl({ isNewURL, toggleForm }: props) {
                 type="time"
                 id="time"
                 name="time"
-                defaultValue={url?.expirationTime}
+                defaultValue={url?.expirationTime
+                  ?.toLocaleTimeString()
+                  .slice(0, -3)}
               />
-              {/* TODO aggiornare in base al formato di data */}
             </div>
           </div>
         </div>

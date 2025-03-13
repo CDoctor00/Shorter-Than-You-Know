@@ -25,7 +25,7 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
   const copyToClipboard = () => {
     try {
       navigator.clipboard
-        .writeText(url.shortenURL)
+        .writeText(url.shortUrl)
         .then(() => {
           console.log("Copied");
         })
@@ -36,12 +36,6 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
       console.error("Error: ", err);
     }
   };
-
-  //? remove protocol from URL
-  const shorten = url.shortenURL.slice(
-    url.shortenURL.indexOf("//") + 2,
-    url.shortenURL.length
-  );
 
   return (
     <div className={`card-container ${isOpen ? "open" : "close"}`}>
@@ -54,11 +48,11 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
       <div className="shorten-wrapper">
         {isNewURL ? (
           <>
-            <a href={url.shortenURL} className="shorten-url">
+            <a href={url.shortUrl} className="shorten-url">
               <span className="redirect-icon">
                 <FaExternalLinkAlt />
               </span>
-              <span className="redirect-url">{shorten}</span>
+              <span className="redirect-url">{url.shortID}</span>
             </a>
           </>
         ) : (

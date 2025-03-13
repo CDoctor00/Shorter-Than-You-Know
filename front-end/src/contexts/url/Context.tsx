@@ -1,13 +1,16 @@
 import { createContext } from "react";
 
 export interface url {
-  longURL: string;
-  shortenURL: string;
+  longUrl: string;
+  shortUrl: string;
+  shortID: string;
+  uuid?: string;
+  isEnabled?: boolean;
   status?: string;
-  createdTime?: string;
-  lastUpdateTime?: string;
+  createTime?: Date;
+  updateTime?: Date;
+  expirationTime?: Date;
   prefix?: string;
-  expirationTime?: string;
   password?: string;
   note?: string;
   clicks?: number;
