@@ -15,7 +15,7 @@
   align-items: center;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 5;
+  z-index: 2;
   animation: fade 0.3s ease-in-out;
   color: var(--text);
 }

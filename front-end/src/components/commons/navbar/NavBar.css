@@ -4,7 +4,7 @@
   align-items: center;
   height: 5rem;
   padding: 1rem;
-  border-bottom: solid 1px rgb(from var(--text) r g b / 0.5);
+  border-bottom: solid 1px var(--border-gray);
   background: var(--background);
 
   .icons {

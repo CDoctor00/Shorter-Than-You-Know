@@ -41,7 +41,7 @@
   left: 0;
   top: 0;
   border-radius: 0 50% 50% 0;
-  background: rgb(from var(--background) r g b / 0.5);
+  background: var(--icon-bg);
   transform: translatex(-2rem);
   transition: all 0.25s ease-in-out;
   z-index: 1;

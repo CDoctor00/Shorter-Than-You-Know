@@ -37,10 +37,7 @@ const ThemeContextProvider = (props: props) => {
   }, [theme]);
 
   const themeSwitcher = () => {
-    const htmlTag = document.getElementsByTagName("html")[0];
-
-    const themeAttribute = htmlTag.getAttribute(attributeName);
-    if (themeAttribute === lightTheme) {
+    if (theme === lightTheme) {
       setTheme(darkTheme);
     } else {
       setTheme(lightTheme);

@@ -3,7 +3,7 @@
   height: fit-content;
   display: flex;
   flex-direction: column;
-  border-bottom: 1px rgb(from var(--text) r g b / 0.3) solid;
+  border-bottom: 1px solid var(--border-gray);
 
   .label {
     display: flex;

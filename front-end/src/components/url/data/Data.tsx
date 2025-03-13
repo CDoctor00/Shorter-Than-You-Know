@@ -37,6 +37,12 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
     }
   };
 
+  //? remove protocol from URL
+  const shorten = url.shortUrl.slice(
+    url.shortUrl.indexOf("//") + 2,
+    url.shortUrl.length
+  );
+
   return (
     <div className={`card-container ${isOpen ? "open" : "close"}`}>
       <label
@@ -52,7 +58,7 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
               <span className="redirect-icon">
                 <FaExternalLinkAlt />
               </span>
-              <span className="redirect-url">{url.shortID}</span>
+              <span className="redirect-url">{shorten}</span>
             </a>
           </>
         ) : (
