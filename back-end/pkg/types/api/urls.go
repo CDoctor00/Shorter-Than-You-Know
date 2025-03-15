@@ -35,6 +35,12 @@ type UpdateRequest struct {
 	Note      string    `json:"Note"`
 }
 
+type UpdateResponse struct {
+	LongUrl    string `json:"longUrl"`
+	ShortID    string `json:"shortID"`
+	UpdateTime string `json:"updateTime"`
+}
+
 type UrlData struct {
 	UUID           uuid.UUID `json:"uuid"`
 	LongUrl        string    `json:"longUrl"`

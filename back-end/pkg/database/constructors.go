@@ -55,7 +55,7 @@ func NewUrlsDTO() queries.DTO {
 			Structure: dbType.URL{},
 			Constraints: []string{
 				"UNIQUE(uuid)",
-				"UNIQUE(short)",
+				"UNIQUE(short_id)",
 				"FOREIGN KEY(owner_id) REFERENCES styk.users(id) ON DELETE CASCADE",
 			},
 			AddIndex: true,
