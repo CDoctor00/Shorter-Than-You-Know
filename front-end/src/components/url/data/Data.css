@@ -3,6 +3,14 @@
   flex-direction: column;
   padding: 2.5rem 1rem;
   gap: 2rem;
+
+  .buttons {
+    gap: 1.5rem;
+
+    button {
+      width: 2.5rem;
+    }
+  }
 }
 
 .shorten-url {

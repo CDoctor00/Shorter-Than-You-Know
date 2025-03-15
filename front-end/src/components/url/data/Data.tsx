@@ -1,8 +1,11 @@
 import { useContext } from "react";
 import { FaCopy, FaExternalLinkAlt, FaShare, FaPen } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { UrlContext } from "../../../contexts/url/Context";
+import { ModalContext } from "../../../contexts/modal/Context";
 import UrlInfo from "../../user/history/url_info/Info";
 import "./Data.css";
+import Delete from "../Delete/Delete";
 
 interface props {
   isOpen: boolean;
@@ -13,6 +16,7 @@ interface props {
 
 function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
   const { url } = useContext(UrlContext);
+  const { setChildren } = useContext(ModalContext);
 
   if (!url) {
     return null;
@@ -20,6 +24,10 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
 
   const modifyURL = () => {
     toggleForm();
+  };
+
+  const swapModalToDelete = () => {
+    setChildren(<Delete />);
   };
 
   const copyToClipboard = () => {
@@ -66,18 +74,20 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
         )}
         <div className="buttons">
           <button onClick={copyToClipboard}>
-            <span> Copy </span>
             <FaCopy />
           </button>
           <button>
-            <span> Share </span>
             <FaShare />
           </button>
           {!isNewURL && (
-            <button onClick={modifyURL}>
-              <span> Modify </span>
-              <FaPen />
-            </button>
+            <>
+              <button onClick={modifyURL}>
+                <FaPen />
+              </button>
+              <button onClick={swapModalToDelete}>
+                <MdDelete />
+              </button>
+            </>
           )}
         </div>
       </div>

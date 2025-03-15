@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import ListItem from "../list_item/ListItem";
 import { url } from "../../../../contexts/url/Context";
+import { HistoryContext } from "../../../../contexts/history/Context";
 import { z } from "zod";
 import { getStatus, mockToken } from "./utils";
 import "./Container.css";
 
 function HistoryContainer() {
-  const [urls, setUrls] = useState<url[]>([]);
+  const { history, setHistory } = useContext(HistoryContext);
 
   const getHistory = async () => {
     const response = await fetch(
@@ -43,37 +44,36 @@ function HistoryContainer() {
       return;
     }
 
-    const data: url[] = [];
+    setHistory(
+      resultsResponse.data.map((item) => {
+        const exp = item.expirationTime
+          ? new Date(item.expirationTime)
+          : undefined;
 
-    resultsResponse.data.map((item) => {
-      const exp = item.expirationTime
-        ? new Date(item.expirationTime)
-        : undefined;
+        const newURL: url = {
+          ...item,
+          shortUrl: `${window.location.origin}/${item.shortID}`,
+          createTime: new Date(item.createTime),
+          updateTime: new Date(item.updateTime),
+          expirationTime: exp,
+          status: getStatus(item.isEnabled, exp),
+        };
 
-      const newURL: url = {
-        ...item,
-        shortUrl: `${window.location.origin}/${item.shortID}`,
-        createTime: new Date(item.createTime),
-        updateTime: new Date(item.updateTime),
-        expirationTime: exp,
-        status: getStatus(item.isEnabled, exp),
-      };
-
-      data.push(newURL);
-    });
-
-    setUrls(data);
+        return newURL;
+      })
+    );
   };
 
   useEffect(() => {
     getHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="history-container">
       <h2 className="title">History</h2>
       <div className="history-list">
-        {urls.map((item: url, id: number) => {
+        {history.map((item: url, id: number) => {
           return <ListItem url={item} key={id} />;
         })}
       </div>

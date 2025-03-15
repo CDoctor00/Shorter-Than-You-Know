@@ -3,8 +3,9 @@ import { z } from "zod";
 import { FaArrowDown } from "react-icons/fa6";
 import { UrlContext } from "../../../contexts/url/Context";
 import { createExpDate } from "./utils";
-import "./Form.css";
 import { getStatus, mockToken } from "../../user/history/container/utils";
+import { HistoryContext } from "../../../contexts/history/Context";
+import "./Form.css";
 
 type ShortenRequestBody = {
   url: string;
@@ -31,6 +32,7 @@ interface props {
 function FormUrl({ isNewURL, toggleForm }: props) {
   const [isOpen, setIsOpen] = useState(!isNewURL);
   const { url, setURL } = useContext(UrlContext);
+  const { updateItem } = useContext(HistoryContext);
 
   const createShortenURL = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -128,8 +130,6 @@ function FormUrl({ isNewURL, toggleForm }: props) {
       time: z.string({ message: "time error" }).nullish(),
     });
 
-    console.log(formValues);
-
     const resultsForm = formSchema.safeParse(formValues);
     if (!resultsForm.success) {
       console.error(resultsForm.error);
@@ -162,8 +162,9 @@ function FormUrl({ isNewURL, toggleForm }: props) {
     }
 
     const responseSchema = z.object({
-      longUrl: z.string({ message: "longUrl error" }),
-      shortID: z.string({ message: "shortID error" }),
+      longUrl: z.string({ message: "longUrl error" }).nonempty(),
+      shortID: z.string({ message: "shortID error" }).nonempty(),
+      updateTime: z.string({ message: "updateTime error" }).nonempty(),
     });
 
     const resultsResponse = responseSchema.safeParse(responseData);
@@ -172,13 +173,13 @@ function FormUrl({ isNewURL, toggleForm }: props) {
       return;
     }
 
-    setURL({
+    const newUrl = {
       longUrl: resultsResponse.data.longUrl,
       shortID: resultsResponse.data.shortID,
       shortUrl: `${window.location.origin}/${resultsResponse.data.shortID}`,
       createTime: url.createTime,
       uuid: url.uuid,
-      updateTime: new Date(),
+      updateTime: new Date(resultsResponse.data.updateTime),
       expirationTime: new Date(requestBody.expirationTime),
       isEnabled: requestBody.isEnabled,
       prefix: requestBody.prefix,
@@ -186,7 +187,9 @@ function FormUrl({ isNewURL, toggleForm }: props) {
         requestBody.isEnabled,
         new Date(requestBody.expirationTime)
       ),
-    });
+    };
+    setURL(newUrl);
+    updateItem(newUrl);
     toggleForm();
   };
 
