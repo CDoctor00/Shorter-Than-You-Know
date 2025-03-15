@@ -1,13 +1,18 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import { z } from "zod";
 import ListItem from "../list_item/ListItem";
 import { url } from "../../../../contexts/url/Context";
 import { HistoryContext } from "../../../../contexts/history/Context";
-import { z } from "zod";
 import { getStatus, mockToken } from "./utils";
+import { FaSearch } from "react-icons/fa";
+import { FaXmark } from "react-icons/fa6";
 import "./Container.css";
 
 function HistoryContainer() {
   const { history, setHistory } = useContext(HistoryContext);
+  const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const getHistory = async () => {
     const response = await fetch(
@@ -69,14 +74,80 @@ function HistoryContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  let timeoutID: number;
+  const updateFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (timeoutID) {
+      clearTimeout(timeoutID);
+    }
+
+    timeoutID = setTimeout(() => {
+      setFilter(event.target.value);
+      setCurrentPage(1);
+    }, 300);
+  };
+
+  const updatePages = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1);
+  };
+
+  const filteredHistory = history.filter(
+    (item) =>
+      item.longUrl.toLowerCase().includes(filter.toLowerCase()) ||
+      item.shortUrl.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredHistory.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
     <div className="history-container">
       <h2 className="title">History</h2>
-      <div className="history-list">
-        {history.map((item: url, id: number) => {
+      <div className="bar">
+        <form className="search">
+          <FaSearch className="button lens" />
+          <input type="text" placeholder="Search" onChange={updateFilter} />
+          <button
+            className="button reset"
+            type="reset"
+            onClick={() => setFilter("")}
+          >
+            <FaXmark />
+          </button>
+        </form>
+        <form className="pages">
+          <select name="pages" id="pages" onChange={updatePages}>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+        </form>
+      </div>
+
+      <div className="list">
+        {currentItems.map((item: url, id: number) => {
           return <ListItem url={item} key={id} />;
         })}
       </div>
+
+      <ul className="pagination">
+        {Array.from(
+          { length: Math.ceil(filteredHistory.length / itemsPerPage) },
+          (_, index) => (
+            <li
+              key={index}
+              onClick={() => {
+                setCurrentPage(index + 1);
+              }}
+              className={currentPage === index + 1 ? "active" : ""}
+            >
+              {index + 1}
+            </li>
+          )
+        )}
+      </ul>
     </div>
   );
 }
