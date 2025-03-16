@@ -17,10 +17,12 @@ export interface url {
 
 interface context {
   url: url | undefined;
-  setURL: (newUrl: url | undefined) => void;
+  isNew: boolean;
+  setUrl: (newUrl: url | undefined, isNew: boolean) => void;
 }
 
 export const UrlContext = createContext<context>({
   url: undefined,
-  setURL: () => {},
+  isNew: true,
+  setUrl: () => {},
 });

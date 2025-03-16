@@ -7,9 +7,15 @@ interface props {
 
 const UrlContextProvider = (props: props) => {
   const [url, setURL] = useState<url>();
+  const [isNew, setIsNew] = useState(true);
+
+  const updateStates = (newUrl: url | undefined, isNew: boolean) => {
+    setURL(newUrl);
+    setIsNew(isNew);
+  };
 
   return (
-    <UrlContext.Provider value={{ url, setURL }}>
+    <UrlContext.Provider value={{ url, isNew, setUrl: updateStates }}>
       {props.children}
     </UrlContext.Provider>
   );

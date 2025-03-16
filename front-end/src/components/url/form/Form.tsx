@@ -23,15 +23,13 @@ type UpdateRequestBody = {
   expirationTime: string;
   password: string;
 };
-
 interface props {
-  isNewURL: boolean;
   toggleForm: () => void;
 }
 
-function FormUrl({ isNewURL, toggleForm }: props) {
-  const [isOpen, setIsOpen] = useState(!isNewURL);
-  const { url, setURL } = useContext(UrlContext);
+function FormUrl({ toggleForm }: props) {
+  const { url, isNew, setUrl } = useContext(UrlContext);
+  const [isOpen, setIsOpen] = useState(!isNew);
   const { updateItem } = useContext(HistoryContext);
 
   const createShortenURL = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -94,11 +92,14 @@ function FormUrl({ isNewURL, toggleForm }: props) {
       return;
     }
 
-    setURL({
-      longUrl: resultsResponse.data.longUrl,
-      shortID: resultsResponse.data.shortID,
-      shortUrl: `${window.location.origin}/${resultsResponse.data.shortID}`,
-    });
+    setUrl(
+      {
+        longUrl: resultsResponse.data.longUrl,
+        shortID: resultsResponse.data.shortID,
+        shortUrl: `${window.location.origin}/${resultsResponse.data.shortID}`,
+      },
+      true
+    );
     toggleForm();
   };
 
@@ -188,7 +189,7 @@ function FormUrl({ isNewURL, toggleForm }: props) {
         new Date(requestBody.expirationTime)
       ),
     };
-    setURL(newUrl);
+    setUrl(newUrl, false);
     updateItem(newUrl);
     toggleForm();
   };
@@ -196,7 +197,7 @@ function FormUrl({ isNewURL, toggleForm }: props) {
   return (
     <div className="form-url-container">
       <label className="card-label">Shorten your URL</label>
-      <form onSubmit={isNewURL ? createShortenURL : updateURL}>
+      <form onSubmit={isNew ? createShortenURL : updateURL}>
         <input
           type="text"
           id="url"
@@ -204,7 +205,7 @@ function FormUrl({ isNewURL, toggleForm }: props) {
           placeholder="https://example.com/long-url"
           defaultValue={url?.longUrl}
         />
-        {isNewURL && (
+        {isNew && (
           <button
             className="advanced-button"
             onClick={(e) => {
@@ -272,7 +273,7 @@ function FormUrl({ isNewURL, toggleForm }: props) {
             </div>
           </div>
         </div>
-        <input type="submit" value={isNewURL ? "Shorten" : "Apply changes"} />
+        <input type="submit" value={isNew ? "Shorten" : "Apply changes"} />
       </form>
     </div>
   );

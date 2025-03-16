@@ -14,12 +14,11 @@ import "./QRCode.css";
 interface props {
   isOpen: boolean;
   toggleQR: () => void;
-  isNewURL: boolean;
 }
 
-function QRCode({ isOpen, toggleQR, isNewURL }: props) {
+function QRCode({ isOpen, toggleQR }: props) {
   const refQR = useRef<HTMLDivElement | null>(null);
-  const { url } = useContext(UrlContext);
+  const { url, isNew } = useContext(UrlContext);
   const [blob, setBlob] = useState<Blob | null>(null);
   const [dataURL, setDataURL] = useState<string>("");
   const img = useMemo(() => new Image(), []);
@@ -79,7 +78,7 @@ function QRCode({ isOpen, toggleQR, isNewURL }: props) {
 
   return (
     <div
-      className={`card-container down ${isNewURL ? "small" : "big"} ${
+      className={`card-container down ${isNew ? "small" : "big"} ${
         isOpen ? "open" : "close"
       }`}
       id="qr-container"
@@ -89,7 +88,7 @@ function QRCode({ isOpen, toggleQR, isNewURL }: props) {
         className={`card-label down ${isOpen ? "" : "close"}`}
         onClick={isOpen ? undefined : toggleQR}
       >
-        {`${isNewURL ? "Get" : "See"} your QR code`}
+        {`${isNew ? "Get" : "See"} your QR code`}
       </label>
       <div className="qr-wrapper">
         <QRCodeSVG

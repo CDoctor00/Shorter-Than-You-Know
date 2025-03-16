@@ -1,7 +1,7 @@
 import { FaPlus } from "react-icons/fa6";
-import "./UrlButton.css";
 import { useContext } from "react";
 import { UrlContext } from "../../../contexts/url/Context";
+import "./UrlButton.css";
 
 interface props {
   text?: string;
@@ -9,13 +9,13 @@ interface props {
 }
 
 function UrlButton(props: props) {
-  const { setURL } = useContext(UrlContext);
+  const { setUrl } = useContext(UrlContext);
 
   return (
     <button
       className="url-button"
       onClick={() => {
-        setURL(undefined);
+        setUrl(undefined, true);
       }}
     >
       <span className="url-icon">

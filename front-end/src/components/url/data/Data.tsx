@@ -4,18 +4,17 @@ import { MdDelete } from "react-icons/md";
 import { UrlContext } from "../../../contexts/url/Context";
 import { ModalContext } from "../../../contexts/modal/Context";
 import UrlInfo from "../../user/history/url_info/Info";
+import Delete from "../delete/Delete";
 import "./Data.css";
-import Delete from "../Delete/Delete";
 
 interface props {
   isOpen: boolean;
   toggleQR: () => void;
-  isNewURL: boolean;
   toggleForm: () => void;
 }
 
-function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
-  const { url } = useContext(UrlContext);
+function UrlData({ isOpen, toggleQR, toggleForm }: props) {
+  const { url, isNew } = useContext(UrlContext);
   const { setChildren } = useContext(ModalContext);
 
   if (!url) {
@@ -57,10 +56,10 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
         className={`card-label up ${isOpen ? "" : "close"}`}
         onClick={isOpen ? undefined : toggleQR}
       >
-        {`${isNewURL ? "Get" : "See"} your shorten link`}
+        {`${isNew ? "Get" : "See"} your shorten link`}
       </label>
       <div className="shorten-wrapper">
-        {isNewURL ? (
+        {isNew ? (
           <>
             <a href={url.shortUrl} className="shorten-url">
               <span className="redirect-icon">
@@ -79,7 +78,7 @@ function UrlData({ isOpen, toggleQR, isNewURL, toggleForm }: props) {
           <button>
             <FaShare />
           </button>
-          {!isNewURL && (
+          {!isNew && (
             <>
               <button onClick={modifyURL}>
                 <FaPen />

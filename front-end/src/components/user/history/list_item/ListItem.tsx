@@ -8,11 +8,11 @@ import "./ListItem.css";
 
 function ListItem({ url }: { url: url }) {
   const { toggleModal, setChildren } = useContext(ModalContext);
-  const { setURL } = useContext(UrlContext);
+  const { setUrl } = useContext(UrlContext);
 
   const handleClickInfo = () => {
-    setURL(url);
-    setChildren(<UrlContainer isNewURL={false} />);
+    setUrl(url, false);
+    setChildren(<UrlContainer />);
     toggleModal();
   };
 

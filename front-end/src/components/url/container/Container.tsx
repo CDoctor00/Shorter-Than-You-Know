@@ -4,7 +4,7 @@ import ShowUrl from "../show/Show";
 import { UrlContext } from "../../../contexts/url/Context";
 import "./Container.css";
 
-function UrlContainer({ isNewURL }: { isNewURL: boolean }) {
+function UrlContainer() {
   const { url } = useContext(UrlContext);
   const [showForm, setShowForm] = useState(url === undefined);
 
@@ -15,9 +15,9 @@ function UrlContainer({ isNewURL }: { isNewURL: boolean }) {
   return (
     <div className="url-container">
       {showForm ? (
-        <FormUrl isNewURL={isNewURL} toggleForm={toggleForm} />
+        <FormUrl toggleForm={toggleForm} />
       ) : (
-        <ShowUrl isNewURL={isNewURL} toggleForm={toggleForm} />
+        <ShowUrl toggleForm={toggleForm} />
       )}
     </div>
   );

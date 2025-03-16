@@ -5,15 +5,16 @@ import UrlContainer from "../container/Container";
 import "./Page.css";
 
 function UrlPage() {
-  const { url, setURL } = useContext(UrlContext);
+  const { url, setUrl } = useContext(UrlContext);
 
   useEffect(() => {
-    setURL(undefined);
-  }, [setURL]);
+    setUrl(undefined, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="url-page">
-      <UrlContainer isNewURL={true} />
+      <UrlContainer />
 
       {url && <UrlButton />}
     </div>
