@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"styk/pkg/database"
-	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
 
 	"github.com/gofiber/fiber/v2"
@@ -40,18 +39,13 @@ func DeleteURL(context *fiber.Ctx) error {
 		return serverError(context, errGet, "delete url")
 	}
 
-	//? Retrieving user email from the JWT
-	tokenString := string(context.Request().Header.Peek("Authorization"))
-	tokenString = tokenString[len("Bearer "):]
-
-	claims, errClaims := auth.GetClaimsFromToken(tokenString)
-	if errClaims != nil {
-		return serverError(context, errClaims, "delete url")
+	user, errToken := getUserFromToken(context)
+	if errToken != nil {
+		return serverError(context, errToken, "delete url")
 	}
-	userID, _ := claims[auth.UserID].(string)
 
 	//? Check if the request's user is the url's owner
-	if !urlInfo.OwnerID.Valid || userID != urlInfo.OwnerID.String {
+	if !urlInfo.OwnerID.Valid || user.ID != urlInfo.OwnerID.String {
 		return context.Status(fiber.StatusUnauthorized).JSON(
 			api.ResponseError{
 				Error:         "The user can't update the asked resource",

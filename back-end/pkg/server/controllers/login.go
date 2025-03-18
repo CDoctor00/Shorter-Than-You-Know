@@ -54,12 +54,12 @@ func Login(context *fiber.Ctx) error {
 		return serverError(context, errCompare, "login")
 	}
 
-	accessToken, errCreate := auth.CreateToken(user.ID, auth.AccessToken)
+	accessToken, errCreate := auth.CreateToken(user, auth.AccessToken)
 	if errCreate != nil {
 		return serverError(context, errCreate, "login")
 	}
 
-	refreshToken, errCreate := auth.CreateToken(user.ID, auth.RefreshToken)
+	refreshToken, errCreate := auth.CreateToken(user, auth.RefreshToken)
 	if errCreate != nil {
 		return serverError(context, errCreate, "login")
 	}

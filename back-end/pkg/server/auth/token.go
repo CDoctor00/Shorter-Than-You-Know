@@ -3,6 +3,8 @@ package auth
 import (
 	"fmt"
 	"os"
+	"styk/pkg/types/api"
+	"styk/pkg/types/database"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -12,14 +14,9 @@ const ( //Token type
 	AccessToken  = "accessToken"
 	RefreshToken = "refreshToken"
 )
+const UserClaimName = "user" //Token Claim
 
-const ( //Token claims
-	UserID         = "userID"
-	CreationTime   = "iat"
-	ExpirationTime = "exp"
-)
-
-func CreateToken(userID string, tokenType string) (string, error) {
+func CreateToken(user database.User, tokenType string) (string, error) {
 	var duration time.Duration
 
 	switch tokenType {
@@ -29,13 +26,29 @@ func CreateToken(userID string, tokenType string) (string, error) {
 		duration = time.Hour * 24 * 30
 	}
 
-	var token = jwt.NewWithClaims(
-		jwt.SigningMethodHS256,
-		jwt.MapClaims{
-			UserID:         userID,
-			CreationTime:   time.Now().Unix(),
-			ExpirationTime: time.Now().Add(duration).Unix(),
-		})
+	var claims = api.Token{
+		RegisteredClaims: jwt.RegisteredClaims{
+			// ID:        uuid.NewString(),
+			// Subject:   "styk",
+			// Issuer:    "back-end",
+			// Audience:  jwt.ClaimStrings{"front-end"},
+			// NotBefore: jwt.NewNumericDate(time.Now()),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(duration)),
+		},
+		User: api.TokenUserInfo{
+			ID:    user.ID,
+			Email: user.Email,
+		},
+	}
+	if user.Name.Valid {
+		claims.User.Name = &user.Name.String
+	}
+	if user.Surname.Valid {
+		claims.User.Surname = &user.Surname.String
+	}
+
+	var token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	secret_key := []byte(os.Getenv("JWT_KEY"))
 

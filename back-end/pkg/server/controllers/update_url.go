@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"styk/pkg/database"
-	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
 	dbType "styk/pkg/types/database"
 	"time"
@@ -41,18 +40,13 @@ func UpdateURL(context *fiber.Ctx) error {
 		return serverError(context, errGet, "update url")
 	}
 
-	//? Retrieving user email from the JWT
-	tokenString := string(context.Request().Header.Peek("Authorization"))
-	tokenString = tokenString[len("Bearer "):]
-
-	claims, errClaims := auth.GetClaimsFromToken(tokenString)
-	if errClaims != nil {
-		return serverError(context, errClaims, "update url")
+	user, errToken := getUserFromToken(context)
+	if errToken != nil {
+		return serverError(context, errToken, "update url")
 	}
-	userID, _ := claims[auth.UserID].(string)
 
 	//? Check if the request's user is the url's owner
-	if !ownerID.Valid || userID != ownerID.String {
+	if !ownerID.Valid || user.ID != ownerID.String {
 		return context.Status(fiber.StatusUnauthorized).JSON(
 			api.ResponseError{
 				Error:         "The user can't update the asked resource",

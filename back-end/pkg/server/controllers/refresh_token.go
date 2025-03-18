@@ -7,18 +7,12 @@ import (
 )
 
 func RefreshToken(context *fiber.Ctx) error {
-	//? Retrieving user email from the JWT
-	tokenString := string(context.Request().Header.Peek("Authorization"))
-	tokenString = tokenString[len("Bearer "):]
-
-	claims, errClaims := auth.GetClaimsFromToken(tokenString)
-	if errClaims != nil {
-		return serverError(context, errClaims, "refresh token")
+	user, errToken := getUserFromToken(context)
+	if errToken != nil {
+		return serverError(context, errToken, "refresh token")
 	}
 
-	userID, _ := claims[auth.UserID].(string)
-
-	token, errCreate := auth.CreateToken(userID, auth.AccessToken)
+	token, errCreate := auth.CreateToken(*user, auth.AccessToken)
 	if errCreate != nil {
 		return serverError(context, errCreate, "refresh token")
 	}

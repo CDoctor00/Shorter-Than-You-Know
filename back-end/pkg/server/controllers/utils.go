@@ -1,9 +1,13 @@
 package controllers
 
 import (
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"regexp"
+	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
+	"styk/pkg/types/database"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,6 +26,51 @@ func serverError(context *fiber.Ctx, err error, action string) error {
 			Error:         err.Error(),
 			FriendlyError: fmt.Sprintf("The system has encountered an error while the %s", action),
 		})
+}
+
+func getUserFromToken(context *fiber.Ctx) (*database.User, error) {
+	//? Retrieving user email from the JWT
+	token := string(context.Request().Header.Peek("Authorization"))
+	if token == "" {
+		return nil, nil
+	}
+	token = token[len("Bearer "):]
+
+	claims, errClaims := auth.GetClaimsFromToken(token)
+	if errClaims != nil {
+		return nil, fmt.Errorf("getUserFromToken: %w", errClaims)
+	}
+
+	jsonClaim, errMarshal := json.Marshal(claims[auth.UserClaimName])
+	if errMarshal != nil {
+		return nil, fmt.Errorf("getUserFromToken: %w", errMarshal)
+	}
+
+	var tokenUser api.TokenUserInfo
+	errUnmarshal := json.Unmarshal(jsonClaim, &tokenUser)
+	if errUnmarshal != nil {
+		return nil, fmt.Errorf("getUserFromToken: %w", errUnmarshal)
+	}
+
+	var user = database.User{
+		ID:    tokenUser.ID,
+		Email: tokenUser.Email,
+	}
+
+	if tokenUser.Name != nil {
+		user.Name = sql.NullString{
+			Valid:  true,
+			String: *tokenUser.Name,
+		}
+	}
+	if tokenUser.Surname != nil {
+		user.Surname = sql.NullString{
+			Valid:  true,
+			String: *tokenUser.Surname,
+		}
+	}
+
+	return &user, nil
 }
 
 /*---------- SHORTEN/UPDATE UTILITY FUNCTIONS ----------*/

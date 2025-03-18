@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"styk/pkg/database"
-	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
 	dbType "styk/pkg/types/database"
 	"time"
@@ -71,18 +70,14 @@ func Shorten(context *fiber.Ctx) error {
 	//? Get the userID from the JWT, if the user is logged, to link the new URL with the owner
 	var userID sql.NullString
 
-	tokenString := string(context.Request().Header.Peek("Authorization"))
-	if len(tokenString) > 0 {
-		tokenString = tokenString[len("Bearer "):]
-		claims, errGetClaim := auth.GetClaimsFromToken(tokenString)
-		if errGetClaim != nil {
-			return serverError(context, errGetClaim, "URL shortening")
-		}
-
-		claim, _ := claims[auth.UserID].(string)
+	user, errToken := getUserFromToken(context)
+	if errToken != nil {
+		return serverError(context, errToken, "URL shortening")
+	}
+	if user != nil {
 		userID = sql.NullString{
 			Valid:  true,
-			String: claim,
+			String: user.ID,
 		}
 	}
 

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"styk/pkg/database"
-	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
 	"time"
 
@@ -10,20 +9,14 @@ import (
 )
 
 func UserHistory(context *fiber.Ctx) error {
-	//? Retrieving user email from the JWT
-	tokenString := string(context.Request().Header.Peek("Authorization"))
-	tokenString = tokenString[len("Bearer "):]
-
-	claims, errClaims := auth.GetClaimsFromToken(tokenString)
-	if errClaims != nil {
-		return serverError(context, errClaims, "get user history")
+	user, errToken := getUserFromToken(context)
+	if errToken != nil {
+		return serverError(context, errToken, "URL shortening")
 	}
-
-	userID, _ := claims[auth.UserID].(string)
 
 	var urlsDTO = database.NewUrlsDTO()
 
-	rows, errGet := urlsDTO.GetUserUrls(userID)
+	rows, errGet := urlsDTO.GetUserUrls(user.ID)
 	if errGet != nil {
 		return serverError(context, errGet, "get user history")
 	}
