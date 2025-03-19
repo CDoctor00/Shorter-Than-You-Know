@@ -96,42 +96,34 @@ func checkEmailSintax(email string) (bool, string) {
 }
 
 func createNewUser(requestBody api.SignUpRequest) (dbType.User, error) {
-	var (
-		password  string
-		errCreate error
-	)
+	var user = dbType.User{
+		Email:        requestBody.Email,
+		ID:           uuid.New().String()[:8],
+		CreationTime: time.Now(),
+	}
+
 	if requestBody.Password == "" {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
 			[]byte(requestBody.Password), bcrypt.DefaultCost)
-		password = string(hash)
-		errCreate = errGenerate
+		if errGenerate != nil {
+			return dbType.User{}, fmt.Errorf("controllers.createNewUser: %w", errGenerate)
+		}
+		user.Password = string(hash)
 	}
 
-	var (
-		name    sql.NullString
-		surname sql.NullString
-	)
-
 	if requestBody.Name != nil {
-		name = sql.NullString{
+		user.Name = sql.NullString{
 			Valid:  true,
 			String: *requestBody.Name,
 		}
 	}
 
 	if requestBody.Surname != nil {
-		surname = sql.NullString{
+		user.Surname = sql.NullString{
 			Valid:  true,
 			String: *requestBody.Surname,
 		}
 	}
 
-	return dbType.User{
-		ID:           uuid.New().String()[:8],
-		Email:        requestBody.Email,
-		Name:         name,
-		Surname:      surname,
-		Password:     password,
-		CreationTime: time.Now(),
-	}, errCreate
+	return user, nil
 }

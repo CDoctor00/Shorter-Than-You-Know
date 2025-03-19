@@ -69,18 +69,19 @@ func UpdateURL(context *fiber.Ctx) error {
 	if !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
-				Error:         "Unacceptable Custom URL",
+				Error:         "Unacceptable Prefix",
 				FriendlyError: errCheck,
 			})
 	}
 
-	//? Verify if the 'note' field respects the max limit
-	if requestBody.Note != nil {
+	//? Verify if the 'note' field respects the max and min limits
+	check, errCheck = checkNote(requestBody.Note)
+	if !check {
 		if len(*requestBody.Note) > noteMaxLength {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
 				api.ResponseError{
 					Error:         "Unacceptable Note",
-					FriendlyError: "The system does not accept a note longer than 500 characters",
+					FriendlyError: errCheck,
 				})
 		}
 	}
@@ -137,7 +138,7 @@ func createUrl(requestBody api.UrlRequest) (dbType.URL, error) {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
 			[]byte(*requestBody.Password), bcrypt.DefaultCost)
 		if errGenerate != nil {
-			return dbType.URL{}, fmt.Errorf("controllers.createNewURL: %w", errGenerate)
+			return dbType.URL{}, fmt.Errorf("controllers.createUrl: %w", errGenerate)
 		}
 
 		url.Password = sql.NullString{Valid: true, String: string(hash)}

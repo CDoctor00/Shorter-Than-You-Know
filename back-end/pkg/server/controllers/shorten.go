@@ -40,7 +40,17 @@ func Shorten(context *fiber.Ctx) error {
 	if !check {
 		return context.Status(fiber.StatusUnprocessableEntity).JSON(
 			api.ResponseError{
-				Error:         "Unacceptable Custom URL",
+				Error:         "Unacceptable Prefix",
+				FriendlyError: errCheck,
+			})
+	}
+
+	//? Verify if the 'note' field respects the min and max limits
+	check, errCheck = checkNote(requestBody.Note)
+	if !check {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(
+			api.ResponseError{
+				Error:         "Unacceptable Note",
 				FriendlyError: errCheck,
 			})
 	}
@@ -54,17 +64,6 @@ func Shorten(context *fiber.Ctx) error {
 				api.ResponseError{
 					Error:         "Wrong expiration time",
 					FriendlyError: "The system accepts only date expressed in the RFC3339 format (e.g. 2006-01-02T15:04:05Z or 2006-01-02T15:04:05-07:00)",
-				})
-		}
-	}
-
-	//? Verify if the 'note' field respects the max limit
-	if requestBody.Note != nil {
-		if len(*requestBody.Note) > noteMaxLength {
-			return context.Status(fiber.StatusUnprocessableEntity).JSON(
-				api.ResponseError{
-					Error:         "Unacceptable Note",
-					FriendlyError: "The system does not accept a note longer than 500 characters",
 				})
 		}
 	}
@@ -148,7 +147,6 @@ func createNewURL(requestBody api.UrlRequest, userID sql.NullString) (dbType.URL
 			Valid:  true,
 			String: *requestBody.Note,
 		}
-
 	}
 
 	var actualTime = time.Now()

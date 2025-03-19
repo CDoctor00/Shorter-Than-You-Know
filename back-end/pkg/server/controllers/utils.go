@@ -102,7 +102,7 @@ func checkURL(url string) (bool, string) {
 This function check the correctness of the given Prefix.
 
 It returns false only if the Prefix contains special characters or
-respect length rules.
+doesn't respect length rules.
 In addition, it returns a string that explains the problem.
 */
 func checkPrefix(prefix *string) (bool, string) {
@@ -110,13 +110,38 @@ func checkPrefix(prefix *string) (bool, string) {
 		return true, ""
 	}
 
+	if *prefix == "" {
+		return false, "The system does not accept an empty string as prefix"
+	}
+
 	if len(*prefix) > prefixMaxLength {
 		return false, fmt.Sprintf(
-			"The system does not accept an prefix longer than %d characters", prefixMaxLength)
+			"The system does not accept a prefix longer than %d characters", prefixMaxLength)
 	}
 
 	const expression = `[\W]` //Only alphanumeric characters
 	regex, _ := regexp.Compile(expression)
 
 	return !regex.MatchString(*prefix), "The system does not accept a prefix with special characters"
+}
+
+/*
+This function check the correctness of the given Note.
+
+It returns false only if the Note doesn't respect length rules.
+In addition, it returns a string that explains the problem.
+*/
+func checkNote(note *string) (bool, string) {
+	if note != nil {
+		if *note == "" {
+			return false, "The system does not accept an empty string as note"
+		}
+
+		if len(*note) > noteMaxLength {
+			return false, fmt.Sprintf(
+				"The system does not accept a prefix longer than %d characters", prefixMaxLength)
+		}
+	}
+
+	return true, ""
 }
