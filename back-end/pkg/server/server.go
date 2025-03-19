@@ -35,5 +35,6 @@ func setupRoutes(server *fiber.App) {
 	authGroup.Get("/userHistory", controllers.UserHistory)
 	authGroup.Put("/deleteUser", controllers.DeleteUser)
 	authGroup.Put("/deleteUrl", controllers.DeleteURL)
+	authGroup.Put("/updateUser", controllers.UpdateUser)
 	authGroup.Put("/updateUrl", controllers.UpdateURL)
 }

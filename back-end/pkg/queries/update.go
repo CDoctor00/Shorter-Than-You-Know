@@ -29,3 +29,22 @@ func (dto DTO) UpdateUrl(url database.URL) error {
 
 	return nil
 }
+
+func (dto DTO) UpdateUser(user database.User) error {
+	var query = fmt.Sprintf(`UPDATE %s.%s 
+	SET password = $1, name = $2, surname = $3 
+	WHERE id = $4;`,
+		dto.Table.Schema, dto.Table.Name)
+
+	_, errExec := dto.DB.Exec(
+		query,
+		user.Password,
+		user.Name,
+		user.Surname,
+		user.ID)
+	if errExec != nil {
+		return fmt.Errorf("queries.UpdateUser: %w", errExec)
+	}
+
+	return nil
+}

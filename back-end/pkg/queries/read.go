@@ -78,6 +78,32 @@ func (dto DTO) GetUserFromEmail(email string) (database.User, error) {
 
 /*
 This function does a SELECT query on the database of the specific table,
+to get the all user informations of the given identification key.
+*/
+func (dto DTO) GetUserFromID(id string) (database.User, error) {
+	var user database.User
+
+	var query = fmt.Sprintf("SELECT id, email, password, name, surname, created_at FROM %s.%s WHERE id = $1",
+		dto.Table.Schema, dto.Table.Name)
+
+	result := dto.DB.QueryRow(query, id)
+	errQuery := result.Scan(
+		&user.ID,
+		&user.Email,
+		&user.Password,
+		&user.Name,
+		&user.Surname,
+		&user.CreationTime,
+	)
+	if errQuery != nil {
+		return user, fmt.Errorf("queries.GetUserFromID: %w", errQuery)
+	}
+
+	return user, nil
+}
+
+/*
+This function does a SELECT query on the database of the specific table,
 to get the url OwnerID based on the uuid given parameter and returns it.
 */
 func (dto DTO) GetUrlOwnerID(uuid uuid.UUID) (sql.NullString, error) {
