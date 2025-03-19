@@ -7,7 +7,7 @@ type SignUpRequest struct {
 	Surname  *string `json:"surname,omitempty"`
 }
 
-type UserRequest struct {
+type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -17,4 +17,8 @@ type UpdateUserRequest struct {
 	NewPassword *string `json:"newPassword,omitempty"`
 	Name        *string `json:"name,omitempty"`
 	Surname     *string `json:"surname,omitempty"`
+}
+
+type DeleteUserRequest struct {
+	Password string `json:"Password"`
 }

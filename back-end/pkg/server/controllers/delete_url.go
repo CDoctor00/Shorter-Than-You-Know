@@ -12,7 +12,7 @@ import (
 )
 
 func DeleteURL(context *fiber.Ctx) error {
-	var requestBody = api.DeleteRequest{}
+	var requestBody = api.DeleteUrlRequest{}
 
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {

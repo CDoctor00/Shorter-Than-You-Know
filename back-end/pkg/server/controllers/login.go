@@ -13,7 +13,7 @@ import (
 )
 
 func Login(context *fiber.Ctx) error {
-	var requestBody = api.UserRequest{}
+	var requestBody = api.LoginRequest{}
 
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {

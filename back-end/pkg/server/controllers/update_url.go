@@ -77,7 +77,7 @@ func UpdateURL(context *fiber.Ctx) error {
 	}
 
 	return context.Status(fiber.StatusCreated).JSON(
-		api.UpdateResponse{
+		api.UpdateUrlResponse{
 			LongUrl:    requestBody.URL,
 			ShortID:    url.ShortID,
 			UpdateTime: url.UpdateTime.Format(time.RFC3339),

@@ -22,12 +22,12 @@ type RedirectRequest struct {
 	Password string `json:"Password"`
 }
 
-type DeleteRequest struct {
+type DeleteUrlRequest struct {
 	UUID     uuid.UUID `json:"UUID"`
 	Password string    `json:"Password"`
 }
 
-type UpdateResponse struct {
+type UpdateUrlResponse struct {
 	LongUrl    string `json:"longUrl"`
 	ShortID    string `json:"shortID"`
 	UpdateTime string `json:"updateTime"`

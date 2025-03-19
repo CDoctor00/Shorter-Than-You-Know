@@ -12,7 +12,7 @@ import (
 )
 
 func DeleteUser(context *fiber.Ctx) error {
-	var requestBody = api.UserRequest{}
+	var requestBody = api.DeleteUserRequest{}
 
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
@@ -23,16 +23,21 @@ func DeleteUser(context *fiber.Ctx) error {
 			})
 	}
 
+	user, errToken := getUserFromToken(context)
+	if errToken != nil {
+		return serverError(context, errToken, "delete user")
+	}
+
 	var usersDTO = database.NewUsersDTO()
 
-	//? Get user's infos from the given email
-	user, errGet := usersDTO.GetUserFromEmail(requestBody.Email)
+	//? Get user's infos from the token user ID
+	userInfo, errGet := usersDTO.GetUserFromID(user.ID)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
-			return context.Status(fiber.StatusUnauthorized).JSON(
+			return context.Status(fiber.StatusNotFound).JSON(
 				api.ResponseError{
 					Error:         errGet.Error(),
-					FriendlyError: "The email or password provided is incorrect",
+					FriendlyError: "The system did not found the specified resource asked",
 				})
 		}
 
@@ -40,7 +45,7 @@ func DeleteUser(context *fiber.Ctx) error {
 	}
 
 	//? Check if the given password corresponds with the stored one
-	errCompare := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestBody.Password))
+	errCompare := bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(requestBody.Password))
 	if errCompare != nil {
 		if errors.Is(errCompare, bcrypt.ErrMismatchedHashAndPassword) {
 			return context.Status(fiber.StatusUnauthorized).JSON(
