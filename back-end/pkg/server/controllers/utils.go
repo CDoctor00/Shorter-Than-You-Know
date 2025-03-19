@@ -8,14 +8,19 @@ import (
 	"styk/pkg/server/auth"
 	"styk/pkg/types/api"
 	"styk/pkg/types/database"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
 	prefixMaxLength = 10
 	urlMaxLength    = 2100
 	noteMaxLength   = 500
+	ShortenAction   = "shorten"
+	UpdateAction    = "update"
 )
 
 /*---------- GENERIC UTILITY FUNCTIONS ----------*/
@@ -74,6 +79,59 @@ func getUserFromToken(context *fiber.Ctx) (*database.User, error) {
 }
 
 /*---------- SHORTEN/UPDATE UTILITY FUNCTIONS ----------*/
+
+/*
+This function check the correctness of the given request body
+(url, prefix, note and exp).
+
+It returns a *api.ResponseError nil if the functions hasn't
+encountered an error during the checking, otherwise is populated
+with the specific error.
+*/
+func checkRequestBody(requestBody api.UrlRequest) *api.ResponseError {
+	//? Verify the correctness of the given URL
+	check, errCheck := checkURL(requestBody.URL)
+	if !check {
+		return &api.ResponseError{
+			Error:         "Unacceptable URL",
+			FriendlyError: errCheck,
+		}
+	}
+
+	//? Verify the correctness of the given 'prefix' field
+	check, errCheck = checkPrefix(requestBody.Prefix)
+	if !check {
+		return &api.ResponseError{
+			Error:         "Unacceptable Prefix",
+			FriendlyError: errCheck,
+		}
+	}
+
+	//? Verify if the 'note' field respects the max and min limits
+	check, errCheck = checkNote(requestBody.Note)
+	if !check {
+		if len(*requestBody.Note) > noteMaxLength {
+			return &api.ResponseError{
+				Error:         "Unacceptable Note",
+				FriendlyError: errCheck,
+			}
+		}
+	}
+
+	//? Verify the validity of the given expirationTimes
+	if requestBody.Exp != nil {
+		date, errParse := time.Parse(time.RFC3339, *requestBody.Exp)
+
+		if errParse != nil || time.Now().After(date) {
+			return &api.ResponseError{
+				Error:         "Wrong expiration time",
+				FriendlyError: "The system accepts only date expressed in the RFC3339 format (e.g. 2006-01-02T15:04:05Z or 2006-01-02T15:04:05-07:00)",
+			}
+		}
+	}
+
+	return nil
+}
 
 /*
 This function check the correctness of the given URL.
@@ -139,9 +197,76 @@ func checkNote(note *string) (bool, string) {
 
 		if len(*note) > noteMaxLength {
 			return false, fmt.Sprintf(
-				"The system does not accept a prefix longer than %d characters", prefixMaxLength)
+				"The system does not accept a prefix longer than %d characters", noteMaxLength)
 		}
 	}
 
 	return true, ""
+}
+
+/*
+This function create a new database.URL variable based on given parameters.
+
+If action is equal to `ShortenAction` the fuction creates an URL
+from scratch, otherwise if action is equal to `UpdateAction` it
+reacreates the URL with the same UUID and InsertTime.
+*/
+func createNewURL(requestBody api.UrlRequest, userID sql.NullString, action string) (database.URL, error) {
+	var (
+		actualTime = time.Now()
+		url        = database.URL{
+			LongUrl:    requestBody.URL,
+			OwnerID:    userID,
+			UpdateTime: actualTime,
+			Enabled:    true,
+		}
+	)
+
+	switch action {
+	case ShortenAction:
+		url.UUID = uuid.New()
+		url.InsertTime = actualTime
+	case UpdateAction:
+		url.UUID = *requestBody.UUID
+	}
+	url.ShortID = url.UUID.String()[:8]
+
+	if requestBody.IsEnabled != nil {
+		url.Enabled = *requestBody.IsEnabled
+	}
+
+	if requestBody.Password != nil {
+		hash, errGenerate := bcrypt.GenerateFromPassword(
+			[]byte(*requestBody.Password), bcrypt.DefaultCost)
+		if errGenerate != nil {
+			return database.URL{}, fmt.Errorf("controllers.createNewURL: %w", errGenerate)
+		}
+
+		url.Password = sql.NullString{Valid: true, String: string(hash)}
+	}
+
+	if requestBody.Prefix != nil {
+		url.ShortID = fmt.Sprintf("%s-%s", *requestBody.Prefix, url.ShortID)
+		url.Prefix = sql.NullString{
+			Valid:  true,
+			String: *requestBody.Prefix,
+		}
+	}
+
+	if requestBody.Exp != nil {
+		date, _ := time.Parse(time.RFC3339, *requestBody.Exp)
+		url.ExpirationTime = sql.NullTime{
+			Valid: true,
+			Time:  date,
+		}
+	}
+
+	if requestBody.Note != nil {
+		url.Note = sql.NullString{
+			Valid:  true,
+			String: *requestBody.Note,
+		}
+	}
+
+	return url, nil
 }

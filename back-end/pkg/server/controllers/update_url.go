@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"styk/pkg/database"
 	"styk/pkg/types/api"
-	dbType "styk/pkg/types/database"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -54,52 +53,12 @@ func UpdateURL(context *fiber.Ctx) error {
 			})
 	}
 
-	//? Verify the correctness of the given URL
-	check, errCheck := checkURL(requestBody.URL)
-	if !check {
-		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			api.ResponseError{
-				Error:         "Unacceptable URL",
-				FriendlyError: errCheck,
-			})
+	errCheckBody := checkRequestBody(requestBody)
+	if errCheckBody != nil {
+		return context.Status(fiber.StatusUnauthorized).JSON(*errCheckBody)
 	}
 
-	//? Verify the correctness of the given 'prefix' field
-	check, errCheck = checkPrefix(requestBody.Prefix)
-	if !check {
-		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			api.ResponseError{
-				Error:         "Unacceptable Prefix",
-				FriendlyError: errCheck,
-			})
-	}
-
-	//? Verify if the 'note' field respects the max and min limits
-	check, errCheck = checkNote(requestBody.Note)
-	if !check {
-		if len(*requestBody.Note) > noteMaxLength {
-			return context.Status(fiber.StatusUnprocessableEntity).JSON(
-				api.ResponseError{
-					Error:         "Unacceptable Note",
-					FriendlyError: errCheck,
-				})
-		}
-	}
-
-	//? Verify the validity of the given expirationTimes
-	if requestBody.Exp != nil {
-		date, errParse := time.Parse(time.RFC3339, *requestBody.Exp)
-
-		if errParse != nil || time.Now().After(date) {
-			return context.Status(fiber.StatusUnprocessableEntity).JSON(
-				api.ResponseError{
-					Error:         "Wrong expiration time",
-					FriendlyError: "The system accepts only date expressed in the RFC3339 format (e.g. 2006-01-02T15:04:05Z or 2006-01-02T15:04:05-07:00)",
-				})
-		}
-	}
-
-	var url, errCreate = createUrl(requestBody)
+	var url, errCreate = createNewURL(requestBody, ownerID, UpdateAction)
 	if errCreate != nil {
 		if errors.Is(errors.Unwrap(errCreate), bcrypt.ErrPasswordTooLong) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -123,49 +82,4 @@ func UpdateURL(context *fiber.Ctx) error {
 			ShortID:    url.ShortID,
 			UpdateTime: url.UpdateTime.Format(time.RFC3339),
 		})
-}
-
-func createUrl(requestBody api.UrlRequest) (dbType.URL, error) {
-	var url = dbType.URL{
-		UUID:       *requestBody.UUID,
-		LongUrl:    requestBody.URL,
-		ShortID:    requestBody.UUID.String()[:8],
-		UpdateTime: time.Now(),
-		Enabled:    *requestBody.IsEnabled,
-	}
-
-	if requestBody.Password != nil {
-		hash, errGenerate := bcrypt.GenerateFromPassword(
-			[]byte(*requestBody.Password), bcrypt.DefaultCost)
-		if errGenerate != nil {
-			return dbType.URL{}, fmt.Errorf("controllers.createUrl: %w", errGenerate)
-		}
-
-		url.Password = sql.NullString{Valid: true, String: string(hash)}
-	}
-
-	if requestBody.Prefix != nil {
-		url.ShortID = fmt.Sprintf("%s-%s", *requestBody.Prefix, url.ShortID)
-		url.Prefix = sql.NullString{
-			Valid:  true,
-			String: *requestBody.Prefix,
-		}
-	}
-
-	if requestBody.Exp != nil {
-		date, _ := time.Parse(time.RFC3339, *requestBody.Exp)
-		url.ExpirationTime = sql.NullTime{
-			Valid: true,
-			Time:  date,
-		}
-	}
-
-	if requestBody.Note != nil {
-		url.Note = sql.NullString{
-			Valid:  true,
-			String: *requestBody.Note,
-		}
-	}
-
-	return url, nil
 }
