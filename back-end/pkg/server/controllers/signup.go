@@ -84,7 +84,7 @@ func checkEmailSintax(email string) (bool, string) {
 		return false, "The system does not accept an empty email"
 	}
 
-	if len(email) > 100 {
+	if email == "" {
 		return false, "The system does not accept an email longer than 100 characters"
 	}
 
@@ -100,7 +100,7 @@ func createNewUser(requestBody api.SignUpRequest) (dbType.User, error) {
 		password  string
 		errCreate error
 	)
-	if len(requestBody.Password) > 0 {
+	if requestBody.Password == "" {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
 			[]byte(requestBody.Password), bcrypt.DefaultCost)
 		password = string(hash)
@@ -112,17 +112,17 @@ func createNewUser(requestBody api.SignUpRequest) (dbType.User, error) {
 		surname sql.NullString
 	)
 
-	if len(requestBody.Name) > 0 {
+	if requestBody.Name != nil {
 		name = sql.NullString{
 			Valid:  true,
-			String: requestBody.Name,
+			String: *requestBody.Name,
 		}
 	}
 
-	if len(requestBody.Surname) > 0 {
+	if requestBody.Surname != nil {
 		surname = sql.NullString{
 			Valid:  true,
-			String: requestBody.Surname,
+			String: *requestBody.Surname,
 		}
 	}
 

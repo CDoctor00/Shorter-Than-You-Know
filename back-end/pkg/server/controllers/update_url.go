@@ -14,7 +14,7 @@ import (
 )
 
 func UpdateURL(context *fiber.Ctx) error {
-	var requestBody api.UpdateRequest
+	var requestBody api.UrlRequest
 
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
@@ -27,7 +27,7 @@ func UpdateURL(context *fiber.Ctx) error {
 
 	var urlsDTO = database.NewUrlsDTO()
 
-	ownerID, errGet := urlsDTO.GetUrlOwnerID(requestBody.UUID)
+	ownerID, errGet := urlsDTO.GetUrlOwnerID(*requestBody.UUID)
 	if errGet != nil {
 		if errors.Is(errors.Unwrap(errGet), sql.ErrNoRows) {
 			return context.Status(fiber.StatusNotFound).JSON(
@@ -74,9 +74,20 @@ func UpdateURL(context *fiber.Ctx) error {
 			})
 	}
 
+	//? Verify if the 'note' field respects the max limit
+	if requestBody.Note != nil {
+		if len(*requestBody.Note) > noteMaxLength {
+			return context.Status(fiber.StatusUnprocessableEntity).JSON(
+				api.ResponseError{
+					Error:         "Unacceptable Note",
+					FriendlyError: "The system does not accept a note longer than 500 characters",
+				})
+		}
+	}
+
 	//? Verify the validity of the given expirationTimes
-	if len(requestBody.Exp) > 0 {
-		date, errParse := time.Parse(time.RFC3339, requestBody.Exp)
+	if requestBody.Exp != nil {
+		date, errParse := time.Parse(time.RFC3339, *requestBody.Exp)
 
 		if errParse != nil || time.Now().After(date) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -85,15 +96,6 @@ func UpdateURL(context *fiber.Ctx) error {
 					FriendlyError: "The system accepts only date expressed in the RFC3339 format (e.g. 2006-01-02T15:04:05Z or 2006-01-02T15:04:05-07:00)",
 				})
 		}
-	}
-
-	//? Verify if the 'note' field respects the max limit
-	if len(requestBody.Note) > noteMaxLength {
-		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			api.ResponseError{
-				Error:         "Unacceptable Note",
-				FriendlyError: "The system does not accept a note longer than 500 characters",
-			})
 	}
 
 	var url, errCreate = createUrl(requestBody)
@@ -122,18 +124,18 @@ func UpdateURL(context *fiber.Ctx) error {
 		})
 }
 
-func createUrl(requestBody api.UpdateRequest) (dbType.URL, error) {
+func createUrl(requestBody api.UrlRequest) (dbType.URL, error) {
 	var url = dbType.URL{
-		UUID:       requestBody.UUID,
+		UUID:       *requestBody.UUID,
 		LongUrl:    requestBody.URL,
 		ShortID:    requestBody.UUID.String()[:8],
 		UpdateTime: time.Now(),
-		Enabled:    true,
+		Enabled:    *requestBody.IsEnabled,
 	}
 
-	if len(requestBody.Password) > 0 {
+	if requestBody.Password != nil {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
-			[]byte(requestBody.Password), bcrypt.DefaultCost)
+			[]byte(*requestBody.Password), bcrypt.DefaultCost)
 		if errGenerate != nil {
 			return dbType.URL{}, fmt.Errorf("controllers.createNewURL: %w", errGenerate)
 		}
@@ -141,29 +143,27 @@ func createUrl(requestBody api.UpdateRequest) (dbType.URL, error) {
 		url.Password = sql.NullString{Valid: true, String: string(hash)}
 	}
 
-	if len(requestBody.Prefix) > 0 {
-		url.ShortID = fmt.Sprintf("%s-%s", requestBody.Prefix, url.ShortID)
+	if requestBody.Prefix != nil {
+		url.ShortID = fmt.Sprintf("%s-%s", *requestBody.Prefix, url.ShortID)
 		url.Prefix = sql.NullString{
 			Valid:  true,
-			String: requestBody.Prefix,
+			String: *requestBody.Prefix,
 		}
 	}
 
-	if len(requestBody.Exp) > 0 {
-		date, _ := time.Parse(time.RFC3339, requestBody.Exp)
+	if requestBody.Exp != nil {
+		date, _ := time.Parse(time.RFC3339, *requestBody.Exp)
 		url.ExpirationTime = sql.NullTime{
 			Valid: true,
 			Time:  date,
 		}
 	}
 
-	if requestBody.IsEnabled != nil {
-		url.Enabled = *requestBody.IsEnabled
-	}
-
-	url.Note = sql.NullString{
-		Valid:  len(requestBody.Note) > 0,
-		String: requestBody.Note,
+	if requestBody.Note != nil {
+		url.Note = sql.NullString{
+			Valid:  true,
+			String: *requestBody.Note,
+		}
 	}
 
 	return url, nil

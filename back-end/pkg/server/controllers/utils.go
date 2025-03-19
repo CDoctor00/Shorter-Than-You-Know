@@ -105,12 +105,12 @@ It returns false only if the Prefix contains special characters or
 respect length rules.
 In addition, it returns a string that explains the problem.
 */
-func checkPrefix(prefix string) (bool, string) {
-	if prefix == "" {
+func checkPrefix(prefix *string) (bool, string) {
+	if prefix == nil {
 		return true, ""
 	}
 
-	if len(prefix) > prefixMaxLength {
+	if len(*prefix) > prefixMaxLength {
 		return false, fmt.Sprintf(
 			"The system does not accept an prefix longer than %d characters", prefixMaxLength)
 	}
@@ -118,5 +118,5 @@ func checkPrefix(prefix string) (bool, string) {
 	const expression = `[\W]` //Only alphanumeric characters
 	regex, _ := regexp.Compile(expression)
 
-	return !regex.MatchString(prefix), "The system does not accept a prefix with special characters"
+	return !regex.MatchString(*prefix), "The system does not accept a prefix with special characters"
 }

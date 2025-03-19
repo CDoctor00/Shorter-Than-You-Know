@@ -15,7 +15,7 @@ import (
 )
 
 func Shorten(context *fiber.Ctx) error {
-	var requestBody = api.ShortenRequest{}
+	var requestBody = api.UrlRequest{}
 	errParser := context.BodyParser(&requestBody)
 	if errParser != nil {
 		return context.Status(fiber.StatusNotAcceptable).JSON(
@@ -46,8 +46,8 @@ func Shorten(context *fiber.Ctx) error {
 	}
 
 	//? Verify the validity of the given expirationTimes
-	if len(requestBody.Exp) > 0 {
-		date, errParse := time.Parse(time.RFC3339, requestBody.Exp)
+	if requestBody.Exp != nil {
+		date, errParse := time.Parse(time.RFC3339, *requestBody.Exp)
 
 		if errParse != nil || time.Now().After(date) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -59,12 +59,14 @@ func Shorten(context *fiber.Ctx) error {
 	}
 
 	//? Verify if the 'note' field respects the max limit
-	if len(requestBody.Note) > noteMaxLength {
-		return context.Status(fiber.StatusUnprocessableEntity).JSON(
-			api.ResponseError{
-				Error:         "Unacceptable Note",
-				FriendlyError: "The system does not accept a note longer than 500 characters",
-			})
+	if requestBody.Note != nil {
+		if len(*requestBody.Note) > noteMaxLength {
+			return context.Status(fiber.StatusUnprocessableEntity).JSON(
+				api.ResponseError{
+					Error:         "Unacceptable Note",
+					FriendlyError: "The system does not accept a note longer than 500 characters",
+				})
+		}
 	}
 
 	//? Get the userID from the JWT, if the user is logged, to link the new URL with the owner
@@ -107,62 +109,51 @@ func Shorten(context *fiber.Ctx) error {
 		})
 }
 
-func createNewURL(requestBody api.ShortenRequest, userID sql.NullString) (dbType.URL, error) {
-	var (
-		urlUUID  = uuid.New()
-		shortID  = urlUUID.String()[:8]
-		prefix   sql.NullString
-		password sql.NullString
-		note     sql.NullString
-		exp      sql.NullTime
-	)
+func createNewURL(requestBody api.UrlRequest, userID sql.NullString) (dbType.URL, error) {
+	var url = dbType.URL{
+		UUID:    uuid.New(),
+		LongUrl: requestBody.URL,
+		OwnerID: userID,
+	}
+	url.ShortID = url.UUID.String()[:8]
 
-	if len(requestBody.Password) > 0 {
+	if requestBody.Password != nil {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
-			[]byte(requestBody.Password), bcrypt.DefaultCost)
+			[]byte(*requestBody.Password), bcrypt.DefaultCost)
 		if errGenerate != nil {
 			return dbType.URL{}, fmt.Errorf("controllers.createNewURL: %w", errGenerate)
 		}
 
-		password = sql.NullString{Valid: true, String: string(hash)}
+		url.Password = sql.NullString{Valid: true, String: string(hash)}
 	}
 
-	if len(requestBody.Prefix) > 0 {
-		shortID = fmt.Sprintf("%s-%s", requestBody.Prefix, shortID)
-		prefix = sql.NullString{
+	if requestBody.Prefix != nil {
+		url.ShortID = fmt.Sprintf("%s-%s", *requestBody.Prefix, url.ShortID)
+		url.Prefix = sql.NullString{
 			Valid:  true,
-			String: requestBody.Prefix,
+			String: *requestBody.Prefix,
 		}
 	}
 
-	if len(requestBody.Note) > 0 {
-		note = sql.NullString{
-			Valid:  true,
-			String: requestBody.Note,
-		}
-	}
-
-	if len(requestBody.Exp) > 0 {
-		date, _ := time.Parse(time.RFC3339, requestBody.Exp)
-		exp = sql.NullTime{
+	if requestBody.Exp != nil {
+		date, _ := time.Parse(time.RFC3339, *requestBody.Exp)
+		url.ExpirationTime = sql.NullTime{
 			Valid: true,
 			Time:  date,
 		}
 	}
 
-	var actualTime = time.Now()
+	if requestBody.Note != nil {
+		url.Note = sql.NullString{
+			Valid:  true,
+			String: *requestBody.Note,
+		}
 
-	return dbType.URL{
-		UUID:           urlUUID,
-		LongUrl:        requestBody.URL,
-		ShortID:        shortID,
-		Prefix:         prefix,
-		Password:       password,
-		OwnerID:        userID,
-		Enabled:        true,
-		InsertTime:     actualTime,
-		UpdateTime:     actualTime,
-		ExpirationTime: exp,
-		Note:           note,
-	}, nil
+	}
+
+	var actualTime = time.Now()
+	url.InsertTime = actualTime
+	url.UpdateTime = actualTime
+
+	return url, nil
 }

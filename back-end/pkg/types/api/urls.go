@@ -2,12 +2,14 @@ package api
 
 import "github.com/google/uuid"
 
-type ShortenRequest struct {
-	URL      string `json:"URL"`            //a correct url like: 'https://www.google.com' or 'www.google.com'
-	Prefix   string `json:"Prefix"`         //a string representing the new shorten URL: 'short'
-	Exp      string `json:"ExpirationTime"` //expiration time in RFC3339 format like: 2006-01-02T15:04:05Z or 2006-01-02T15:04:05-07:00
-	Note     string `json:"Note"`           //a text field to explain the purpose of the link
-	Password string `json:"Password"`       //a text field (max 72 chars) that limits the access to the link
+type UrlRequest struct {
+	URL       string     `json:"URL"`                      //a correct url like: 'https://www.google.com' or 'www.google.com'
+	IsEnabled *bool      `json:"IsEnabled,omitempty"`      //a boolean to know if enable or not a url
+	UUID      *uuid.UUID `json:"UUID,omitempty"`           //an uuid to identify the shorten URL (used for update)
+	Prefix    *string    `json:"Prefix,omitempty"`         //a string representing the new shorten URL: 'short'
+	Exp       *string    `json:"ExpirationTime,omitempty"` //expiration time in RFC3339 format like: 2006-01-02T15:04:05Z or 2006-01-02T15:04:05-07:00
+	Note      *string    `json:"Note,omitempty"`           //a text field to explain the purpose of the link
+	Password  *string    `json:"Password,omitempty"`       //a text field (max 72 chars) that limits the access to the link
 }
 
 type ShortenResponse struct {
@@ -23,16 +25,6 @@ type RedirectRequest struct {
 type DeleteRequest struct {
 	UUID     uuid.UUID `json:"UUID"`
 	Password string    `json:"Password"`
-}
-
-type UpdateRequest struct {
-	UUID      uuid.UUID `json:"UUID"`
-	URL       string    `json:"URL"`
-	Prefix    string    `json:"Prefix"`
-	IsEnabled *bool     `json:"IsEnabled"`
-	Exp       string    `json:"ExpirationTime"`
-	Password  string    `json:"Password"`
-	Note      string    `json:"Note"`
 }
 
 type UpdateResponse struct {
