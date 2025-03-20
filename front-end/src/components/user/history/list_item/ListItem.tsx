@@ -2,11 +2,12 @@ import { FaCopy, FaInfo } from "react-icons/fa";
 import { MdOutlineBlock, MdOutlineCheckCircle } from "react-icons/md";
 import { useContext } from "react";
 import { ModalContext } from "../../../../contexts/modal/Context";
-import { url, UrlContext } from "../../../../contexts/url/Context";
+import { UrlContext } from "../../../../contexts/url/Context";
 import UrlContainer from "../../../url/container/Container";
+import { Url } from "../../../../types/contexts";
 import "./ListItem.css";
 
-function ListItem({ url }: { url: url }) {
+function ListItem({ url }: { url: Url }) {
   const { toggleModal, setChildren } = useContext(ModalContext);
   const { setUrl } = useContext(UrlContext);
 

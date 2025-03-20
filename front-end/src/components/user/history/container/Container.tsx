@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { z } from "zod";
 import ListItem from "../list_item/ListItem";
-import { url } from "../../../../contexts/url/Context";
 import { HistoryContext } from "../../../../contexts/history/Context";
-import { getStatus, mockToken } from "./utils";
+import { getStatus } from "./utils";
 import { FaSearch } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
+import { getHistory } from "../../../../services/api/auth/history";
+import { getToken } from "../../../../services/api/utils/tokens";
+import { Url } from "../../../../types/contexts";
 import "./Container.css";
 
 function HistoryContainer() {
@@ -14,65 +15,38 @@ function HistoryContainer() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
-  const getHistory = async () => {
-    const response = await fetch(
-      "http://localhost:10000/api/auth/userHistory",
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${mockToken}` },
-      }
-    );
-
-    const responseData = await response.json();
-    if (!response.ok) {
-      console.error(response);
-    }
-
-    const singleSchema = z.object({
-      longUrl: z.string({ message: "longUrl error" }),
-      shortID: z.string({ message: "shortID error" }),
-      uuid: z.string({ message: "uuid error" }),
-      isEnabled: z.boolean({ message: "status error" }),
-      createTime: z.string({ message: "createdTime error" }),
-      updateTime: z.string({ message: "lastUpdateTime error" }),
-      prefix: z.string({ message: "prefix error" }).optional(),
-      expirationTime: z.string({ message: "expirationTime error" }).optional(),
-      password: z.string({ message: "password error" }).optional(),
-      note: z.string({ message: "note error" }).optional(),
-      clicks: z.number({ message: "clicks error" }).optional(),
-    });
-    const responseSchema = z.array(singleSchema);
-
-    const resultsResponse = responseSchema.safeParse(responseData);
-    if (!resultsResponse.success) {
-      console.error(resultsResponse.error);
+  useEffect(() => {
+    const token = getToken();
+    if (!token) {
       return;
     }
 
-    setHistory(
-      resultsResponse.data.map((item) => {
-        const exp = item.expirationTime
-          ? new Date(item.expirationTime)
-          : undefined;
+    getHistory(token)
+      .then((response) => {
+        setHistory(
+          response.map((item) => {
+            const exp = item.expirationTime
+              ? new Date(item.expirationTime)
+              : undefined;
 
-        const newURL: url = {
-          ...item,
-          shortUrl: `${window.location.origin}/${item.shortID}`,
-          createTime: new Date(item.createTime),
-          updateTime: new Date(item.updateTime),
-          expirationTime: exp,
-          status: getStatus(item.isEnabled, exp),
-        };
+            const newURL: Url = {
+              ...item,
+              shortUrl: `${window.location.origin}/${item.shortID}`,
+              createTime: new Date(item.createTime),
+              updateTime: new Date(item.updateTime),
+              expirationTime: exp,
+              status: getStatus(item.isEnabled, exp),
+            };
 
-        return newURL;
+            return newURL;
+          })
+        );
       })
-    );
-  };
-
-  useEffect(() => {
-    getHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
+  }, [setHistory]);
 
   let timeoutID: number;
   const updateFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +54,7 @@ function HistoryContainer() {
       clearTimeout(timeoutID);
     }
 
-    timeoutID = setTimeout(() => {
+    timeoutID = window.setTimeout(() => {
       setFilter(event.target.value);
       setCurrentPage(1);
     }, 300);
@@ -127,7 +101,7 @@ function HistoryContainer() {
       </div>
 
       <div className="list">
-        {currentItems.map((item: url, id: number) => {
+        {currentItems.map((item: Url, id: number) => {
           return <ListItem url={item} key={id} />;
         })}
       </div>

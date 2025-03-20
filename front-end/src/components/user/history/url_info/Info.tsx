@@ -10,7 +10,7 @@ function UrlInfo() {
   }
 
   return (
-    <div className="rows">
+    <div className="info-rows">
       <div className="row">
         <p className="label">Long URL:</p>
         <p className="value horizontal">{url.longUrl}</p>

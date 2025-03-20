@@ -1,11 +1,11 @@
 import { createContext } from "react";
-import { url } from "../url/Context";
+import { Url } from "../../types/contexts";
 
 interface context {
-  history: url[];
-  setHistory: (history: url[]) => void;
+  history: Url[];
+  setHistory: (history: Url[]) => void;
   removeItem: (uuid: string) => void;
-  updateItem: (item: url) => void;
+  updateItem: (item: Url) => void;
 }
 
 export const HistoryContext = createContext<context>({

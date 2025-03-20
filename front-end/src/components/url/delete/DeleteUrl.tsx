@@ -1,12 +1,13 @@
 import { useContext } from "react";
 import { UrlContext } from "../../../contexts/url/Context";
-import { mockToken } from "../../user/history/container/utils";
 import { ModalContext } from "../../../contexts/modal/Context";
 import { HistoryContext } from "../../../contexts/history/Context";
 import { z } from "zod";
-import "./Delete.css";
+import { deleteUrl } from "../../../services/api/auth/deleteUrl";
+import { getToken } from "../../../services/api/utils/tokens";
+import "./DeleteUrl.css";
 
-const Delete = () => {
+const DeleteUrl = () => {
   const { url } = useContext(UrlContext);
   const { removeItem } = useContext(HistoryContext);
   const { toggleModal, setChildren } = useContext(ModalContext);
@@ -31,27 +32,21 @@ const Delete = () => {
       return;
     }
 
-    const response = await fetch("http://localhost:10000/api/auth/deleteUrl", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${mockToken}`,
-      },
-      body: JSON.stringify({
-        uuid: url.uuid,
-        password: resultsForm.data.password,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error(response);
+    const token = getToken();
+    if (!token) {
       return;
     }
 
-    removeItem(url.uuid!);
-
-    toggleModal();
-    setChildren(<></>);
+    deleteUrl(token, { password: resultsForm.data.password, uuid: url.uuid! })
+      .then(() => {
+        removeItem(url.uuid!);
+        toggleModal();
+        setChildren(<></>);
+      })
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
   };
 
   return (
@@ -64,4 +59,4 @@ const Delete = () => {
   );
 };
 
-export default Delete;
+export default DeleteUrl;

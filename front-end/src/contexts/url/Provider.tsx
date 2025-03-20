@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { url, UrlContext } from "./Context";
+import { UrlContext } from "./Context";
+import { Url } from "../../types/contexts";
 
 interface props {
   children: React.ReactNode;
 }
 
 const UrlContextProvider = (props: props) => {
-  const [url, setURL] = useState<url>();
+  const [url, setURL] = useState<Url>();
   const [isNew, setIsNew] = useState(true);
 
-  const updateStates = (newUrl: url | undefined, isNew: boolean) => {
+  const updateStates = (newUrl: Url | undefined, isNew: boolean) => {
     setURL(newUrl);
     setIsNew(isNew);
   };

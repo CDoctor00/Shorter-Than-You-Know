@@ -1,24 +1,24 @@
 import { useState } from "react";
-import { url } from "../url/Context";
 import { HistoryContext } from "./Context";
+import { Url } from "../../types/contexts";
 
 interface props {
   children: React.ReactNode;
 }
 
 const HistoryContextProvider = (props: props) => {
-  const [history, setHistory] = useState<url[]>([]);
+  const [history, setHistory] = useState<Url[]>([]);
 
   const removeItem = (uuid: string) => {
     setHistory(
-      history.filter((item: url) => {
+      history.filter((item: Url) => {
         return item.uuid !== uuid;
       })
     );
   };
 
-  const updateItem = (newItem: url) => {
-    const newHistory = history.map((item: url) => {
+  const updateItem = (newItem: Url) => {
+    const newHistory = history.map((item: Url) => {
       if (item.uuid === newItem.uuid) {
         return newItem;
       }

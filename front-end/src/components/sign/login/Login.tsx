@@ -1,12 +1,11 @@
 import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
-import "./Login.css";
 import { z } from "zod";
-import { useRef } from "react";
-
-type LoginRequestBody = {
-  email: string;
-  password: string;
-};
+import { useContext, useRef } from "react";
+import { login } from "../../../services/api/base/login";
+import { localStorageManager } from "../../../services/system/localStorage";
+import { UserContext } from "../../../contexts/user/Context";
+import { RequestLoginBody } from "../../../services/api/auth/types";
+import "./Login.css";
 
 function LoginForm({
   isOpen,
@@ -16,6 +15,7 @@ function LoginForm({
   toggleForm: () => void;
 }) {
   const ref = useRef<HTMLFormElement | null>(null);
+  const { loginUser } = useContext(UserContext);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,37 +34,24 @@ function LoginForm({
       return;
     }
 
-    const body: LoginRequestBody = {
+    const body: RequestLoginBody = {
       email: resultsForm.data.email,
       password: resultsForm.data.password,
     };
 
-    const response = await fetch("http://localhost:10000/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    login(body)
+      .then((response) => {
+        localStorageManager.setAccessToken(response.accessToken);
+        localStorageManager.setRefreshToken(response.refreshToken);
 
-    const responseData = await response.json();
-    if (!response.ok) {
-      console.error(response);
-    }
-
-    const responseSchema = z.object({
-      accessToken: z.string({ message: "accessToken error" }).min(1),
-      refreshToken: z.string({ message: "refreshToken error" }).min(1),
-    });
-
-    const resultsResponse = responseSchema.safeParse(responseData);
-    if (!resultsResponse.success) {
-      console.error(resultsResponse.error);
-      return;
-    }
-
-    sessionStorage.setItem("access_token", resultsResponse.data.accessToken);
-    localStorage.setItem("refresh_token", resultsResponse.data.refreshToken);
-
-    ref.current?.reset();
+        loginUser(response.accessToken);
+        ref.current?.reset();
+        //TODO redirect
+      })
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
   };
 
   return (
@@ -79,7 +66,7 @@ function LoginForm({
         Sign In
       </label>
       <form onSubmit={onSubmit} ref={ref}>
-        <div className="input-container">
+        <div className="inputs-container">
           <input type="email" name="email" placeholder="Email" />
           <input type="password" name="password" placeholder="Password" />
         </div>

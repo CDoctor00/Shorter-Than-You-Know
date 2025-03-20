@@ -3,34 +3,49 @@ import { z } from "zod";
 import { FaArrowDown } from "react-icons/fa6";
 import { UrlContext } from "../../../contexts/url/Context";
 import { createExpDate } from "./utils";
-import { getStatus, mockToken } from "../../user/history/container/utils";
+import { getStatus } from "../../user/history/container/utils";
 import { HistoryContext } from "../../../contexts/history/Context";
+import { shorten } from "../../../services/api/base/shorten";
+import { getToken } from "../../../services/api/utils/tokens";
+import { updateUrl } from "../../../services/api/auth/updateUrl";
+import { UserContext } from "../../../contexts/user/Context";
+import { RequestUrlBody } from "../../../services/api/auth/types";
+import { Url } from "../../../types/contexts";
 import "./Form.css";
 
-type ShortenRequestBody = {
-  url: string;
-  prefix: string;
-  expirationTime: string;
-  password: string;
-};
-// TODO add note
-
-type UpdateRequestBody = {
-  uuid: string;
-  url: string;
-  prefix: string;
-  isEnabled: boolean;
-  expirationTime: string;
-  password: string;
-};
-interface props {
-  toggleForm: () => void;
-}
-
-function FormUrl({ toggleForm }: props) {
+function FormUrl({ toggleForm }: { toggleForm: () => void }) {
   const { url, isNew, setUrl } = useContext(UrlContext);
-  const [isOpen, setIsOpen] = useState(!isNew);
   const { updateItem } = useContext(HistoryContext);
+  const { user } = useContext(UserContext);
+  const [isOpen, setIsOpen] = useState(!isNew);
+
+  const formSchema = z.object({
+    url: z.string({ message: "URL error" }),
+    password: z
+      .string({ message: "password error" })
+      .optional()
+      .transform((val) => val || undefined),
+    enable: z
+      .string({ message: "enable error" })
+      .optional()
+      .transform((val) => val || undefined),
+    prefix: z
+      .string({ message: "prefix error" })
+      .optional()
+      .transform((val) => val || undefined),
+    note: z
+      .string({ message: "note error" })
+      .optional()
+      .transform((val) => val || undefined),
+    date: z
+      .string({ message: "date error" })
+      .optional()
+      .transform((val) => val || undefined),
+    time: z
+      .string({ message: "time error" })
+      .optional()
+      .transform((val) => val || undefined),
+  });
 
   const createShortenURL = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,30 +53,17 @@ function FormUrl({ toggleForm }: props) {
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData);
 
-    const formSchema = z.object({
-      url: z
-        .string({ message: "URL error" })
-        .nullish()
-        .transform((s) => s ?? ""),
-      password: z
-        .string({ message: "password error" })
-        .nullish()
-        .transform((s) => s ?? ""),
-      prefix: z
-        .string({ message: "prefix error" })
-        .nullish()
-        .transform((s) => s ?? ""),
-      date: z.string({ message: "date error" }).nullish(),
-      time: z.string({ message: "time error" }).nullish(),
-    });
-
     const resultsForm = formSchema.safeParse(formValues);
     if (!resultsForm.success) {
       console.error(resultsForm.error);
       return;
     }
 
-    const data: ShortenRequestBody = {
+    if (!resultsForm.data.url) {
+      return;
+    }
+
+    const requestBody: RequestUrlBody = {
       url: resultsForm.data.url,
       prefix: resultsForm.data.prefix,
       expirationTime: createExpDate(
@@ -69,38 +71,26 @@ function FormUrl({ toggleForm }: props) {
         resultsForm.data.time
       ),
       password: resultsForm.data.password,
+      isEnabled: resultsForm.data.enable === "on",
+      note: resultsForm.data.note,
     };
-    const response = await fetch("http://localhost:10000/api/shorten", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
 
-    const responseData = await response.json();
-    if (!response.ok) {
-      console.error(response);
-    }
-
-    const responseSchema = z.object({
-      longUrl: z.string({ message: "longUrl error" }),
-      shortID: z.string({ message: "shortID error" }),
-    });
-
-    const resultsResponse = responseSchema.safeParse(responseData);
-    if (!resultsResponse.success) {
-      console.error(resultsResponse.error);
-      return;
-    }
-
-    setUrl(
-      {
-        longUrl: resultsResponse.data.longUrl,
-        shortID: resultsResponse.data.shortID,
-        shortUrl: `${window.location.origin}/${resultsResponse.data.shortID}`,
-      },
-      true
-    );
-    toggleForm();
+    shorten(getToken(), requestBody)
+      .then((response) => {
+        setUrl(
+          {
+            longUrl: response.longUrl,
+            shortID: response.shortID,
+            shortUrl: `${window.location.origin}/${response.shortID}`,
+          },
+          true
+        );
+        toggleForm();
+      })
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
   };
 
   const updateURL = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -113,31 +103,18 @@ function FormUrl({ toggleForm }: props) {
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData);
 
-    const formSchema = z.object({
-      url: z
-        .string({ message: "URL error" })
-        .nullish()
-        .transform((s) => s ?? ""),
-      password: z
-        .string({ message: "password error" })
-        .nullish()
-        .transform((s) => s ?? ""),
-      prefix: z
-        .string({ message: "prefix error" })
-        .nullish()
-        .transform((s) => s ?? ""),
-      enable: z.string({ message: "enable error" }).nullish(),
-      date: z.string({ message: "date error" }).nullish(),
-      time: z.string({ message: "time error" }).nullish(),
-    });
-
     const resultsForm = formSchema.safeParse(formValues);
     if (!resultsForm.success) {
       console.error(resultsForm.error);
       return;
     }
 
-    const requestBody: UpdateRequestBody = {
+    const token = getToken();
+    if (!token || !resultsForm.data.url) {
+      return;
+    }
+
+    const requestBody: RequestUrlBody = {
       url: resultsForm.data.url,
       prefix: resultsForm.data.prefix,
       expirationTime: createExpDate(
@@ -147,51 +124,37 @@ function FormUrl({ toggleForm }: props) {
       password: resultsForm.data.password,
       isEnabled: resultsForm.data.enable === "on",
       uuid: url.uuid!,
+      note: resultsForm.data.note,
     };
-    const response = await fetch("http://localhost:10000/api/auth/updateUrl", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${mockToken}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
 
-    const responseData = await response.json();
-    if (!response.ok) {
-      console.error(response);
-    }
+    updateUrl(token, requestBody)
+      .then((response) => {
+        const exp = requestBody.expirationTime
+          ? new Date(requestBody.expirationTime)
+          : undefined;
 
-    const responseSchema = z.object({
-      longUrl: z.string({ message: "longUrl error" }).nonempty(),
-      shortID: z.string({ message: "shortID error" }).nonempty(),
-      updateTime: z.string({ message: "updateTime error" }).nonempty(),
-    });
+        const newUrl: Url = {
+          longUrl: response.longUrl,
+          shortID: response.shortID,
+          shortUrl: `${window.location.origin}/${response.shortID}`,
+          createTime: url.createTime,
+          uuid: url.uuid,
+          updateTime: new Date(response.updateTime),
+          expirationTime: exp,
+          isEnabled: requestBody.isEnabled,
+          prefix: requestBody.prefix,
+          status: getStatus(requestBody.isEnabled, exp),
+          note: resultsForm.data.note,
+        };
 
-    const resultsResponse = responseSchema.safeParse(responseData);
-    if (!resultsResponse.success) {
-      console.error(resultsResponse.error);
-      return;
-    }
-
-    const newUrl = {
-      longUrl: resultsResponse.data.longUrl,
-      shortID: resultsResponse.data.shortID,
-      shortUrl: `${window.location.origin}/${resultsResponse.data.shortID}`,
-      createTime: url.createTime,
-      uuid: url.uuid,
-      updateTime: new Date(resultsResponse.data.updateTime),
-      expirationTime: new Date(requestBody.expirationTime),
-      isEnabled: requestBody.isEnabled,
-      prefix: requestBody.prefix,
-      status: getStatus(
-        requestBody.isEnabled,
-        new Date(requestBody.expirationTime)
-      ),
-    };
-    setUrl(newUrl, false);
-    updateItem(newUrl);
-    toggleForm();
+        setUrl(newUrl, false);
+        updateItem(newUrl);
+        toggleForm();
+      })
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
   };
 
   return (
@@ -204,76 +167,96 @@ function FormUrl({ toggleForm }: props) {
           name="url"
           placeholder="https://example.com/long-url"
           defaultValue={url?.longUrl}
+          required={true}
         />
-        {isNew && (
-          <button
-            className="advanced-button"
-            onClick={(e) => {
-              e.preventDefault();
-              setIsOpen((previous) => !previous);
-            }}
-          >
-            <span>Advanced</span>
-            <FaArrowDown className={`arrow ${isOpen ? "open" : ""}`} />
-          </button>
-        )}
-        <div className={`advanced ${isOpen ? "" : "close"}`}>
-          <div className="input-container">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Password"
-            />
-          </div>
-          <div className="split-inputs">
-            <div className="input-container" id="prefix-input">
-              <label htmlFor="prefix">Prefix</label>
+        <div>
+          {" "}
+          {isNew && (
+            <button
+              className="advanced-button"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsOpen((previous) => !previous);
+              }}
+            >
+              <span>Advanced</span>
+              <FaArrowDown className={`arrow ${isOpen ? "open" : ""}`} />
+            </button>
+          )}
+          <div className={`advanced ${isOpen ? "" : "close"}`}>
+            <div className="input-container">
+              <label htmlFor="password">Password</label>
               <input
-                type="text"
-                id="prefix"
-                name="prefix"
-                placeholder="Custom prefix of shorten URL"
-                defaultValue={url?.prefix}
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
               />
             </div>
-            <div className="input-container" id="enable-input">
-              <label htmlFor="enable">Enable</label>
-              <input
-                type="checkbox"
-                id="enable"
-                name="enable"
-                defaultChecked={url?.isEnabled}
-              />
+            <div className="split-inputs">
+              <div className="input-container" id="prefix-input">
+                <label htmlFor="prefix">Prefix</label>
+                <input
+                  type="text"
+                  id="prefix"
+                  name="prefix"
+                  placeholder="Custom prefix of shorten URL"
+                  defaultValue={url?.prefix}
+                />
+              </div>
+              <div className="input-container" id="enable-input">
+                <label htmlFor="enable">Enable</label>
+                <input
+                  type="checkbox"
+                  id="enable"
+                  name="enable"
+                  defaultChecked={url ? url.isEnabled : true}
+                />
+              </div>
             </div>
-          </div>
-          <div className="split-inputs timestamp">
-            <div className="input-container" id="date-input">
-              <label htmlFor="date">Date</label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                defaultValue={
-                  url?.expirationTime?.toISOString().split("T", 1)[0]
-                }
-              />
+            <div className="split-inputs timestamp">
+              <div className="input-container" id="date-input">
+                <label htmlFor="date">Expiration Date</label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  defaultValue={
+                    url?.expirationTime?.toISOString().split("T", 1)[0]
+                  }
+                />
+              </div>
+              <div className="input-container" id="time-input">
+                <label htmlFor="time">Time</label>
+                <input
+                  type="time"
+                  id="time"
+                  name="time"
+                  defaultValue={url?.expirationTime
+                    ?.toLocaleTimeString()
+                    .slice(0, -3)}
+                />
+              </div>
             </div>
-            <div className="input-container" id="time-input">
-              <label htmlFor="time">Time</label>
-              <input
-                type="time"
-                id="time"
-                name="time"
-                defaultValue={url?.expirationTime
-                  ?.toLocaleTimeString()
-                  .slice(0, -3)}
-              />
-            </div>
+            {user && (
+              <div className="input-container">
+                <label htmlFor="note">Note</label>
+                <textarea
+                  id="note"
+                  name="note"
+                  placeholder="Some note to remember"
+                  maxLength={500}
+                  defaultValue={url?.note}
+                />
+              </div>
+            )}
           </div>
         </div>
-        <input type="submit" value={isNew ? "Shorten" : "Apply changes"} />
+        <input
+          type="submit"
+          id="submit"
+          value={isNew ? "Shorten" : "Apply changes"}
+        />
       </form>
     </div>
   );

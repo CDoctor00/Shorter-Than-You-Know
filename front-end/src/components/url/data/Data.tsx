@@ -4,7 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { UrlContext } from "../../../contexts/url/Context";
 import { ModalContext } from "../../../contexts/modal/Context";
 import UrlInfo from "../../user/history/url_info/Info";
-import Delete from "../delete/Delete";
+import DeleteUrl from "../delete/DeleteUrl";
 import "./Data.css";
 
 interface props {
@@ -26,7 +26,7 @@ function UrlData({ isOpen, toggleQR, toggleForm }: props) {
   };
 
   const swapModalToDelete = () => {
-    setChildren(<Delete />);
+    setChildren(<DeleteUrl />);
   };
 
   const copyToClipboard = () => {

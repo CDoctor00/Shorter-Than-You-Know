@@ -76,7 +76,7 @@
         width: 100%;
         background: transparent;
         border: 1px solid var(--border-gray);
-        border-radius: 0.4rem;
+        border-radius: 0.5rem;
         color: var(--text);
         text-align: center;
       }

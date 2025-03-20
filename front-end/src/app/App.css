@@ -102,12 +102,6 @@ form > input[type="submit"] {
   }
 }
 
-.input-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 /*---------- CARD ----------*/
 
 .card-container {
@@ -162,5 +156,41 @@ form > input[type="submit"] {
 
   &:hover {
     background: var(--primary);
+  }
+}
+
+/*---------- INFO ----------*/
+
+.info-rows {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    font-size: 0.9rem;
+    padding-bottom: 0.1rem;
+    border-bottom: 1px solid var(--input-bg);
+
+    .label {
+      color: var(--text-gray);
+    }
+
+    .value {
+      &.horizontal {
+        overflow-x: auto;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      &.vertical {
+        overflow-y: scroll;
+        max-height: 4rem;
+        text-overflow: ellipsis;
+      }
+    }
   }
 }

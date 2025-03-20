@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { ThemeContext } from "./Context";
+import { localStorageManager } from "../../services/system/localStorage";
 
 const attributeName = "data-theme";
-const localStorageVariable = "site-theme";
 const lightTheme = "light";
 const darkTheme = "dark";
 
@@ -14,7 +14,7 @@ const ThemeContextProvider = (props: props) => {
   const [theme, setTheme] = useState<undefined | string>();
 
   useEffect(() => {
-    const lsTheme = window.localStorage.getItem(localStorageVariable);
+    const lsTheme = localStorageManager.getTheme();
 
     if (lsTheme === null) {
       // //? Checking the browser theme
@@ -33,7 +33,7 @@ const ThemeContextProvider = (props: props) => {
 
     const htmlTag = document.getElementsByTagName("html")[0];
     htmlTag.setAttribute(attributeName, theme);
-    window.localStorage.setItem(localStorageVariable, theme);
+    localStorageManager.setTheme(theme);
   }, [theme]);
 
   const themeSwitcher = () => {

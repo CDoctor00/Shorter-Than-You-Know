@@ -1,14 +1,8 @@
 import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
-import "./Signup.css";
 import { useRef } from "react";
 import { z } from "zod";
-
-type SignupRequestBody = {
-  email: string;
-  password: string;
-  name?: string;
-  surname?: string;
-};
+import { signup } from "../../../services/api/base/signup";
+import "./Signup.css";
 
 function SignUp({
   isOpen,
@@ -27,10 +21,16 @@ function SignUp({
 
     const formSchema = z.object({
       email: z.string({ message: "Email error" }).email(),
-      password1: z.string({ message: "Password 1 error" }).min(1),
-      password2: z.string({ message: "Password 2 error" }).min(1),
-      name: z.string({ message: "Name error" }).optional(),
-      surname: z.string({ message: "Surname error" }).optional(),
+      password1: z.string({ message: "Password 1 error" }).nonempty(),
+      password2: z.string({ message: "Password 2 error" }).nonempty(),
+      name: z
+        .string({ message: "Name error" })
+        .optional()
+        .transform((val) => val || undefined),
+      surname: z
+        .string({ message: "Surname error" })
+        .optional()
+        .transform((val) => val || undefined),
     });
 
     const resultsForm = formSchema.safeParse(formValues);
@@ -44,25 +44,19 @@ function SignUp({
       return;
     }
 
-    const body: SignupRequestBody = {
+    signup({
       email: resultsForm.data.email,
       password: resultsForm.data.password1,
       name: resultsForm.data.name,
       surname: resultsForm.data.surname,
-    };
-
-    const response = await fetch("http://localhost:10000/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      console.error(response);
-      return;
-    }
-
-    ref.current?.reset();
+    })
+      .then(() => {
+        ref.current?.reset();
+      })
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
   };
 
   return (
@@ -74,7 +68,7 @@ function SignUp({
         Create Account
       </label>
       <form ref={ref} onSubmit={onSubmit}>
-        <div className="input-container">
+        <div className="inputs-container">
           <input type="text" name="name" placeholder="Name" />
           <input type="text" name="surname" placeholder="Surname" />
           <input type="email" name="email" placeholder="Email*" />
