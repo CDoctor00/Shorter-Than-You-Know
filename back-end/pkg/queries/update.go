@@ -5,24 +5,12 @@ import (
 	"styk/pkg/types/database"
 )
 
-func (dto DTO) UpdateUrl(url database.URL) error {
-	var query = fmt.Sprintf(`UPDATE %s.%s 
-	SET long_url = $1, short_id = $2, prefix = $3, 
-	password = $4, enabled = $5, update_time = $6, 
-	expiration_time = $7, note = $8 WHERE uuid = $9;`,
-		dto.Table.Schema, dto.Table.Name)
+func (dto DTO) UpdateUrl(url database.UpdateURL) error {
+	var query, args = generateUpdateQueryAndArgs(dto.Table, url)
+	query = fmt.Sprintf("%s uuid = $%d;", query, len(args)+1)
+	args = append(args, url.UUID)
 
-	_, errExec := dto.DB.Exec(
-		query,
-		url.LongUrl,
-		url.ShortID,
-		url.Prefix,
-		url.Password,
-		url.Enabled,
-		url.UpdateTime,
-		url.ExpirationTime,
-		url.Note,
-		url.UUID)
+	_, errExec := dto.DB.Exec(query, args...)
 	if errExec != nil {
 		return fmt.Errorf("queries.UpdateUrl: %w", errExec)
 	}
@@ -30,18 +18,12 @@ func (dto DTO) UpdateUrl(url database.URL) error {
 	return nil
 }
 
-func (dto DTO) UpdateUser(user database.User) error {
-	var query = fmt.Sprintf(`UPDATE %s.%s 
-	SET password = $1, name = $2, surname = $3 
-	WHERE id = $4;`,
-		dto.Table.Schema, dto.Table.Name)
+func (dto DTO) UpdateUser(user database.UpdateUser) error {
+	var query, args = generateUpdateQueryAndArgs(dto.Table, user)
+	query = fmt.Sprintf("%s id = $%d;", query, len(args)+1)
+	args = append(args, user.ID)
 
-	_, errExec := dto.DB.Exec(
-		query,
-		user.Password,
-		user.Name,
-		user.Surname,
-		user.ID)
+	_, errExec := dto.DB.Exec(query, args...)
 	if errExec != nil {
 		return fmt.Errorf("queries.UpdateUser: %w", errExec)
 	}

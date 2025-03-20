@@ -102,7 +102,7 @@ func createNewUser(requestBody api.SignUpRequest) (dbType.User, error) {
 		CreationTime: time.Now(),
 	}
 
-	if requestBody.Password == "" {
+	if requestBody.Password != "" {
 		hash, errGenerate := bcrypt.GenerateFromPassword(
 			[]byte(requestBody.Password), bcrypt.DefaultCost)
 		if errGenerate != nil {

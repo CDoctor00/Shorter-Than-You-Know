@@ -29,3 +29,23 @@ type User struct {
 	Surname      sql.NullString `db_name:"surname" db_type:"VARCHAR(50)"`
 	CreationTime time.Time      `db_name:"created_at" db_type:"TIMESTAMPTZ NOT NULL"`
 }
+
+type UpdateURL struct {
+	UUID           uuid.UUID       `db_name:"uuid"`
+	ShortID        *string         `db_name:"short_id"`
+	LongUrl        *string         `db_name:"long_url"`
+	Prefix         *sql.NullString `db_name:"prefix"`
+	Password       *sql.NullString `db_name:"password"`
+	Enabled        *bool           `db_name:"enabled"`
+	UpdateTime     *time.Time      `db_name:"update_time"`
+	ExpirationTime *sql.NullTime   `db_name:"expiration_time"`
+	Note           *sql.NullString `db_name:"note"`
+}
+
+type UpdateUser struct {
+	ID           string          `db_name:"id"`
+	Password     *string         `db_name:"password"`
+	Name         *sql.NullString `db_name:"name"`
+	Surname      *sql.NullString `db_name:"surname"`
+	CreationTime time.Time       `db_name:"created_at"`
+}

@@ -11,16 +11,12 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
 	prefixMaxLength = 10
 	urlMaxLength    = 2100
 	noteMaxLength   = 500
-	ShortenAction   = "shorten"
-	UpdateAction    = "update"
 )
 
 /*---------- GENERIC UTILITY FUNCTIONS ----------*/
@@ -168,10 +164,6 @@ func checkPrefix(prefix *string) (bool, string) {
 		return true, ""
 	}
 
-	if *prefix == "" {
-		return false, "The system does not accept an empty string as prefix"
-	}
-
 	if len(*prefix) > prefixMaxLength {
 		return false, fmt.Sprintf(
 			"The system does not accept a prefix longer than %d characters", prefixMaxLength)
@@ -190,83 +182,10 @@ It returns false only if the Note doesn't respect length rules.
 In addition, it returns a string that explains the problem.
 */
 func checkNote(note *string) (bool, string) {
-	if note != nil {
-		if *note == "" {
-			return false, "The system does not accept an empty string as note"
-		}
-
-		if len(*note) > noteMaxLength {
-			return false, fmt.Sprintf(
-				"The system does not accept a prefix longer than %d characters", noteMaxLength)
-		}
+	if note != nil && len(*note) > noteMaxLength {
+		return false, fmt.Sprintf(
+			"The system does not accept a prefix longer than %d characters", noteMaxLength)
 	}
 
 	return true, ""
-}
-
-/*
-This function create a new database.URL variable based on given parameters.
-
-If action is equal to `ShortenAction` the fuction creates an URL
-from scratch, otherwise if action is equal to `UpdateAction` it
-reacreates the URL with the same UUID and InsertTime.
-*/
-func createNewURL(requestBody api.UrlRequest, userID sql.NullString, action string) (database.URL, error) {
-	var (
-		actualTime = time.Now()
-		url        = database.URL{
-			LongUrl:    requestBody.URL,
-			OwnerID:    userID,
-			UpdateTime: actualTime,
-			Enabled:    true,
-		}
-	)
-
-	switch action {
-	case ShortenAction:
-		url.UUID = uuid.New()
-		url.InsertTime = actualTime
-	case UpdateAction:
-		url.UUID = *requestBody.UUID
-	}
-	url.ShortID = url.UUID.String()[:8]
-
-	if requestBody.IsEnabled != nil {
-		url.Enabled = *requestBody.IsEnabled
-	}
-
-	if requestBody.Password != nil {
-		hash, errGenerate := bcrypt.GenerateFromPassword(
-			[]byte(*requestBody.Password), bcrypt.DefaultCost)
-		if errGenerate != nil {
-			return database.URL{}, fmt.Errorf("controllers.createNewURL: %w", errGenerate)
-		}
-
-		url.Password = sql.NullString{Valid: true, String: string(hash)}
-	}
-
-	if requestBody.Prefix != nil {
-		url.ShortID = fmt.Sprintf("%s-%s", *requestBody.Prefix, url.ShortID)
-		url.Prefix = sql.NullString{
-			Valid:  true,
-			String: *requestBody.Prefix,
-		}
-	}
-
-	if requestBody.Exp != nil {
-		date, _ := time.Parse(time.RFC3339, *requestBody.Exp)
-		url.ExpirationTime = sql.NullTime{
-			Valid: true,
-			Time:  date,
-		}
-	}
-
-	if requestBody.Note != nil {
-		url.Note = sql.NullString{
-			Valid:  true,
-			String: *requestBody.Note,
-		}
-	}
-
-	return url, nil
 }

@@ -81,29 +81,37 @@ func UpdateUser(context *fiber.Ctx) error {
 	return context.Status(fiber.StatusOK).SendString("User info updated")
 }
 
-func updateUser(user dbType.User, requestBody api.UpdateUserRequest) (dbType.User, error) {
+func updateUser(user dbType.User, requestBody api.UpdateUserRequest) (dbType.UpdateUser, error) {
+	var newUser = dbType.UpdateUser{
+		ID: user.ID,
+	}
+
 	if requestBody.NewPassword != nil {
+		if *requestBody.NewPassword == "" {
+			return dbType.UpdateUser{}, fmt.Errorf("controllers.updateUser: the system doesn't accept an empty password")
+		}
+
 		hash, errGenerate := bcrypt.GenerateFromPassword(
 			[]byte(*requestBody.NewPassword), bcrypt.DefaultCost)
 		if errGenerate != nil {
-			return dbType.User{}, fmt.Errorf("controllers.updateUser: %w", errGenerate)
+			return dbType.UpdateUser{}, fmt.Errorf("controllers.updateUser: %w", errGenerate)
 		}
 		user.Password = string(hash)
 	}
 
 	if requestBody.Name != nil {
-		user.Name = sql.NullString{
+		newUser.Name = &sql.NullString{
 			Valid:  *requestBody.Name != "",
 			String: *requestBody.Name,
 		}
 	}
 
 	if requestBody.Surname != nil {
-		user.Surname = sql.NullString{
+		newUser.Surname = &sql.NullString{
 			Valid:  *requestBody.Surname != "",
 			String: *requestBody.Surname,
 		}
 	}
 
-	return user, nil
+	return newUser, nil
 }

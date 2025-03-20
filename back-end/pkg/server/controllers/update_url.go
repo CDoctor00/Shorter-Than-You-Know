@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"styk/pkg/database"
 	"styk/pkg/types/api"
+	dbType "styk/pkg/types/database"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -58,7 +59,7 @@ func UpdateURL(context *fiber.Ctx) error {
 		return context.Status(fiber.StatusUnauthorized).JSON(*errCheckBody)
 	}
 
-	var url, errCreate = createNewURL(requestBody, ownerID, UpdateAction)
+	var url, errCreate = updateUrl(requestBody)
 	if errCreate != nil {
 		if errors.Is(errors.Unwrap(errCreate), bcrypt.ErrPasswordTooLong) {
 			return context.Status(fiber.StatusUnprocessableEntity).JSON(
@@ -79,7 +80,63 @@ func UpdateURL(context *fiber.Ctx) error {
 	return context.Status(fiber.StatusCreated).JSON(
 		api.UpdateUrlResponse{
 			LongUrl:    requestBody.URL,
-			ShortID:    url.ShortID,
+			ShortID:    *url.ShortID,
 			UpdateTime: url.UpdateTime.Format(time.RFC3339),
 		})
+}
+
+/*
+This function create a new database.URL variable based on given parameters.
+*/
+func updateUrl(requestBody api.UrlRequest) (dbType.UpdateURL, error) {
+	var (
+		actualTime = time.Now()
+		url        = dbType.UpdateURL{
+			UUID:       *requestBody.UUID,
+			LongUrl:    &requestBody.URL,
+			UpdateTime: &actualTime,
+			Enabled:    requestBody.IsEnabled,
+		}
+		shortID = url.UUID.String()[:8]
+	)
+
+	if requestBody.Password != nil {
+		hash, errGenerate := bcrypt.GenerateFromPassword(
+			[]byte(*requestBody.Password), bcrypt.DefaultCost)
+		if errGenerate != nil {
+			return dbType.UpdateURL{}, fmt.Errorf("controllers.updateUrl: %w", errGenerate)
+		}
+
+		url.Password = &sql.NullString{Valid: *requestBody.Password != "", String: string(hash)}
+	}
+
+	if requestBody.Exp != nil {
+		date, _ := time.Parse(time.RFC3339, *requestBody.Exp)
+		url.ExpirationTime = &sql.NullTime{
+			Valid: *requestBody.Exp != "",
+			Time:  date,
+		}
+	}
+
+	if requestBody.Note != nil {
+		url.Note = &sql.NullString{
+			Valid:  *requestBody.Note != "",
+			String: *requestBody.Note,
+		}
+	}
+
+	if requestBody.Prefix != nil {
+		if *requestBody.Prefix != "" {
+			shortID = fmt.Sprintf("%s-%s", *requestBody.Prefix, shortID)
+		}
+
+		url.Prefix = &sql.NullString{
+			Valid:  *requestBody.Prefix != "",
+			String: *requestBody.Prefix,
+		}
+
+	}
+	url.ShortID = &shortID
+
+	return url, nil
 }

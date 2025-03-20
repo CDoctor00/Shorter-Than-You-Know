@@ -128,3 +128,39 @@ func generateInsertArgs(item interface{}) []interface{} {
 
 	return args
 }
+
+/*
+This function generates the `UPDATE QUERY` (without where clause)
+and args to execute it dynamically using the tags and values of
+the structure and the placeholders in order to a greater
+consistency of the security of the code. If the field value is nil,
+it will no added in the query and args.
+*/
+func generateUpdateQueryAndArgs(table dbType.Table, item interface{}) (string, []interface{}) {
+	var (
+		query        string
+		placeholders string
+		argsIndexes  = []int{}
+		args         = []interface{}{}
+	)
+
+	itemValue := reflect.ValueOf(item)
+	for i := 0; i < itemValue.NumField(); i++ {
+		arg := itemValue.Field(i)
+		if arg.Type().Kind() == reflect.Pointer && !arg.IsNil() {
+			argsIndexes = append(argsIndexes, i)
+			args = append(args, arg.Interface())
+		}
+	}
+
+	itemType := reflect.TypeOf(item)
+	for j, index := range argsIndexes {
+		placeholders = fmt.Sprintf("%s, %s = $%d", placeholders,
+			itemType.Field(index).Tag.Get(dbType.TagCNValue), j+1)
+	}
+
+	query = fmt.Sprintf("UPDATE %s.%s SET %s WHERE",
+		table.Schema, table.Name, placeholders[1:])
+
+	return query, args
+}
