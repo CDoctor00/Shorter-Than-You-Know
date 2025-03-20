@@ -1,13 +1,14 @@
 import { z } from "zod";
 import { MdDelete, MdLogout } from "react-icons/md";
 import { FaPen } from "react-icons/fa6";
+import Delete from "../../../commons/delete/Delete";
 import { useContext, useState } from "react";
 import { HistoryContext } from "../../../../contexts/history/Context";
 import { UserContext } from "../../../../contexts/user/Context";
 import { ModalContext } from "../../../../contexts/modal/Context";
 import { updateUser } from "../../../../services/api/auth/updateUser";
 import { getToken } from "../../../../services/api/utils/tokens";
-import DeleteUser from "../delete/DeleteUser";
+import { deleteUser } from "../../../../services/api/auth/deleteUser";
 import "./Card.css";
 
 function ProfileCard() {
@@ -73,8 +74,43 @@ function ProfileCard() {
       });
   };
 
+  const submitDelete = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const formValues = Object.fromEntries(formData);
+
+    const formSchema = z.object({
+      password: z.string({ message: "password error" }).nonempty(),
+    });
+
+    const resultsForm = formSchema.safeParse(formValues);
+    if (!resultsForm.success) {
+      console.error(resultsForm.error);
+      return;
+    }
+
+    const token = getToken();
+    if (!token) {
+      return;
+    }
+
+    deleteUser(token, { password: resultsForm.data.password })
+      .then(() => {
+        logoutUser();
+        toggleModal();
+        setChildren(<></>);
+      })
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
+  };
+
   const swapModalToDelete = () => {
-    setChildren(<DeleteUser />);
+    setChildren(
+      <Delete submitDelete={submitDelete} title="Delete your profile" />
+    );
   };
 
   const logout = () => {

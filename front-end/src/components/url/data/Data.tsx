@@ -1,10 +1,14 @@
-import { useContext } from "react";
+import { z } from "zod";
 import { FaCopy, FaExternalLinkAlt, FaShare, FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { useContext } from "react";
 import { UrlContext } from "../../../contexts/url/Context";
 import { ModalContext } from "../../../contexts/modal/Context";
 import UrlInfo from "../../user/history/url_info/Info";
-import DeleteUrl from "../delete/DeleteUrl";
+import Delete from "../../commons/delete/Delete";
+import { getToken } from "../../../services/api/utils/tokens";
+import { HistoryContext } from "../../../contexts/history/Context";
+import { deleteUrl } from "../../../services/api/auth/deleteUrl";
 import "./Data.css";
 
 interface props {
@@ -15,7 +19,8 @@ interface props {
 
 function UrlData({ isOpen, toggleQR, toggleForm }: props) {
   const { url, isNew } = useContext(UrlContext);
-  const { setChildren } = useContext(ModalContext);
+  const { toggleModal, setChildren } = useContext(ModalContext);
+  const { removeItem } = useContext(HistoryContext);
 
   if (!url) {
     return null;
@@ -25,8 +30,43 @@ function UrlData({ isOpen, toggleQR, toggleForm }: props) {
     toggleForm();
   };
 
+  const submitDelete = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const formValues = Object.fromEntries(formData);
+
+    const formSchema = z.object({
+      password: z.string({ message: "password error" }).nonempty(),
+    });
+
+    const resultsForm = formSchema.safeParse(formValues);
+    if (!resultsForm.success) {
+      console.error(resultsForm.error);
+      return;
+    }
+
+    const token = getToken();
+    if (!token) {
+      return;
+    }
+
+    deleteUrl(token, { password: resultsForm.data.password, uuid: url.uuid! })
+      .then(() => {
+        removeItem(url.uuid!);
+        toggleModal();
+        setChildren(<></>);
+      })
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
+  };
+
   const swapModalToDelete = () => {
-    setChildren(<DeleteUrl />);
+    setChildren(
+      <Delete deleteFunction={submitDelete} title="Delete your url" />
+    );
   };
 
   const copyToClipboard = () => {
