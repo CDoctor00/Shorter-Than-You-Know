@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { FaCopy, FaExternalLinkAlt, FaShare, FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useContext } from "react";
@@ -6,9 +5,10 @@ import { UrlContext } from "../../../../contexts/url/Context";
 import { ModalContext } from "../../../../contexts/modal/Context";
 import { HistoryContext } from "../../../../contexts/history/Context";
 import { getToken } from "../../../../services/api/utils/tokens";
-import { deleteUrl } from "../../../../services/api/auth/deleteUrl";
+import { deleteUrl } from "../../../../services/api/auth/delete_url";
 import Delete from "../../../commons/delete/Delete";
 import UrlInfo from "../../../user/history/url_info/Info";
+import { FormDeleteType } from "../../../../services/zod/form/delete";
 import "./Data.css";
 
 interface props {
@@ -30,28 +30,13 @@ function UrlData({ isOpen, toggleQR, toggleForm }: props) {
     toggleForm();
   };
 
-  const submitDelete = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const formValues = Object.fromEntries(formData);
-
-    const formSchema = z.object({
-      password: z.string({ message: "password error" }).nonempty(),
-    });
-
-    const resultsForm = formSchema.safeParse(formValues);
-    if (!resultsForm.success) {
-      console.error(resultsForm.error);
-      return;
-    }
-
+  const submitDelete = async (data: FormDeleteType) => {
     const token = getToken();
     if (!token) {
       return;
     }
 
-    deleteUrl(token, { password: resultsForm.data.password, uuid: url.uuid! })
+    deleteUrl(token, { password: data.password, uuid: url.uuid! })
       .then(() => {
         removeItem(url.uuid!);
         toggleModal();

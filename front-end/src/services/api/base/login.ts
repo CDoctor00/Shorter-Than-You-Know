@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { RequestLoginBody, ResponseLoginBody } from "../auth/types";
+import { loginResponseSchema } from "../../zod/api/login";
 
 export const login = async (
   body: RequestLoginBody
@@ -16,12 +16,7 @@ export const login = async (
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const responseSchema = z.object({
-      accessToken: z.string({ message: "accessToken error" }).nonempty(),
-      refreshToken: z.string({ message: "refreshToken error" }).nonempty(),
-    });
-
-    const resultsResponse = responseSchema.safeParse(responseData);
+    const resultsResponse = loginResponseSchema.safeParse(responseData);
     if (!resultsResponse.success) {
       throw new Error(
         resultsResponse.error.issues.map((issue) => issue.message).join(", ")

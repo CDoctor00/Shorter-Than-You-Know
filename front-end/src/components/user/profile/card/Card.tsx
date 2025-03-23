@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { MdDelete, MdLogout } from "react-icons/md";
 import { FaPen } from "react-icons/fa6";
 import Delete from "../../../commons/delete/Delete";
@@ -6,9 +5,16 @@ import { useContext, useState } from "react";
 import { HistoryContext } from "../../../../contexts/history/Context";
 import { UserContext } from "../../../../contexts/user/Context";
 import { ModalContext } from "../../../../contexts/modal/Context";
-import { updateUser } from "../../../../services/api/auth/updateUser";
+import { updateUser } from "../../../../services/api/auth/update_user";
 import { getToken } from "../../../../services/api/utils/tokens";
-import { deleteUser } from "../../../../services/api/auth/deleteUser";
+import { deleteUser } from "../../../../services/api/auth/delete_user";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormDeleteType } from "../../../../services/zod/form/delete";
+import {
+  formUpdateUserSchema,
+  FormUpdateUserType,
+} from "../../../../services/zod/form/update_user";
 import "./Card.css";
 
 function ProfileCard() {
@@ -16,6 +22,15 @@ function ProfileCard() {
   const { setChildren, toggleModal } = useContext(ModalContext);
   const { setHistory } = useContext(HistoryContext);
   const [isShow, setIsShow] = useState(true);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+  } = useForm<FormUpdateUserType>({
+    resolver: zodResolver(formUpdateUserSchema),
+  });
 
   if (!user) {
     return;
@@ -25,81 +40,21 @@ function ProfileCard() {
     setIsShow(false);
   };
 
-  const update = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const formValues = Object.fromEntries(formData);
-
-    const formSchema = z.object({
-      password: z.string({ message: "password error" }),
-      newPassword: z
-        .string({ message: "new password error" })
-        .optional()
-        .transform((val) => val || undefined),
-      name: z
-        .string({ message: "name error" })
-        .optional()
-        .transform((val) => val || undefined),
-      surname: z
-        .string({ message: "surname error" })
-        .optional()
-        .transform((val) => val || undefined),
-    });
-
-    const resultsForm = formSchema.safeParse(formValues);
-    if (!resultsForm.success) {
-      console.error(resultsForm.error);
-      return;
-    }
-
+  const update = (data: FormUpdateUserType) => {
     const token = getToken();
     if (!token) {
       return;
     }
 
     updateUser(token, {
-      password: resultsForm.data.password,
-      name: resultsForm.data.name,
-      surname: resultsForm.data.surname,
-      newPassword: resultsForm.data.newPassword,
+      password: data.password,
+      name: data.name,
+      surname: data.surname,
+      newPassword: data.newPassword,
     })
       .then(() => {
-        updateUserInfo(resultsForm.data.name, resultsForm.data.surname);
+        updateUserInfo(data.name, data.surname);
         setIsShow(true);
-      })
-      .catch((error) => {
-        console.error(error);
-        return;
-      });
-  };
-
-  const submitDelete = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const formValues = Object.fromEntries(formData);
-
-    const formSchema = z.object({
-      password: z.string({ message: "password error" }).nonempty(),
-    });
-
-    const resultsForm = formSchema.safeParse(formValues);
-    if (!resultsForm.success) {
-      console.error(resultsForm.error);
-      return;
-    }
-
-    const token = getToken();
-    if (!token) {
-      return;
-    }
-
-    deleteUser(token, { password: resultsForm.data.password })
-      .then(() => {
-        logoutUser();
-        toggleModal();
-        setChildren(<></>);
       })
       .catch((error) => {
         console.error(error);
@@ -111,6 +66,24 @@ function ProfileCard() {
     setChildren(
       <Delete submitDelete={submitDelete} title="Delete your profile" />
     );
+  };
+
+  const submitDelete = async (data: FormDeleteType) => {
+    const token = getToken();
+    if (!token) {
+      return;
+    }
+
+    deleteUser(token, { password: data.password })
+      .then(() => {
+        logoutUser();
+        toggleModal();
+        setChildren(<></>);
+      })
+      .catch((error) => {
+        console.error(error);
+        return;
+      });
   };
 
   const logout = () => {
@@ -153,39 +126,64 @@ function ProfileCard() {
           </div>
         </div>
       ) : (
-        <>
-          <form onSubmit={update}>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Password"
-              required={true}
-            />
-            <input
-              type="password"
-              id="newPassword"
-              name="newPassword"
-              placeholder="Type new password to update it"
-            />
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Name"
-              defaultValue={user.name}
-            />
-            <input
-              type="text"
-              id="surname"
-              name="surname"
-              placeholder="Suranme"
-              defaultValue={user.surname}
-            />
-
-            <input type="submit" id="submit" value={"Update"} />
-          </form>
-        </>
+        <form onSubmit={handleSubmit(update)}>
+          <input
+            type="password"
+            id="password"
+            {...register("password")}
+            className={errors.password && "error-input"}
+            onChange={() => {
+              clearErrors("password");
+            }}
+            placeholder="Password"
+            required={true}
+          />
+          {errors.password && (
+            <p className="error-input-message">{errors.password.message}</p>
+          )}
+          <input
+            type="password"
+            id="newPassword"
+            {...register("newPassword")}
+            className={errors.newPassword && "error-input"}
+            onChange={() => {
+              clearErrors("newPassword");
+            }}
+            placeholder="Type new password to update it"
+          />
+          {errors.newPassword && (
+            <p className="error-input-message">{errors.newPassword.message}</p>
+          )}
+          <input
+            type="text"
+            id="name"
+            {...register("name")}
+            className={errors.name && "error-input"}
+            onChange={() => {
+              clearErrors("name");
+            }}
+            placeholder="Name"
+            defaultValue={user.name}
+          />
+          {errors.name && (
+            <p className="error-input-message">{errors.name.message}</p>
+          )}
+          <input
+            type="text"
+            id="surname"
+            {...register("surname")}
+            className={errors.surname && "error-input"}
+            onChange={() => {
+              clearErrors("surname");
+            }}
+            placeholder="Suranme"
+            defaultValue={user.surname}
+          />
+          {errors.surname && (
+            <p className="error-input-message">{errors.surname.message}</p>
+          )}
+          <input type="submit" id="submit" value={"Update"} />
+        </form>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { responseRefrehTokenSchema } from "../../zod/api/refresh_token";
 
 export const refreshToken = async (refreshToken: string): Promise<string> => {
   try {
@@ -15,11 +15,7 @@ export const refreshToken = async (refreshToken: string): Promise<string> => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const responseSchema = z.object({
-      accessToken: z.string({ message: "accessToken error" }).nonempty(),
-    });
-
-    const resultsResponse = responseSchema.safeParse(responseData);
+    const resultsResponse = responseRefrehTokenSchema.safeParse(responseData);
     if (!resultsResponse.success) {
       throw new Error(
         resultsResponse.error.issues.map((issue) => issue.message).join(", ")

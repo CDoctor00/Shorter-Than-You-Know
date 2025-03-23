@@ -1,10 +1,14 @@
 import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
-import { z } from "zod";
 import { useContext, useRef } from "react";
 import { login } from "../../../services/api/base/login";
 import { localStorageManager } from "../../../services/system/localStorage";
 import { UserContext } from "../../../contexts/user/Context";
-import { RequestLoginBody } from "../../../services/api/auth/types";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  formLoginSchema,
+  FormLoginType,
+} from "../../../services/zod/form/login";
 import "./Login.css";
 
 function LoginForm({
@@ -17,29 +21,20 @@ function LoginForm({
   const ref = useRef<HTMLFormElement | null>(null);
   const { loginUser } = useContext(UserContext);
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+  } = useForm<FormLoginType>({
+    resolver: zodResolver(formLoginSchema),
+  });
 
-    const formData = new FormData(event.currentTarget);
-    const formValues = Object.fromEntries(formData);
-
-    const formSchema = z.object({
-      email: z.string({ message: "Email error" }).email(),
-      password: z.string({ message: "Password error" }).min(1),
-    });
-
-    const resultsForm = formSchema.safeParse(formValues);
-    if (!resultsForm.success) {
-      console.error(resultsForm.error);
-      return;
-    }
-
-    const body: RequestLoginBody = {
-      email: resultsForm.data.email,
-      password: resultsForm.data.password,
-    };
-
-    login(body)
+  const onSubmit = async (data: FormLoginType) => {
+    login({
+      email: data.email,
+      password: data.password,
+    })
       .then((response) => {
         localStorageManager.setAccessToken(response.accessToken);
         localStorageManager.setRefreshToken(response.refreshToken);
@@ -65,10 +60,28 @@ function LoginForm({
       >
         Sign In
       </label>
-      <form onSubmit={onSubmit} ref={ref}>
+      <form onSubmit={handleSubmit(onSubmit)} ref={ref}>
         <div className="inputs-container">
-          <input type="email" name="email" placeholder="Email" />
-          <input type="password" name="password" placeholder="Password" />
+          <input
+            type="text"
+            placeholder="Email"
+            {...register("email")}
+            className={errors.email && "error-input"}
+            onChange={() => clearErrors("email")}
+          />
+          {errors.email && (
+            <p className="error-input-message">{errors.email.message}</p>
+          )}
+          <input
+            type="password"
+            placeholder="Password"
+            {...register("password")}
+            className={errors.password && "error-input"}
+            onChange={() => clearErrors("password")}
+          />
+          {errors.password && (
+            <p className="error-input-message">{errors.password.message}</p>
+          )}
         </div>
         <input type="submit" value="Sign In" />
         <div className="icons">

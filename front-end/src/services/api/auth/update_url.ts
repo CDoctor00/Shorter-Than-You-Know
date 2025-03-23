@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { RequestUrlBody, ResponseUpdateUrlBody } from "./types";
+import { responseUpdateUrlSchema } from "../../zod/api/update_url";
 
 export const updateUrl = async (
   authToken: string,
@@ -23,13 +23,7 @@ export const updateUrl = async (
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const responseSchema = z.object({
-      longUrl: z.string({ message: "longUrl error" }).nonempty(),
-      shortID: z.string({ message: "shortID error" }).nonempty(),
-      updateTime: z.string({ message: "updateTime error" }).nonempty(),
-    });
-
-    const resultsResponse = responseSchema.safeParse(responseData);
+    const resultsResponse = responseUpdateUrlSchema.safeParse(responseData);
     if (!resultsResponse.success) {
       throw new Error(
         resultsResponse.error.issues.map((issue) => issue.message).join(", ")

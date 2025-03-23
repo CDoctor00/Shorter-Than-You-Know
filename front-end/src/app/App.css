@@ -102,6 +102,17 @@ form > input[type="submit"] {
   }
 }
 
+.error-input {
+  color: red;
+  border: 1px solid red;
+}
+
+.error-input-message {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: red;
+}
+
 /*---------- CARD ----------*/
 
 .card-container {

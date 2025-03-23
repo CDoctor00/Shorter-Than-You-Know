@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { RequestUrlBody, ResponseShortenBody } from "../auth/types";
+import { responseShortenSchema } from "../../zod/api/shorten";
 
 export const shorten = async (
   authToken: string | undefined,
@@ -25,12 +25,7 @@ export const shorten = async (
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const responseSchema = z.object({
-      longUrl: z.string({ message: "longUrl error" }).nonempty(),
-      shortID: z.string({ message: "shortID error" }).nonempty(),
-    });
-
-    const resultsResponse = responseSchema.safeParse(responseData);
+    const resultsResponse = responseShortenSchema.safeParse(responseData);
     if (!resultsResponse.success) {
       throw new Error(
         resultsResponse.error.issues.map((issue) => issue.message).join(", ")

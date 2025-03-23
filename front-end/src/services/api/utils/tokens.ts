@@ -1,5 +1,5 @@
 import { JWT, TokenValidationResult } from "../../../types/token";
-import { refreshToken } from "../auth/refreshToken";
+import { refreshToken } from "../auth/refresh_token";
 import { localStorageManager } from "../../system/localStorage";
 
 /**
