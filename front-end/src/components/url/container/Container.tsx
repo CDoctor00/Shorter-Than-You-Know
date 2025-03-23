@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
-import FormUrl from "../form/Form";
-import ShowUrl from "../show/Show";
 import { UrlContext } from "../../../contexts/url/Context";
+import FormUrl from "../form/Form";
+import ShowUrlContainer from "../show/container/Container";
 import "./Container.css";
 
 function UrlContainer() {
@@ -17,7 +17,7 @@ function UrlContainer() {
       {showForm ? (
         <FormUrl toggleForm={toggleForm} />
       ) : (
-        <ShowUrl toggleForm={toggleForm} />
+        <ShowUrlContainer toggleForm={toggleForm} />
       )}
     </div>
   );

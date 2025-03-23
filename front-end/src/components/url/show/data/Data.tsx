@@ -2,13 +2,13 @@ import { z } from "zod";
 import { FaCopy, FaExternalLinkAlt, FaShare, FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useContext } from "react";
-import { UrlContext } from "../../../contexts/url/Context";
-import { ModalContext } from "../../../contexts/modal/Context";
-import UrlInfo from "../../user/history/url_info/Info";
-import Delete from "../../commons/delete/Delete";
-import { getToken } from "../../../services/api/utils/tokens";
-import { HistoryContext } from "../../../contexts/history/Context";
-import { deleteUrl } from "../../../services/api/auth/deleteUrl";
+import { UrlContext } from "../../../../contexts/url/Context";
+import { ModalContext } from "../../../../contexts/modal/Context";
+import { HistoryContext } from "../../../../contexts/history/Context";
+import { getToken } from "../../../../services/api/utils/tokens";
+import { deleteUrl } from "../../../../services/api/auth/deleteUrl";
+import Delete from "../../../commons/delete/Delete";
+import UrlInfo from "../../../user/history/url_info/Info";
 import "./Data.css";
 
 interface props {
@@ -64,9 +64,7 @@ function UrlData({ isOpen, toggleQR, toggleForm }: props) {
   };
 
   const swapModalToDelete = () => {
-    setChildren(
-      <Delete deleteFunction={submitDelete} title="Delete your url" />
-    );
+    setChildren(<Delete submitDelete={submitDelete} title="Delete your url" />);
   };
 
   const copyToClipboard = () => {

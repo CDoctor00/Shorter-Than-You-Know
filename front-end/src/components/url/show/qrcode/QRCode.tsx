@@ -6,9 +6,9 @@ import {
   useMemo,
   useContext,
 } from "react";
+import { UrlContext } from "../../../../contexts/url/Context";
 import { QRCodeSVG } from "qrcode.react";
 import { FaCopy, FaDownload } from "react-icons/fa";
-import { UrlContext } from "../../../contexts/url/Context";
 import "./QRCode.css";
 
 interface props {

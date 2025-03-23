@@ -1,14 +1,14 @@
 import { useContext, useState } from "react";
+import { UrlContext } from "../../../../contexts/url/Context";
 import UrlData from "../data/Data";
 import QRCode from "../qrcode/QRCode";
-import { UrlContext } from "../../../contexts/url/Context";
-import "./Show.css";
+import "./Container.css";
 
 interface props {
   toggleForm: () => void;
 }
 
-function ShowUrl({ toggleForm }: props) {
+function ShowUrlContainer({ toggleForm }: props) {
   const [isOpenQR, setIsOpenQR] = useState(false);
   const { isNew } = useContext(UrlContext);
 
@@ -17,11 +17,11 @@ function ShowUrl({ toggleForm }: props) {
   };
 
   return (
-    <div className={`show-url ${isNew ? "small" : "big"}`}>
+    <div className={`show-url-container ${isNew ? "small" : "big"}`}>
       <UrlData isOpen={!isOpenQR} toggleQR={toggleQR} toggleForm={toggleForm} />
       <QRCode isOpen={isOpenQR} toggleQR={toggleQR} />
     </div>
   );
 }
 
-export default ShowUrl;
+export default ShowUrlContainer;
