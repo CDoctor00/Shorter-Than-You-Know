@@ -11,20 +11,18 @@ interface props {
 }
 
 const ThemeContextProvider = (props: props) => {
-  const [theme, setTheme] = useState<undefined | string>();
-
-  useEffect(() => {
+  const [theme, setTheme] = useState<undefined | string>(() => {
     const lsTheme = localStorageManager.getTheme();
 
     if (lsTheme === null) {
       // //? Checking the browser theme
       if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        setTheme(darkTheme);
+        return darkTheme;
       }
     } else {
-      setTheme(lsTheme);
+      return lsTheme;
     }
-  }, []);
+  });
 
   useEffect(() => {
     if (!theme) {

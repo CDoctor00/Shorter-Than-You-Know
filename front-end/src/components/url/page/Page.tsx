@@ -16,7 +16,7 @@ function UrlPage() {
     <div className="url-page">
       <UrlContainer />
 
-      {url && <UrlButton />}
+      {url && <UrlButton redirect={false} />}
     </div>
   );
 }

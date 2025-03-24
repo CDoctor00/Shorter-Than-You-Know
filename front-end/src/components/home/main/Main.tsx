@@ -16,7 +16,7 @@ function Main() {
         </p>
       </div>
       <Image />
-      <UrlButton />
+      <UrlButton redirect={true} />
     </div>
   );
 }

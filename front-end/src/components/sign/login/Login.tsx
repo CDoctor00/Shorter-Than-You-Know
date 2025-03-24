@@ -41,7 +41,6 @@ function LoginForm({
 
         loginUser(response.accessToken);
         ref.current?.reset();
-        //TODO redirect
       })
       .catch((error) => {
         console.error(error);

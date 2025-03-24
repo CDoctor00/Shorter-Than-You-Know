@@ -1,4 +1,5 @@
 .logo {
   width: fit-content;
   height: 100%;
+  cursor: pointer;
 }

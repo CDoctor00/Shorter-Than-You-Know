@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UserContext } from "./Context";
 import { checkTokens, validateToken } from "../../services/api/utils/tokens";
 import { localStorageManager } from "../../services/system/local_storage";
@@ -9,16 +9,14 @@ interface props {
 }
 
 const UserContextProvider = (props: props) => {
-  const [user, setUser] = useState<User | undefined>(undefined);
-
-  useEffect(() => {
+  const [user, setUser] = useState<User | undefined>(() => {
     const check = checkTokens();
     if (!check) {
       localStorageManager.clearData();
       return;
     }
-    setUser(localStorageManager.getUserInfo());
-  }, []);
+    return localStorageManager.getUserInfo();
+  });
 
   const loginUser = (token: string) => {
     const result = validateToken(token);
