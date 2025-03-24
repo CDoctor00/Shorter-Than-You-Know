@@ -9,14 +9,10 @@ export const formUrlSchema = z.object({
     .string({ message: "password error" })
     .optional()
     .transform((val) => val || undefined),
-  enable: z
-    .string({ message: "enable error" })
-    .optional()
-    .transform((val) => val || undefined),
+  enable: z.boolean({ message: "enable error" }),
   prefix: z
     .string({ message: "prefix error" })
     .max(10, "The url prefix could not be longer than 10 chars")
-    .regex(new RegExp("[W]"))
     .optional()
     .transform((val) => val || undefined),
   note: z

@@ -1,11 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useMemo,
-  useContext,
-} from "react";
+import { useState, useEffect, useRef, useMemo, useContext } from "react";
 import { UrlContext } from "../../../../contexts/url/Context";
 import { QRCodeSVG } from "qrcode.react";
 import { FaCopy, FaDownload } from "react-icons/fa";
@@ -23,7 +16,7 @@ function QRCode({ isOpen, toggleQR }: props) {
   const [dataURL, setDataURL] = useState<string>("");
   const img = useMemo(() => new Image(), []);
 
-  const createBlob = useCallback(() => {
+  useEffect(() => {
     if (refQR.current) {
       const svgElement = refQR.current!.querySelector("svg");
       if (svgElement) {
@@ -44,10 +37,6 @@ function QRCode({ isOpen, toggleQR }: props) {
       }
     }
   }, [img]);
-
-  useEffect(() => {
-    createBlob();
-  }, [createBlob]);
 
   useEffect(() => {
     img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(dataURL)}`;

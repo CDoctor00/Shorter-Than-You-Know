@@ -18,8 +18,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./Form.css";
 
-function FormUrl({ toggleForm }: { toggleForm: () => void }) {
-  const { url, isNew, setUrl } = useContext(UrlContext);
+function FormUrl() {
+  const { url, isNew, setUrl, toggleShowForm } = useContext(UrlContext);
   const { updateItem } = useContext(HistoryContext);
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(!isNew);
@@ -39,7 +39,7 @@ function FormUrl({ toggleForm }: { toggleForm: () => void }) {
       prefix: data.prefix,
       expirationTime: createExpDate(data.date, data.time),
       password: data.password,
-      isEnabled: data.enable === "on",
+      isEnabled: data.enable,
       note: data.note,
     };
 
@@ -53,7 +53,7 @@ function FormUrl({ toggleForm }: { toggleForm: () => void }) {
           },
           true
         );
-        toggleForm();
+        toggleShowForm();
       })
       .catch((error) => {
         console.error(error);
@@ -76,7 +76,7 @@ function FormUrl({ toggleForm }: { toggleForm: () => void }) {
       prefix: data.prefix,
       expirationTime: createExpDate(data.date, data.time),
       password: data.password,
-      isEnabled: data.enable === "on",
+      isEnabled: data.enable,
       uuid: url.uuid!,
       note: data.note,
     };
@@ -103,7 +103,7 @@ function FormUrl({ toggleForm }: { toggleForm: () => void }) {
 
         setUrl(newUrl, false);
         updateItem(newUrl);
-        toggleForm();
+        toggleShowForm();
       })
       .catch((error) => {
         console.error(error);

@@ -9,13 +9,14 @@ interface props {
 }
 
 function UrlButton(props: props) {
-  const { setUrl } = useContext(UrlContext);
+  const { setUrl, toggleShowForm } = useContext(UrlContext);
 
   return (
     <button
       className="url-button"
       onClick={() => {
         setUrl(undefined, true);
+        toggleShowForm();
       }}
     >
       <span className="url-icon">

@@ -4,11 +4,7 @@ import UrlData from "../data/Data";
 import QRCode from "../qrcode/QRCode";
 import "./Container.css";
 
-interface props {
-  toggleForm: () => void;
-}
-
-function ShowUrlContainer({ toggleForm }: props) {
+function ShowUrlContainer() {
   const [isOpenQR, setIsOpenQR] = useState(false);
   const { isNew } = useContext(UrlContext);
 
@@ -18,7 +14,7 @@ function ShowUrlContainer({ toggleForm }: props) {
 
   return (
     <div className={`show-url-container ${isNew ? "small" : "big"}`}>
-      <UrlData isOpen={!isOpenQR} toggleQR={toggleQR} toggleForm={toggleForm} />
+      <UrlData isOpen={!isOpenQR} toggleQR={toggleQR} />
       <QRCode isOpen={isOpenQR} toggleQR={toggleQR} />
     </div>
   );

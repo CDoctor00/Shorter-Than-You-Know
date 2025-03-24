@@ -14,11 +14,10 @@ import "./Data.css";
 interface props {
   isOpen: boolean;
   toggleQR: () => void;
-  toggleForm: () => void;
 }
 
-function UrlData({ isOpen, toggleQR, toggleForm }: props) {
-  const { url, isNew } = useContext(UrlContext);
+function UrlData({ isOpen, toggleQR }: props) {
+  const { url, isNew, toggleShowForm } = useContext(UrlContext);
   const { toggleModal, setChildren } = useContext(ModalContext);
   const { removeItem } = useContext(HistoryContext);
 
@@ -27,7 +26,7 @@ function UrlData({ isOpen, toggleQR, toggleForm }: props) {
   }
 
   const modifyURL = () => {
-    toggleForm();
+    toggleShowForm();
   };
 
   const submitDelete = async (data: FormDeleteType) => {
