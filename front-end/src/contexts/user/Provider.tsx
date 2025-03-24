@@ -9,13 +9,21 @@ interface props {
 }
 
 const UserContextProvider = (props: props) => {
-  const [user, setUser] = useState<User | undefined>(() => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User>(() => {
     const check = checkTokens();
     if (!check) {
       localStorageManager.clearData();
-      return;
+    } else {
+      const user = localStorageManager.getUserInfo();
+      if (user) {
+        setIsAuthenticated(true);
+        return user;
+      }
     }
-    return localStorageManager.getUserInfo();
+
+    setIsAuthenticated(false);
+    return { email: "", id: "" };
   });
 
   const loginUser = (token: string) => {
@@ -23,12 +31,14 @@ const UserContextProvider = (props: props) => {
     if (result.isValid) {
       setUser(result.token!.user);
       localStorageManager.setUserInfo(result.token!.user);
+      setIsAuthenticated(true);
     }
   };
 
   const logoutUser = () => {
     localStorageManager.clearData();
-    setUser(undefined);
+    setIsAuthenticated(false);
+    setUser({ email: "", id: "" });
   };
 
   const updateUserInfo = (newName?: string, newSurname?: string) => {
@@ -44,7 +54,7 @@ const UserContextProvider = (props: props) => {
 
   return (
     <UserContext.Provider
-      value={{ user, loginUser, logoutUser, updateUserInfo }}
+      value={{ user, isAuthenticated, loginUser, logoutUser, updateUserInfo }}
     >
       {props.children}
     </UserContext.Provider>

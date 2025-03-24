@@ -8,9 +8,9 @@ interface props {
 }
 
 const PrivateRoute = ({ children }: props) => {
-  const { user } = useContext(UserContext);
+  const { isAuthenticated } = useContext(UserContext);
 
-  if (!user) {
+  if (!isAuthenticated) {
     return <Navigate to="/sign" replace />;
   }
 

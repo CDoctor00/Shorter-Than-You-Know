@@ -32,10 +32,6 @@ function ProfileCard() {
     resolver: zodResolver(formUpdateUserSchema),
   });
 
-  if (!user) {
-    return;
-  }
-
   const swapToUpdate = () => {
     setIsShow(false);
   };

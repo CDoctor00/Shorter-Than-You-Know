@@ -9,10 +9,6 @@ function ProfileBar() {
   const { user } = useContext(UserContext);
   const { toggleModal, setChildren } = useContext(ModalContext);
 
-  if (!user) {
-    return;
-  }
-
   const hasName = !(user.name === undefined && user.surname === undefined);
 
   const getTitle = (): string => {

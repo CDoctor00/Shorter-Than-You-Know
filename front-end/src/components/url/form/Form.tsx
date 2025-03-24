@@ -21,7 +21,7 @@ import "./Form.css";
 function FormUrl() {
   const { url, isNew, setUrl, toggleShowForm } = useContext(UrlContext);
   const { updateItem } = useContext(HistoryContext);
-  const { user } = useContext(UserContext);
+  const { isAuthenticated } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(!isNew);
 
   const {
@@ -236,7 +236,7 @@ function FormUrl() {
                 )}
               </div>
             </div>
-            {user && (
+            {isAuthenticated && (
               <div className="input-container">
                 <label htmlFor="note">Note</label>
                 <textarea

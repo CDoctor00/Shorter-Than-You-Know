@@ -8,14 +8,14 @@ interface props {
 }
 
 const UnloggedRoute = ({ children }: props) => {
-  const { user } = useContext(UserContext);
+  const { isAuthenticated } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
+    if (isAuthenticated) {
       navigate("/user");
     }
-  }, [user]);
+  }, [isAuthenticated]);
 
   return children;
 };
