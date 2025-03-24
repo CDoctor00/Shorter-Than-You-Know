@@ -8,7 +8,7 @@ export const deleteUrl = async (
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/auth/deleteUrl`,
       {
-        method: "PUT",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
