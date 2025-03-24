@@ -9,7 +9,7 @@ export const updateUrl = async (
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/auth/updateUrl`,
       {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
