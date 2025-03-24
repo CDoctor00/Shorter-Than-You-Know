@@ -9,6 +9,7 @@ import {
   formLoginSchema,
   FormLoginType,
 } from "../../../services/zod/form/login";
+import { ToastContainer, toast } from "react-toastify";
 import "./Login.css";
 
 function LoginForm({
@@ -36,11 +37,15 @@ function LoginForm({
       password: data.password,
     })
       .then((response) => {
-        localStorageManager.setAccessToken(response.accessToken);
-        localStorageManager.setRefreshToken(response.refreshToken);
+        if (response.status == 200) {
+          localStorageManager.setAccessToken(response.data!.accessToken);
+          localStorageManager.setRefreshToken(response.data!.refreshToken);
 
-        loginUser(response.accessToken);
-        ref.current?.reset();
+          loginUser(response.data!.accessToken);
+          ref.current?.reset();
+        } else if (response.status >= 400) {
+          toast.error("Wrong email or password");
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -90,6 +95,19 @@ function LoginForm({
           <FaGithub className="icon" />
         </div>
       </form>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        limit={3}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 }

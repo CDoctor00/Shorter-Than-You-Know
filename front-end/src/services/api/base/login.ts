@@ -13,7 +13,9 @@ export const login = async (
 
     const responseData = await response.json();
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      return {
+        status: response.status,
+      };
     }
 
     const resultsResponse = loginResponseSchema.safeParse(responseData);
@@ -23,7 +25,10 @@ export const login = async (
       );
     }
 
-    return resultsResponse.data;
+    return {
+      status: response.status,
+      data: resultsResponse.data,
+    };
   } catch (error) {
     throw new Error(`login: ${error}`);
   }

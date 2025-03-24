@@ -61,8 +61,11 @@ export interface HistoryItem {
 export type ResponseHistory = HistoryItem[];
 
 export interface ResponseLoginBody {
-  accessToken: string;
-  refreshToken: string;
+  status: number;
+  data?: {
+    accessToken: string;
+    refreshToken: string;
+  };
 }
 
 export interface ResponseShortenBody {
