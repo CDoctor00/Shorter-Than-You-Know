@@ -18,8 +18,12 @@ type ShortenResponse struct {
 }
 
 type RedirectRequest struct {
-	ShortURL string `json:"ShortURL"`
-	Password string `json:"Password"`
+	ShortID  string  `json:"ShortID"`
+	Password *string `json:"Password"`
+}
+
+type RedirectResponse struct {
+	LongUrl string `json:"longUrl"`
 }
 
 type DeleteUrlRequest struct {

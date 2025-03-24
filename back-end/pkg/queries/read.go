@@ -10,15 +10,15 @@ import (
 
 /*
 This function does a SELECT query on the database of the specific table,
-to get the original URL path from the 'shortURL' given parameter and returns it.
+to get the original URL path from the 'shortID' given parameter and returns it.
 */
-func (dto DTO) RetrieveOriginalURL(shortURL string) (database.URL, error) {
+func (dto DTO) RetrieveOriginalURL(shortID string) (database.URL, error) {
 	var originalURL database.URL
 
-	var query = fmt.Sprintf("SELECT long_url, expiration_time, password FROM %s.%s WHERE short = $1",
+	var query = fmt.Sprintf("SELECT long_url, expiration_time, password FROM %s.%s WHERE short_id = $1",
 		dto.Table.Schema, dto.Table.Name)
 
-	result := dto.DB.QueryRow(query, shortURL)
+	result := dto.DB.QueryRow(query, shortID)
 	errQuery := result.Scan(
 		&originalURL.LongUrl,
 		&originalURL.ExpirationTime,

@@ -28,7 +28,7 @@ func Redirect(context *fiber.Ctx) error {
 	var urlsDTO = database.NewUrlsDTO()
 
 	//? Get original URL's infos from the given shorten one
-	originalURL, errRetrieve := urlsDTO.RetrieveOriginalURL(requestBody.ShortURL)
+	originalURL, errRetrieve := urlsDTO.RetrieveOriginalURL(requestBody.ShortID)
 	if errRetrieve != nil {
 		if errors.Is(errors.Unwrap(errRetrieve), sql.ErrNoRows) {
 			return context.Status(fiber.StatusNotFound).JSON(
@@ -43,10 +43,17 @@ func Redirect(context *fiber.Ctx) error {
 
 	//? Check if the asked URL has a password
 	if originalURL.Password.Valid {
+		if requestBody.Password == nil {
+			return context.Status(fiber.StatusUnauthorized).JSON(
+				api.ResponseError{
+					Error:         "Resource protected",
+					FriendlyError: "You should enter a password in order to access the requested resource",
+				})
+		}
 
 		//? Check if the given password corresponds with the stored one
 		errCompare := bcrypt.CompareHashAndPassword([]byte(
-			originalURL.Password.String), []byte(requestBody.Password))
+			originalURL.Password.String), []byte(*requestBody.Password))
 		if errCompare != nil {
 			if errors.Is(errCompare, bcrypt.ErrMismatchedHashAndPassword) {
 				return context.Status(fiber.StatusUnauthorized).JSON(
@@ -78,12 +85,10 @@ func Redirect(context *fiber.Ctx) error {
 			})
 	}
 
-	errRedirect := context.Redirect(addProtocolIfNotExists(originalURL.LongUrl))
-	if errRedirect != nil {
-		return serverError(context, errRedirect, "redirect")
-	}
-
-	return nil
+	return context.Status(fiber.StatusOK).JSON(
+		api.RedirectResponse{
+			LongUrl: addProtocolIfNotExists(originalURL.LongUrl),
+		})
 }
 
 /*
