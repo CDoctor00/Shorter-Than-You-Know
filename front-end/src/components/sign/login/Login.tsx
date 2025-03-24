@@ -1,7 +1,7 @@
 import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
 import { useContext, useRef } from "react";
 import { login } from "../../../services/api/base/login";
-import { localStorageManager } from "../../../services/system/localStorage";
+import { localStorageManager } from "../../../services/system/local_storage";
 import { UserContext } from "../../../contexts/user/Context";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

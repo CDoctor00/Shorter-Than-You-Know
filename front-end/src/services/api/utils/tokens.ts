@@ -1,6 +1,6 @@
 import { JWT, TokenValidationResult } from "../../../types/token";
 import { refreshToken } from "../auth/refresh_token";
-import { localStorageManager } from "../../system/localStorage";
+import { localStorageManager } from "../../system/local_storage";
 
 /**
  * Retrieves the current access token. If expired or not present,

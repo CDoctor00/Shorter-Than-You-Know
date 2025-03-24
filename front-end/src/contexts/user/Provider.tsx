@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UserContext } from "./Context";
 import { checkTokens, validateToken } from "../../services/api/utils/tokens";
-import { localStorageManager } from "../../services/system/localStorage";
+import { localStorageManager } from "../../services/system/local_storage";
 import { User } from "../../types/token";
 
 interface props {

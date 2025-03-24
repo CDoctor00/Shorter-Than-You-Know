@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ThemeContext } from "./Context";
-import { localStorageManager } from "../../services/system/localStorage";
+import { localStorageManager } from "../../services/system/local_storage";
 
 const attributeName = "data-theme";
 const lightTheme = "light";

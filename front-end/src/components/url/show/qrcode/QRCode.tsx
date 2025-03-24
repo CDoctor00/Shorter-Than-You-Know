@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useMemo, useContext } from "react";
 import { UrlContext } from "../../../../contexts/url/Context";
 import { QRCodeSVG } from "qrcode.react";
 import { FaCopy, FaDownload } from "react-icons/fa";
+import { downdloadBlob } from "../../../../services/system/download_blob";
+import { copyToClipboard } from "../../../../services/system/clipboard";
 import "./QRCode.css";
 
 interface props {
@@ -42,25 +44,6 @@ function QRCode({ isOpen, toggleQR }: props) {
     img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(dataURL)}`;
   }, [img, dataURL]);
 
-  const copyToClipboard = () => {
-    if (!blob) return;
-
-    navigator.clipboard
-      .write([new ClipboardItem({ "image/png": blob })])
-      .then(() => console.log("Image copied to clipboard"))
-      .catch((err) => console.error("Error copying image:", err));
-  };
-
-  const downdload = () => {
-    if (!blob) return;
-
-    const element = document.createElement("a");
-    element.href = URL.createObjectURL(blob);
-    element.download = "qrcode.png";
-    element.click();
-    console.log("download start");
-  };
-
   if (!url) {
     return null;
   }
@@ -87,11 +70,19 @@ function QRCode({ isOpen, toggleQR }: props) {
           marginSize={1}
         />
         <div className="buttons">
-          <button onClick={copyToClipboard}>
+          <button
+            onClick={() => {
+              copyToClipboard(blob);
+            }}
+          >
             <span> Copy </span>
             <FaCopy />
           </button>
-          <button onClick={downdload}>
+          <button
+            onClick={() => {
+              downdloadBlob(blob);
+            }}
+          >
             <span> Download </span>
             <FaDownload />
           </button>

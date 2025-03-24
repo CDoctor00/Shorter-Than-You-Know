@@ -9,6 +9,7 @@ import { deleteUrl } from "../../../../services/api/auth/delete_url";
 import Delete from "../../../commons/delete/Delete";
 import UrlInfo from "../../../user/history/url_info/Info";
 import { FormDeleteType } from "../../../../services/zod/form/delete";
+import { copyToClipboard } from "../../../../services/system/clipboard";
 import "./Data.css";
 
 interface props {
@@ -51,21 +52,6 @@ function UrlData({ isOpen, toggleQR }: props) {
     setChildren(<Delete submitDelete={submitDelete} title="Delete your url" />);
   };
 
-  const copyToClipboard = () => {
-    try {
-      navigator.clipboard
-        .writeText(url.shortUrl)
-        .then(() => {
-          console.log("Copied");
-        })
-        .catch((err) => {
-          console.error("Error: ", err);
-        });
-    } catch (err) {
-      console.error("Error: ", err);
-    }
-  };
-
   //? remove protocol from URL
   const shorten = url.shortUrl.slice(
     url.shortUrl.indexOf("//") + 2,
@@ -94,7 +80,11 @@ function UrlData({ isOpen, toggleQR }: props) {
           <UrlInfo />
         )}
         <div className="buttons">
-          <button onClick={copyToClipboard}>
+          <button
+            onClick={() => {
+              copyToClipboard(url.shortUrl);
+            }}
+          >
             <FaCopy />
           </button>
           <button>
