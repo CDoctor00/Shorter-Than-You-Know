@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  formDeleteSchema,
-  FormDeleteType,
-} from "../../../services/zod/form/delete";
+  formPasswordSchema,
+  FormPasswordType,
+} from "../../../services/zod/form/password";
 import "./Delete.css";
 
 interface props {
-  submitDelete: (data: FormDeleteType) => void;
+  submitDelete: (data: FormPasswordType) => void;
   title: string;
 }
 
@@ -17,8 +17,8 @@ const Delete = ({ submitDelete, title }: props) => {
     handleSubmit,
     formState: { errors },
     clearErrors,
-  } = useForm<FormDeleteType>({
-    resolver: zodResolver(formDeleteSchema),
+  } = useForm<FormPasswordType>({
+    resolver: zodResolver(formPasswordSchema),
   });
 
   return (

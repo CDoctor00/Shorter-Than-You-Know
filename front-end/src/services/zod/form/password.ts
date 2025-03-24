@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-export const formDeleteSchema = z.object({
+export const formPasswordSchema = z.object({
   password: z
     .string({ message: "Password error" })
     .nonempty("A password could not be empty"),
 });
 
-export type FormDeleteType = z.infer<typeof formDeleteSchema>;
+export type FormPasswordType = z.infer<typeof formPasswordSchema>;

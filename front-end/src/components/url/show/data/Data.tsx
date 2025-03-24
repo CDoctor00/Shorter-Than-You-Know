@@ -8,7 +8,7 @@ import { getToken } from "../../../../services/api/utils/tokens";
 import { deleteUrl } from "../../../../services/api/auth/delete_url";
 import Delete from "../../../commons/delete/Delete";
 import UrlInfo from "../../../user/history/url_info/Info";
-import { FormDeleteType } from "../../../../services/zod/form/delete";
+import { FormPasswordType } from "../../../../services/zod/form/password";
 import { copyToClipboard } from "../../../../services/system/clipboard";
 import "./Data.css";
 
@@ -30,7 +30,7 @@ function UrlData({ isOpen, toggleQR }: props) {
     toggleShowForm();
   };
 
-  const submitDelete = async (data: FormDeleteType) => {
+  const submitDelete = async (data: FormPasswordType) => {
     const token = getToken();
     if (!token) {
       return;
@@ -53,10 +53,7 @@ function UrlData({ isOpen, toggleQR }: props) {
   };
 
   //? remove protocol from URL
-  const shorten = url.shortUrl.slice(
-    url.shortUrl.indexOf("//") + 2,
-    url.shortUrl.length
-  );
+  const shorten = url.shortUrl.slice(url.shortUrl.indexOf("//") + 2);
 
   return (
     <div className={`card-container ${isOpen ? "open" : "close"}`}>
@@ -68,14 +65,12 @@ function UrlData({ isOpen, toggleQR }: props) {
       </label>
       <div className="shorten-wrapper">
         {isNew ? (
-          <>
-            <a href={url.shortUrl} className="shorten-url">
-              <span className="redirect-icon">
-                <FaExternalLinkAlt />
-              </span>
-              <span className="redirect-url">{shorten}</span>
-            </a>
-          </>
+          <a href={url.shortUrl} className="shorten-url">
+            <span className="redirect-icon">
+              <FaExternalLinkAlt />
+            </span>
+            <span className="redirect-url">{shorten}</span>
+          </a>
         ) : (
           <UrlInfo />
         )}

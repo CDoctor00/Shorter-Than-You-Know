@@ -10,7 +10,7 @@ import { getToken } from "../../../../services/api/utils/tokens";
 import { deleteUser } from "../../../../services/api/auth/delete_user";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormDeleteType } from "../../../../services/zod/form/delete";
+import { FormPasswordType } from "../../../../services/zod/form/password";
 import {
   formUpdateUserSchema,
   FormUpdateUserType,
@@ -68,7 +68,7 @@ function ProfileCard() {
     );
   };
 
-  const submitDelete = async (data: FormDeleteType) => {
+  const submitDelete = async (data: FormPasswordType) => {
     const token = getToken();
     if (!token) {
       return;

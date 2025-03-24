@@ -38,6 +38,11 @@ export interface RequestUpdateUserBody {
   surname?: string;
 }
 
+export interface RequestRedirectBody {
+  shortID: string;
+  password?: string;
+}
+
 /*---------- RESPONSES----------*/
 export interface HistoryItem {
   longUrl: string;
@@ -69,4 +74,9 @@ export interface ResponseUpdateUrlBody {
   longUrl: string;
   shortID: string;
   updateTime: string;
+}
+
+export interface ResponseRedirectBody {
+  status: number;
+  longUrl: string;
 }

@@ -1,0 +1,27 @@
+.redirect-page {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .protected-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90vw;
+    gap: 2rem;
+
+    svg {
+      height: fit-content;
+    }
+
+    form {
+      width: 100%;
+      input {
+        margin: 0;
+      }
+    }
+  }
+}
