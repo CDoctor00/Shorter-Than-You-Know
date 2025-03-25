@@ -3,8 +3,8 @@ import { z } from "zod";
 export const formUrlSchema = z.object({
   url: z
     .string({ message: "URL error" })
-    .nonempty()
-    .max(2100, "The system doesn't accept an URL longer than 2100 characters"),
+    .nonempty("zod.formUrl.url.empty")
+    .max(2100, "zod.formUrl.url.long"),
   password: z
     .string({ message: "password error" })
     .optional()
@@ -12,12 +12,12 @@ export const formUrlSchema = z.object({
   enable: z.boolean({ message: "enable error" }),
   prefix: z
     .string({ message: "prefix error" })
-    .max(10, "The url prefix could not be longer than 10 chars")
+    .max(10, "zod.formUrl.prefix")
     .optional()
     .transform((val) => val || undefined),
   note: z
     .string({ message: "note error" })
-    .max(500, "A note could not be longer than 500 chars")
+    .max(500, "zod.formUrl.note")
     .optional()
     .transform((val) => val || undefined),
   date: z

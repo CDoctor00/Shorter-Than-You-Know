@@ -2,8 +2,9 @@ import Logo from "../logo/Logo";
 import { FaMoon, FaSun, FaUser } from "react-icons/fa6";
 import { useContext } from "react";
 import { ThemeContext } from "../../../contexts/theme/Context";
-import "./NavBar.css";
 import { useNavigate } from "react-router-dom";
+import LanguageSelector from "../language-selector/LanguageSelector";
+import "./NavBar.css";
 
 function NavBar() {
   const { isLightTheme, themeSwitcher } = useContext(ThemeContext);
@@ -18,6 +19,7 @@ function NavBar() {
           }}
         />
         <div className="icons">
+          <LanguageSelector />
           <div onClick={themeSwitcher}>
             {isLightTheme ? (
               <FaSun className="icon" />

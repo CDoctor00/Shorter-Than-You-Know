@@ -8,12 +8,14 @@ import { getHistory } from "../../../../services/api/auth/history";
 import { getToken } from "../../../../services/api/utils/tokens";
 import { Url } from "../../../../types/contexts";
 import "./Container.css";
+import { useTranslation } from "react-i18next";
 
 function HistoryContainer() {
   const { history, setHistory } = useContext(HistoryContext);
   const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const token = getToken();
@@ -77,7 +79,7 @@ function HistoryContainer() {
 
   return (
     <div className="history-container">
-      <h2 className="title">History</h2>
+      <h2 className="title">{t("userPage.history.title")}</h2>
       <div className="bar">
         <form className="search">
           <FaSearch className="button lens" />

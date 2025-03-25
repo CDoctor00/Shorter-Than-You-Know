@@ -4,6 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { FaCopy, FaDownload } from "react-icons/fa";
 import { downdloadBlob } from "../../../../services/system/download_blob";
 import { copyToClipboard } from "../../../../services/system/clipboard";
+import { useTranslation } from "react-i18next";
 import "./QRCode.css";
 
 interface props {
@@ -17,6 +18,7 @@ function QRCode({ isOpen, toggleQR }: props) {
   const [blob, setBlob] = useState<Blob | null>(null);
   const [dataURL, setDataURL] = useState<string>("");
   const img = useMemo(() => new Image(), []);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (refQR.current) {
@@ -60,7 +62,7 @@ function QRCode({ isOpen, toggleQR }: props) {
         className={`card-label down ${isOpen ? "" : "close"}`}
         onClick={isOpen ? undefined : toggleQR}
       >
-        {`${isNew ? "Get" : "See"} your QR code`}
+        {isNew ? t("urlPage.show.qrTitle.new") : t("urlPage.show.qrTitle.old")}
       </label>
       <div className="qr-wrapper">
         <QRCodeSVG
@@ -75,7 +77,6 @@ function QRCode({ isOpen, toggleQR }: props) {
               copyToClipboard(blob);
             }}
           >
-            <span> Copy </span>
             <FaCopy />
           </button>
           <button
@@ -83,7 +84,6 @@ function QRCode({ isOpen, toggleQR }: props) {
               downdloadBlob(blob);
             }}
           >
-            <span> Download </span>
             <FaDownload />
           </button>
         </div>

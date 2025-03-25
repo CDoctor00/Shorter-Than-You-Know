@@ -1,0 +1,171 @@
+{
+  "commons": {
+    "urlButton": "Shorten a new link",
+    "footerPhrase": "Made with blood and sweat",
+    "delete": {
+      "userTitle": "Delete your account",
+      "urlTitle": "Delete your url",
+      "placeholder": "Enter the password to confirm",
+      "button": "Confirm delete"
+    }
+  },
+  "homePage": {
+    "main": {
+      "title": "Shorten, Share, and Track Your Links Instantly!",
+      "description": "Reduce the length of your links in one click and make them easier and more stylish to share, or customize them. Manage your shared links the way you prefer and track their statistics."
+    },
+    "explore": {
+      "text": {
+        "title": "Improve your experience!",
+        "description": "Expand your possibilities by accessing all advanced features: track the history of your links, add notes, manage them as you prefer, and monitor their statistics."
+      },
+      "columnsTitle": {
+        "feature": "Feature",
+        "signed": "Signed",
+        "free": "Free"
+      }
+    },
+    "faq": {
+      "title": "Explore the features!"
+    },
+    "features": {
+      "customPrefix": {
+        "title": "Custom Prefix",
+        "description": "With the custom prefix feature, you can modify the beginning of your short links to make them more recognizable and branded. Instead of a generic link, you will have control over the prefix, making your URL more professional and easier to remember."
+      },
+      "password": {
+        "title": "Password",
+        "description": "Keep control of your links with a password! This option allows you to set a password to access the content of the created link, ensuring greater security and privacy."
+      },
+      "expirationTime": {
+        "title": "Expiration Time",
+        "description": "Thanks to the ability to define an expiration time, you can set a time limit for your short links (by defining a specific date and time), after which they will no longer be accessible. Perfect for sharing temporary content without having to delete it manually!"
+      },
+      "history": {
+        "title": "History",
+        "description": "By accessing your history, you can keep track of all your shortened links in a single dashboard. You will have access to a detailed list with useful information to better manage and edit your URLs."
+      },
+      "note": {
+        "title": "Notes",
+        "description": "If you create many links, it might be useful to add personal notes to each of them, making it easier to manage and organize your URLs."
+      },
+      "status": {
+        "title": "Enable/Disable",
+        "description": "With this feature, you can enable or disable a short link at any time without permanently deleting it. This allows you to have complete control over the availability of the link."
+      },
+      "updateExpirationTime": {
+        "title": "Update Expiration Time",
+        "description": "By accessing your profile area, you will be able to update the expiration time. This way, you can easily modify the date or access limit of your link without having to generate a new one."
+      },
+      "statistics": {
+        "title": "Statistics",
+        "description": "Monitor the performance of your links and gain insights. You will be able to view information regarding your profile or specific details about each individual created link."
+      }
+    }
+  },
+  "redirectPage": {
+    "protected": {
+      "title": "The requested url is protected",
+      "button": "Unlock the url"
+    }
+  },
+  "signPage": {
+    "signup": {
+      "title": "Create Account",
+      "button": "Sign Up",
+      "form": {
+        "name": "Name",
+        "surname": "Surname",
+        "email": "Email *",
+        "password1": "Password *",
+        "password2": "Repeat password *"
+      }
+    },
+    "login": {
+      "title": "Sign In",
+      "button": "Sign In",
+      "toastMessage": "Wrong email or password",
+      "form": {
+        "email": "Email",
+        "password": "Password"
+      }
+    }
+  },
+  "urlPage": {
+    "form": {
+      "title": "Shorten your URL",
+      "advancedButton": "Advanced",
+      "submitButton": {
+        "new": "Shorten",
+        "update": "Apply changes"
+      },
+      "placeholders": {
+        "longUrl": "https://example.com/long-url",
+        "password": "Password",
+        "prefix": "Custom Prefix",
+        "enable": "Enable",
+        "expirationDate": "Expiration Date",
+        "expirationTime": "Time",
+        "note": "Note"
+      }
+    },
+    "show": {
+      "urlTitle": {
+        "new": "Get your shorten link",
+        "old": "See your shorten link"
+      },
+      "qrTitle": {
+        "new": "Get your QR code",
+        "old": "See your QR code"
+      }
+    }
+  },
+  "userPage": {
+    "history": {
+      "title": "History",
+      "item": {
+        "longUrl": "Long URL",
+        "shortUrl": "Short URL",
+        "status": "Status",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "expireAt": "Expire At",
+        "note": "Note",
+        "clicks": "Clicks"
+      }
+    },
+    "profile": {
+      "title": {
+        "see": "See your profile",
+        "update": "Update your profile"
+      },
+      "form": {
+        "email": "Email",
+        "name": "Name",
+        "surname": "Surname",
+        "password": "Password",
+        "newPassword": "Type new password to update it"
+      },
+      "updateButton": "Apply changes"
+    },
+    "statistics": {
+      "title": "Statistics",
+      "totalLinks": "Total Links",
+      "totalClicks": "Total Clicks",
+      "activeLinks": "Active Links"
+    }
+  },
+  "zod": {
+    "formUrl": {
+      "url": {
+        "empty": "The system doesn't accept an empty URL",
+        "long": "The system doesn't accept an URL longer than 2100 characters"
+      },
+      "prefix": "The URL prefix could not be longer than 10 characters",
+      "note": "A note could not be longer than 500 characters"
+    },
+    "password": "A password could not be empty",
+    "email": "The entered value must be an email",
+    "mismatch": "The passwords do not match"
+  }
+}

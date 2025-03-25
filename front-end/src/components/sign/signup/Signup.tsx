@@ -7,6 +7,7 @@ import {
 } from "../../../services/zod/form/signup";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import "./Signup.css";
 
 function SignUp({
@@ -17,6 +18,7 @@ function SignUp({
   toggleForm: () => void;
 }) {
   const ref = useRef<HTMLFormElement | null>(null);
+  const { t } = useTranslation();
 
   const {
     register,
@@ -50,13 +52,13 @@ function SignUp({
         onClick={isOpen ? undefined : toggleForm}
         className={`card-label up ${isOpen ? "" : "close"}`}
       >
-        Create Account
+        {t("signPage.signup.title")}
       </label>
       <form ref={ref} onSubmit={handleSubmit(onSubmit)}>
         <div className="inputs-container">
           <input
             type="text"
-            placeholder="Name"
+            placeholder={t("signPage.signup.form.name")}
             {...register("name")}
             onChange={() => {
               clearErrors("name");
@@ -68,7 +70,7 @@ function SignUp({
           )}
           <input
             type="text"
-            placeholder="Surname"
+            placeholder={t("signPage.signup.form.surname")}
             {...register("surname")}
             onChange={() => {
               clearErrors("surname");
@@ -80,7 +82,7 @@ function SignUp({
           )}
           <input
             type="text"
-            placeholder="Email*"
+            placeholder={t("signPage.signup.form.email")}
             {...register("email")}
             onChange={() => {
               clearErrors("email");
@@ -88,11 +90,11 @@ function SignUp({
             className={errors.email && "error-input"}
           />
           {errors.email && (
-            <p className="error-input-message">{errors.email.message}</p>
+            <p className="error-input-message">{t(errors.email.message!)}</p>
           )}
           <input
             type="password"
-            placeholder="Password*"
+            placeholder={t("signPage.signup.form.password1")}
             {...register("password1")}
             onChange={() => {
               clearErrors("password1");
@@ -100,11 +102,13 @@ function SignUp({
             className={errors.password1 && "error-input"}
           />
           {errors.password1 && (
-            <p className="error-input-message">{errors.password1.message}</p>
+            <p className="error-input-message">
+              {t(errors.password1.message!)}
+            </p>
           )}
           <input
             type="password"
-            placeholder="Repeat Password*"
+            placeholder={t("signPage.signup.form.password2")}
             {...register("password2")}
             onChange={() => {
               clearErrors("password2");
@@ -112,7 +116,9 @@ function SignUp({
             className={errors.password2 && "error-input"}
           />
           {errors.password2 && (
-            <p className="error-input-message">{errors.password2.message}</p>
+            <p className="error-input-message">
+              {t(errors.password2.message!)}
+            </p>
           )}
         </div>
         <input type="submit" value="Sign Up" />

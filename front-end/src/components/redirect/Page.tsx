@@ -10,12 +10,14 @@ import { redirect } from "../../services/api/base/redirect";
 import { useNavigate } from "react-router-dom";
 import Loader from "../commons/loader/Loader";
 import { ToastContainer, toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import "./Page.css";
 
 function RedirectPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isProtected, setIsProtected] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const openUrl = (value?: FormPasswordType) => {
     const shortID = window.location.pathname.slice(1);
@@ -64,7 +66,7 @@ function RedirectPage() {
       ) : (
         isProtected && (
           <div className="protected-container">
-            <h2 className="title">The requested url is protected</h2>
+            <h2 className="title">{t("redirectPage.protected.title")}</h2>
             <Image />
             <form onSubmit={handleSubmit(openUrl)}>
               <input
@@ -75,9 +77,11 @@ function RedirectPage() {
                 className={errors.password && "error-input"}
               />
               {errors.password && (
-                <p className="error-input-message">{errors.password.message}</p>
+                <p className="error-input-message">
+                  {t(errors.password.message!)}
+                </p>
               )}
-              <input type="submit" value="Unlock url" />
+              <input type="submit" value={t("redirectPage.protected.button")} />
             </form>
           </div>
         )

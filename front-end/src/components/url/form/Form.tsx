@@ -17,12 +17,14 @@ import {
 } from "../../../services/zod/form/form_url";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./Form.css";
+import { useTranslation } from "react-i18next";
 
 function FormUrl() {
   const { url, isNew, setUrl, toggleShowForm } = useContext(UrlContext);
   const { updateItem } = useContext(HistoryContext);
   const { isAuthenticated } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(!isNew);
+  const { t } = useTranslation();
 
   const {
     register,
@@ -113,7 +115,7 @@ function FormUrl() {
 
   return (
     <div className="form-url-container">
-      <label className="card-label">Shorten your URL</label>
+      <label className="card-label">{t("urlPage.form.title")}</label>
       <form
         onSubmit={
           isNew ? handleSubmit(createShortenURL) : handleSubmit(updateURL)
@@ -127,11 +129,11 @@ function FormUrl() {
           onChange={() => {
             clearErrors("url");
           }}
-          placeholder="https://example.com/long-url"
+          placeholder={t("urlPage.form.placeholders.longUrl")}
           defaultValue={url?.longUrl}
         />
         {errors.url && (
-          <p className="error-input-message">{errors.url.message}</p>
+          <p className="error-input-message">{t(errors.url.message!)}</p>
         )}
         <div>
           {isNew && (
@@ -142,13 +144,15 @@ function FormUrl() {
                 setIsOpen((previous) => !previous);
               }}
             >
-              <span>Advanced</span>
+              <span>{t("urlPage.form.advancedButton")}</span>
               <FaArrowDown className={`arrow ${isOpen ? "open" : ""}`} />
             </button>
           )}
           <div className={`advanced ${isOpen ? "" : "close"}`}>
             <div className="input-container">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">
+                {t("urlPage.form.placeholders.password")}
+              </label>
               <input
                 type="password"
                 id="password"
@@ -157,7 +161,7 @@ function FormUrl() {
                 onChange={() => {
                   clearErrors("password");
                 }}
-                placeholder="Password"
+                placeholder={t("urlPage.form.placeholders.password")}
               />
               {errors.password && (
                 <p className="error-input-message">{errors.password.message}</p>
@@ -165,7 +169,9 @@ function FormUrl() {
             </div>
             <div className="split-inputs">
               <div className="input-container" id="prefix-input">
-                <label htmlFor="prefix">Prefix</label>
+                <label htmlFor="prefix">
+                  {t("urlPage.form.placeholders.prefix")}
+                </label>
                 <input
                   type="text"
                   id="prefix"
@@ -174,15 +180,19 @@ function FormUrl() {
                   onChange={() => {
                     clearErrors("prefix");
                   }}
-                  placeholder="Custom prefix of shorten URL"
+                  placeholder={t("urlPage.form.placeholders.prefix")}
                   defaultValue={url?.prefix}
                 />
                 {errors.prefix && (
-                  <p className="error-input-message">{errors.prefix.message}</p>
+                  <p className="error-input-message">
+                    {t(errors.prefix.message!)}
+                  </p>
                 )}
               </div>
               <div className="input-container" id="enable-input">
-                <label htmlFor="enable">Enable</label>
+                <label htmlFor="enable">
+                  {t("urlPage.form.placeholders.enable")}
+                </label>
                 <input
                   type="checkbox"
                   id="enable"
@@ -200,7 +210,9 @@ function FormUrl() {
             </div>
             <div className="split-inputs timestamp">
               <div className="input-container" id="date-input">
-                <label htmlFor="date">Expiration Date</label>
+                <label htmlFor="date">
+                  {t("urlPage.form.placeholders.expirationDate")}
+                </label>
                 <input
                   type="date"
                   id="date"
@@ -218,7 +230,9 @@ function FormUrl() {
                 )}
               </div>
               <div className="input-container" id="time-input">
-                <label htmlFor="time">Time</label>
+                <label htmlFor="time">
+                  {t("urlPage.form.placeholders.expirationTime")}
+                </label>
                 <input
                   type="time"
                   id="time"
@@ -238,7 +252,9 @@ function FormUrl() {
             </div>
             {isAuthenticated && (
               <div className="input-container">
-                <label htmlFor="note">Note</label>
+                <label htmlFor="note">
+                  {t("urlPage.form.placeholders.note")}
+                </label>
                 <textarea
                   id="note"
                   {...register("note")}
@@ -246,12 +262,14 @@ function FormUrl() {
                   onChange={() => {
                     clearErrors("note");
                   }}
-                  placeholder="Some note to remember"
+                  placeholder={t("urlPage.form.placeholders.note")}
                   maxLength={500}
                   defaultValue={url?.note}
                 />
                 {errors.note && (
-                  <p className="error-input-message">{errors.note.message}</p>
+                  <p className="error-input-message">
+                    {t(errors.note.message!)}
+                  </p>
                 )}
               </div>
             )}
@@ -260,7 +278,11 @@ function FormUrl() {
         <input
           type="submit"
           id="submit"
-          value={isNew ? "Shorten" : "Apply changes"}
+          value={
+            isNew
+              ? t("urlPage.form.submitButton.new")
+              : t("urlPage.form.submitButton.update")
+          }
         />
       </form>
     </div>

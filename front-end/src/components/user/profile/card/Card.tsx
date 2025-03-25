@@ -16,12 +16,14 @@ import {
   FormUpdateUserType,
 } from "../../../../services/zod/form/update_user";
 import "./Card.css";
+import { useTranslation } from "react-i18next";
 
 function ProfileCard() {
   const { user, logoutUser, updateUserInfo } = useContext(UserContext);
   const { setChildren, toggleModal } = useContext(ModalContext);
   const { setHistory } = useContext(HistoryContext);
   const [isShow, setIsShow] = useState(true);
+  const { t } = useTranslation();
 
   const {
     register,
@@ -91,21 +93,23 @@ function ProfileCard() {
   return (
     <div className="profile-card-container">
       <h2 className="title">
-        {isShow ? "See your profile" : "Update your profile"}
+        {isShow
+          ? t("userPage.profile.title.see")
+          : t("userPage.profile.title.update")}
       </h2>
       {isShow ? (
         <div className="info-container">
           <div className="info-rows">
             <div className="row">
-              <p className="label">Email:</p>
+              <p className="label">{`${t("userPage.profile.form.email")}`}</p>
               <p className="value horizontal">{user.email}</p>
             </div>
             <div className="row">
-              <p className="label">Name:</p>
+              <p className="label">{`${t("userPage.profile.form.name")}`}</p>
               <p className="value horizontal">{user.name}</p>
             </div>
             <div className="row">
-              <p className="label">Surname:</p>
+              <p className="label">{`${t("userPage.profile.form.surname")}`}</p>
               <p className="value">{user.surname}</p>
             </div>
           </div>
@@ -131,11 +135,11 @@ function ProfileCard() {
             onChange={() => {
               clearErrors("password");
             }}
-            placeholder="Password"
+            placeholder={t("userPage.profile.form.password")}
             required={true}
           />
           {errors.password && (
-            <p className="error-input-message">{errors.password.message}</p>
+            <p className="error-input-message">{t(errors.password.message!)}</p>
           )}
           <input
             type="password"
@@ -145,7 +149,7 @@ function ProfileCard() {
             onChange={() => {
               clearErrors("newPassword");
             }}
-            placeholder="Type new password to update it"
+            placeholder={t("userPage.profile.form.newPassword")}
           />
           {errors.newPassword && (
             <p className="error-input-message">{errors.newPassword.message}</p>
@@ -158,7 +162,7 @@ function ProfileCard() {
             onChange={() => {
               clearErrors("name");
             }}
-            placeholder="Name"
+            placeholder={t("userPage.profile.form.name")}
             defaultValue={user.name}
           />
           {errors.name && (
@@ -172,13 +176,17 @@ function ProfileCard() {
             onChange={() => {
               clearErrors("surname");
             }}
-            placeholder="Suranme"
+            placeholder={t("userPage.profile.form.surname")}
             defaultValue={user.surname}
           />
           {errors.surname && (
             <p className="error-input-message">{errors.surname.message}</p>
           )}
-          <input type="submit" id="submit" value={"Update"} />
+          <input
+            type="submit"
+            id="submit"
+            value={t("userPage.profile.updateButton")}
+          />
         </form>
       )}
     </div>

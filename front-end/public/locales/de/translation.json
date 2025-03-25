@@ -1,0 +1,171 @@
+{
+  "commons": {
+    "urlButton": "Einen neuen Link kürzen",
+    "footerPhrase": "Mit Blut und Schweiß gemacht",
+    "delete": {
+      "userTitle": "Ihr Konto löschen",
+      "urlTitle": "Ihre URL löschen",
+      "placeholder": "Passwort eingeben, um zu bestätigen",
+      "button": "Löschen bestätigen"
+    }
+  },
+  "homePage": {
+    "main": {
+      "title": "Kürzen, Teilen und Verfolgen Sie Ihre Links sofort!",
+      "description": "Verkürzen Sie Ihre Links mit einem Klick und machen Sie sie einfacher und stilvoller zu teilen oder personalisieren Sie sie. Verwalten Sie Ihre geteilten Links nach Ihren Wünschen und verfolgen Sie deren Statistiken."
+    },
+    "explore": {
+      "text": {
+        "title": "Verbessern Sie Ihr Erlebnis!",
+        "description": "Erweitern Sie Ihre Möglichkeiten, indem Sie auf alle erweiterten Funktionen zugreifen: Verfolgen Sie die Historie Ihrer Links, fügen Sie Notizen hinzu, verwalten Sie sie nach Belieben und überwachen Sie ihre Statistiken."
+      },
+      "columnsTitle": {
+        "feature": "Funktion",
+        "signed": "Registriert",
+        "free": "Kostenlos"
+      }
+    },
+    "faq": {
+      "title": "Entdecken Sie die Funktionen!"
+    },
+    "features": {
+      "customPrefix": {
+        "title": "Benutzerdefiniertes Präfix",
+        "description": "Mit der Funktion für benutzerdefinierte Präfixe können Sie den Anfang Ihrer Kurzlinks ändern, um sie erkennbarer und markengerechter zu gestalten. Anstatt eines generischen Links haben Sie die Kontrolle über das Präfix, wodurch Ihre URL professioneller und leichter zu merken ist."
+      },
+      "password": {
+        "title": "Passwort",
+        "description": "Behalten Sie die Kontrolle über Ihre Links mit einem Passwort! Diese Option ermöglicht es Ihnen, ein Passwort für den Zugriff auf den Inhalt des erstellten Links festzulegen, um mehr Sicherheit und Datenschutz zu gewährleisten."
+      },
+      "expirationTime": {
+        "title": "Ablaufzeit",
+        "description": "Dank der Möglichkeit, eine Ablaufzeit festzulegen, können Sie eine zeitliche Begrenzung für Ihre Kurzlinks definieren (durch Festlegen eines bestimmten Datums und einer bestimmten Uhrzeit), nach der sie nicht mehr zugänglich sind. Perfekt zum Teilen temporärer Inhalte, ohne sie manuell löschen zu müssen!"
+      },
+      "history": {
+        "title": "Verlauf",
+        "description": "Durch den Zugriff auf Ihren Verlauf können Sie alle Ihre gekürzten Links in einem einzigen Dashboard verfolgen. Sie haben Zugriff auf eine detaillierte Liste mit nützlichen Informationen zur besseren Verwaltung und Bearbeitung Ihrer URLs."
+      },
+      "note": {
+        "title": "Notizen",
+        "description": "Wenn Sie viele Links erstellen, kann es hilfreich sein, jedem eine persönliche Notiz hinzuzufügen, um die Verwaltung und Organisation Ihrer URLs zu erleichtern."
+      },
+      "status": {
+        "title": "Aktivieren/Deaktivieren",
+        "description": "Mit dieser Funktion können Sie einen Kurzlink jederzeit aktivieren oder deaktivieren, ohne ihn endgültig zu löschen. Dadurch haben Sie die volle Kontrolle über die Verfügbarkeit des Links."
+      },
+      "updateExpirationTime": {
+        "title": "Ablaufzeit aktualisieren",
+        "description": "Durch den Zugriff auf Ihr Profil können Sie die Ablaufzeit aktualisieren. So können Sie das Datum oder die Zugriffsgrenze Ihres Links einfach ändern, ohne einen neuen erstellen zu müssen."
+      },
+      "statistics": {
+        "title": "Statistiken",
+        "description": "Überwachen Sie die Leistung Ihrer Links und gewinnen Sie Einblicke. Sie können Informationen zu Ihrem Profil oder spezifische Details zu jedem einzelnen erstellten Link einsehen."
+      }
+    }
+  },
+  "redirectPage": {
+    "protected": {
+      "title": "Die angeforderte URL ist geschützt",
+      "button": "URL entsperren"
+    }
+  },
+  "signPage": {
+    "signup": {
+      "title": "Konto erstellen",
+      "button": "Registrieren",
+      "form": {
+        "name": "Name",
+        "surname": "Nachname",
+        "email": "E-Mail *",
+        "password1": "Passwort *",
+        "password2": "Passwort wiederholen *"
+      }
+    },
+    "login": {
+      "title": "Anmelden",
+      "button": "Anmelden",
+      "toastMessage": "Falsche E-Mail oder falsches Passwort",
+      "form": {
+        "email": "E-Mail",
+        "password": "Passwort"
+      }
+    }
+  },
+  "urlPage": {
+    "form": {
+      "title": "Kürzen Sie Ihre URL",
+      "advancedButton": "Erweitert",
+      "submitButton": {
+        "new": "Kürzen",
+        "update": "Änderungen anwenden"
+      },
+      "placeholders": {
+        "longUrl": "https://beispiel.com/lange-url",
+        "password": "Passwort",
+        "prefix": "Benutzerdefiniertes Präfix",
+        "enable": "Aktivieren",
+        "expirationDate": "Ablaufdatum",
+        "expirationTime": "Uhrzeit",
+        "note": "Notiz"
+      }
+    },
+    "show": {
+      "urlTitle": {
+        "new": "Holen Sie sich Ihren gekürzten Link",
+        "old": "Sehen Sie sich Ihren gekürzten Link an"
+      },
+      "qrTitle": {
+        "new": "Holen Sie sich Ihren QR-Code",
+        "old": "Sehen Sie sich Ihren QR-Code an"
+      }
+    }
+  },
+  "userPage": {
+    "history": {
+      "title": "Verlauf",
+      "item": {
+        "longUrl": "Lange URL",
+        "shortUrl": "Kurze URL",
+        "status": "Status",
+        "createdAt": "Erstellt am",
+        "updatedAt": "Aktualisiert am",
+        "expireAt": "Läuft ab am",
+        "note": "Notiz",
+        "clicks": "Klicks"
+      }
+    },
+    "profile": {
+      "title": {
+        "see": "Ihr Profil ansehen",
+        "update": "Ihr Profil aktualisieren"
+      },
+      "form": {
+        "email": "E-Mail",
+        "name": "Name",
+        "surname": "Nachname",
+        "password": "Passwort",
+        "newPassword": "Neues Passwort eingeben, um es zu aktualisieren"
+      },
+      "updateButton": "Änderungen anwenden"
+    },
+    "statistics": {
+      "title": "Statistiken",
+      "totalLinks": "Gesamtzahl der Links",
+      "totalClicks": "Gesamtanzahl der Klicks",
+      "activeLinks": "Aktive Links"
+    }
+  },
+  "zod": {
+    "formUrl": {
+      "url": {
+        "empty": "Das System akzeptiert keine leere URL",
+        "long": "Das System akzeptiert keine URL mit mehr als 2100 Zeichen"
+      },
+      "prefix": "Das URL-Präfix darf nicht länger als 10 Zeichen sein",
+      "note": "Eine Notiz darf nicht länger als 500 Zeichen sein"
+    },
+    "password": "Ein Passwort darf nicht leer sein",
+    "email": "Der eingegebene Wert muss eine E-Mail sein",
+    "mismatch": "Die Passwörter stimmen nicht überein"
+  }
+}

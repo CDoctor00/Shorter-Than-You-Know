@@ -1,0 +1,171 @@
+{
+  "commons": {
+    "urlButton": "Raccourcir un nouveau lien",
+    "footerPhrase": "Fait avec du sang et de la sueur",
+    "delete": {
+      "userTitle": "Supprimer votre compte",
+      "urlTitle": "Supprimer votre URL",
+      "placeholder": "Entrez le mot de passe pour confirmer",
+      "button": "Confirmer la suppression"
+    }
+  },
+  "homePage": {
+    "main": {
+      "title": "Raccourcissez, partagez et suivez vos liens instantanément!",
+      "description": "Réduisez la longueur de vos liens en un clic et rendez-les plus faciles et élégants à partager, ou personnalisez-les. Gérez vos liens partagés comme vous le souhaitez et suivez leurs statistiques."
+    },
+    "explore": {
+      "text": {
+        "title": "Améliorez votre expérience !",
+        "description": "Étendez vos possibilités en accédant à toutes les fonctionnalités avancées : suivez l'historique de vos liens, ajoutez des notes, gérez-les comme vous le souhaitez et surveillez leurs statistiques."
+      },
+      "columnsTitle": {
+        "feature": "Fonctionnalité",
+        "signed": "Inscrit",
+        "free": "Gratuit"
+      }
+    },
+    "faq": {
+      "title": "Explorez les fonctionnalités !"
+    },
+    "features": {
+      "customPrefix": {
+        "title": "Préfixe Personnalisé",
+        "description": "Avec la fonctionnalité de préfixe personnalisé, vous pouvez modifier le début de vos liens courts pour les rendre plus reconnaissables et adaptés à votre marque. Au lieu d'un lien générique, vous aurez le contrôle du préfixe, rendant votre URL plus professionnelle et plus facile à mémoriser."
+      },
+      "password": {
+        "title": "Mot de passe",
+        "description": "Gardez le contrôle de vos liens avec un mot de passe ! Cette option vous permet de définir un mot de passe pour accéder au contenu du lien créé, garantissant une plus grande sécurité et confidentialité."
+      },
+      "expirationTime": {
+        "title": "Durée d'Expiration",
+        "description": "Grâce à la possibilité de définir une durée d'expiration, vous pouvez fixer une limite de temps pour vos liens courts (en définissant une date et une heure précises), après quoi ils ne seront plus accessibles. Parfait pour partager du contenu temporaire sans avoir à le supprimer manuellement!"
+      },
+      "history": {
+        "title": "Historique",
+        "description": "En accédant à votre historique, vous pouvez suivre tous vos liens raccourcis sur un tableau de bord unique. Vous aurez accès à une liste détaillée avec des informations utiles pour mieux gérer et modifier vos URL."
+      },
+      "note": {
+        "title": "Notes",
+        "description": "Si vous créez de nombreux liens, il peut être utile d'ajouter des notes personnelles à chacun d'eux, facilitant ainsi leur gestion et leur organisation."
+      },
+      "status": {
+        "title": "Activer/Désactiver",
+        "description": "Avec cette fonctionnalité, vous pouvez activer ou désactiver un lien court à tout moment sans le supprimer définitivement. Cela vous permet d'avoir un contrôle total sur la disponibilité du lien."
+      },
+      "updateExpirationTime": {
+        "title": "Mettre à Jour la Durée d'Expiration",
+        "description": "En accédant à votre profil, vous pourrez mettre à jour la durée d'expiration. Ainsi, vous pourrez facilement modifier la date ou la limite d'accès de votre lien sans avoir à en générer un nouveau."
+      },
+      "statistics": {
+        "title": "Statistiques",
+        "description": "Surveillez les performances de vos liens et obtenez des analyses. Vous pourrez afficher des informations concernant votre profil ou des détails spécifiques sur chaque lien créé."
+      }
+    }
+  },
+  "redirectPage": {
+    "protected": {
+      "title": "L'URL demandée est protégée",
+      "button": "Déverrouiller l'URL"
+    }
+  },
+  "signPage": {
+    "signup": {
+      "title": "Créer un Compte",
+      "button": "S'inscrire",
+      "form": {
+        "name": "Nom",
+        "surname": "Prénom",
+        "email": "Email *",
+        "password1": "Mot de passe *",
+        "password2": "Répéter le mot de passe *"
+      }
+    },
+    "login": {
+      "title": "Connexion",
+      "button": "Se connecter",
+      "toastMessage": "Email ou mot de passe incorrect",
+      "form": {
+        "email": "Email",
+        "password": "Mot de passe"
+      }
+    }
+  },
+  "urlPage": {
+    "form": {
+      "title": "Raccourcissez votre URL",
+      "advancedButton": "Avancé",
+      "submitButton": {
+        "new": "Raccourcir",
+        "update": "Appliquer les modifications"
+      },
+      "placeholders": {
+        "longUrl": "https://exemple.com/longue-url",
+        "password": "Mot de passe",
+        "prefix": "Préfixe Personnalisé",
+        "enable": "Activer",
+        "expirationDate": "Date d'Expiration",
+        "expirationTime": "Heure",
+        "note": "Note"
+      }
+    },
+    "show": {
+      "urlTitle": {
+        "new": "Obtenez votre lien raccourci",
+        "old": "Voir votre lien raccourci"
+      },
+      "qrTitle": {
+        "new": "Obtenez votre code QR",
+        "old": "Voir votre code QR"
+      }
+    }
+  },
+  "userPage": {
+    "history": {
+      "title": "Historique",
+      "item": {
+        "longUrl": "URL Longue",
+        "shortUrl": "URL Courte",
+        "status": "Statut",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le",
+        "expireAt": "Expire le",
+        "note": "Note",
+        "clicks": "Clics"
+      }
+    },
+    "profile": {
+      "title": {
+        "see": "Voir votre profil",
+        "update": "Mettre à jour votre profil"
+      },
+      "form": {
+        "email": "Email",
+        "name": "Nom",
+        "surname": "Prénom",
+        "password": "Mot de passe",
+        "newPassword": "Saisissez un nouveau mot de passe pour le mettre à jour"
+      },
+      "updateButton": "Appliquer les modifications"
+    },
+    "statistics": {
+      "title": "Statistiques",
+      "totalLinks": "Total des Liens",
+      "totalClicks": "Total des Clics",
+      "activeLinks": "Liens Actifs"
+    }
+  },
+  "zod": {
+    "formUrl": {
+      "url": {
+        "empty": "Le système n'accepte pas une URL vide",
+        "long": "Le système n'accepte pas une URL de plus de 2100 caractères"
+      },
+      "prefix": "Le préfixe de l'URL ne peut pas dépasser 10 caractères",
+      "note": "Une note ne peut pas dépasser 500 caractères"
+    },
+    "password": "Un mot de passe ne peut pas être vide",
+    "email": "La valeur entrée doit être un email",
+    "mismatch": "Les mots de passe ne correspondent pas"
+  }
+}

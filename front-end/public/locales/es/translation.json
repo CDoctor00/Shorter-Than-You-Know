@@ -1,0 +1,171 @@
+{
+  "commons": {
+    "urlButton": "Acortar un nuevo enlace",
+    "footerPhrase": "Hecho con sangre y sudor",
+    "delete": {
+      "userTitle": "Eliminar tu cuenta",
+      "urlTitle": "Eliminar tu URL",
+      "placeholder": "Ingresa la contraseña para confirmar",
+      "button": "Confirmar eliminación"
+    }
+  },
+  "homePage": {
+    "main": {
+      "title": "¡Acorta, comparte y sigue tus enlaces al instante!",
+      "description": "Reduce la longitud de tus enlaces con un solo clic y haz que sean más fáciles y elegantes de compartir, o personalízalos. Administra tus enlaces compartidos como prefieras y sigue sus estadísticas."
+    },
+    "explore": {
+      "text": {
+        "title": "¡Mejora tu experiencia!",
+        "description": "Amplía tus posibilidades accediendo a todas las funciones avanzadas: sigue el historial de tus enlaces, añade notas, adminístralos como prefieras y monitorea sus estadísticas."
+      },
+      "columnsTitle": {
+        "feature": "Función",
+        "signed": "Registrado",
+        "free": "Gratis"
+      }
+    },
+    "faq": {
+      "title": "¡Explora las funciones!"
+    },
+    "features": {
+      "customPrefix": {
+        "title": "Prefijo Personalizado",
+        "description": "Con la función de prefijo personalizado, puedes modificar el inicio de tus enlaces cortos para hacerlos más reconocibles y con marca. En lugar de un enlace genérico, tendrás control sobre el prefijo, haciendo que tu URL sea más profesional y fácil de recordar."
+      },
+      "password": {
+        "title": "Contraseña",
+        "description": "¡Mantén el control de tus enlaces con una contraseña! Esta opción te permite establecer una contraseña para acceder al contenido del enlace creado, garantizando mayor seguridad y privacidad."
+      },
+      "expirationTime": {
+        "title": "Tiempo de Expiración",
+        "description": "Gracias a la posibilidad de definir un tiempo de expiración, puedes establecer un límite de tiempo para tus enlaces cortos (definiendo una fecha y hora específicas), después del cual ya no serán accesibles. ¡Perfecto para compartir contenido temporal sin tener que eliminarlo manualmente!"
+      },
+      "history": {
+        "title": "Historial",
+        "description": "Accediendo a tu historial, puedes hacer un seguimiento de todos tus enlaces acortados en un solo panel. Tendrás acceso a una lista detallada con información útil para gestionar y editar mejor tus URLs."
+      },
+      "note": {
+        "title": "Notas",
+        "description": "Si creas muchos enlaces, puede ser útil añadir anotaciones personales a cada uno de ellos, facilitando su gestión y organización."
+      },
+      "status": {
+        "title": "Habilitar/Deshabilitar",
+        "description": "Con esta función, puedes activar o desactivar un enlace corto en cualquier momento sin eliminarlo permanentemente. Esto te permite tener un control total sobre la disponibilidad del enlace."
+      },
+      "updateExpirationTime": {
+        "title": "Actualizar Tiempo de Expiración",
+        "description": "Accediendo a tu perfil, podrás actualizar el tiempo de expiración. De esta manera, puedes modificar fácilmente la fecha o el límite de acceso de tu enlace sin tener que generar uno nuevo."
+      },
+      "statistics": {
+        "title": "Estadísticas",
+        "description": "Monitorea el rendimiento de tus enlaces y obtén información. Podrás ver datos relacionados con tu perfil o detalles específicos de cada enlace creado."
+      }
+    }
+  },
+  "redirectPage": {
+    "protected": {
+      "title": "La URL solicitada está protegida",
+      "button": "Desbloquear la URL"
+    }
+  },
+  "signPage": {
+    "signup": {
+      "title": "Crear Cuenta",
+      "button": "Registrarse",
+      "form": {
+        "name": "Nombre",
+        "surname": "Apellido",
+        "email": "Correo electrónico *",
+        "password1": "Contraseña *",
+        "password2": "Repetir contraseña *"
+      }
+    },
+    "login": {
+      "title": "Iniciar Sesión",
+      "button": "Iniciar Sesión",
+      "toastMessage": "Correo electrónico o contraseña incorrectos",
+      "form": {
+        "email": "Correo electrónico",
+        "password": "Contraseña"
+      }
+    }
+  },
+  "urlPage": {
+    "form": {
+      "title": "Acortar tu URL",
+      "advancedButton": "Avanzado",
+      "submitButton": {
+        "new": "Acortar",
+        "update": "Aplicar cambios"
+      },
+      "placeholders": {
+        "longUrl": "https://ejemplo.com/langa-url",
+        "password": "Contraseña",
+        "prefix": "Prefijo Personalizado",
+        "enable": "Habilitar",
+        "expirationDate": "Fecha de Expiración",
+        "expirationTime": "Hora",
+        "note": "Nota"
+      }
+    },
+    "show": {
+      "urlTitle": {
+        "new": "Obtén tu enlace acortado",
+        "old": "Ver tu enlace acortado"
+      },
+      "qrTitle": {
+        "new": "Obtén tu código QR",
+        "old": "Ver tu código QR"
+      }
+    }
+  },
+  "userPage": {
+    "history": {
+      "title": "Historial",
+      "item": {
+        "longUrl": "URL Larga",
+        "shortUrl": "URL Corta",
+        "status": "Estado",
+        "createdAt": "Creado el",
+        "updatedAt": "Actualizado el",
+        "expireAt": "Expira el",
+        "note": "Nota",
+        "clicks": "Clics"
+      }
+    },
+    "profile": {
+      "title": {
+        "see": "Ver tu perfil",
+        "update": "Actualizar tu perfil"
+      },
+      "form": {
+        "email": "Correo electrónico",
+        "name": "Nombre",
+        "surname": "Apellido",
+        "password": "Contraseña",
+        "newPassword": "Escribe una nueva contraseña para actualizarla"
+      },
+      "updateButton": "Aplicar cambios"
+    },
+    "statistics": {
+      "title": "Estadísticas",
+      "totalLinks": "Total de Enlaces",
+      "totalClicks": "Total de Clics",
+      "activeLinks": "Enlaces Activos"
+    }
+  },
+  "zod": {
+    "formUrl": {
+      "url": {
+        "empty": "El sistema no acepta una URL vacía",
+        "long": "El sistema no acepta una URL de más de 2100 caracteres"
+      },
+      "prefix": "El prefijo de la URL no puede tener más de 10 caracteres",
+      "note": "Una nota no puede tener más de 500 caracteres"
+    },
+    "password": "La contraseña no puede estar vacía",
+    "email": "El valor ingresado debe ser un correo electrónico",
+    "mismatch": "Las contraseñas no coinciden"
+  }
+}

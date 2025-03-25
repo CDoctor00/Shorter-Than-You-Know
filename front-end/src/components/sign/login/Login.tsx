@@ -11,6 +11,7 @@ import {
 } from "../../../services/zod/form/login";
 import { ToastContainer, toast } from "react-toastify";
 import "./Login.css";
+import { useTranslation } from "react-i18next";
 
 function LoginForm({
   isOpen,
@@ -21,6 +22,7 @@ function LoginForm({
 }) {
   const ref = useRef<HTMLFormElement | null>(null);
   const { loginUser } = useContext(UserContext);
+  const { t } = useTranslation();
 
   const {
     register,
@@ -44,7 +46,7 @@ function LoginForm({
           loginUser(response.data!.accessToken);
           ref.current?.reset();
         } else if (response.status >= 400) {
-          toast.error("Wrong email or password");
+          toast.error(t("signPage.login.toastMessage"));
         }
       })
       .catch((error) => {
@@ -62,32 +64,32 @@ function LoginForm({
         onClick={isOpen ? undefined : toggleForm}
         className={`card-label down ${isOpen ? "" : "close"}`}
       >
-        Sign In
+        {t("signPage.login.title")}
       </label>
       <form onSubmit={handleSubmit(onSubmit)} ref={ref}>
         <div className="inputs-container">
           <input
             type="text"
-            placeholder="Email"
+            placeholder={t("signPage.login.form.email")}
             {...register("email")}
             className={errors.email && "error-input"}
             onChange={() => clearErrors("email")}
           />
           {errors.email && (
-            <p className="error-input-message">{errors.email.message}</p>
+            <p className="error-input-message">{t(errors.email.message!)}</p>
           )}
           <input
             type="password"
-            placeholder="Password"
+            placeholder={t("signPage.login.form.password")}
             {...register("password")}
             className={errors.password && "error-input"}
             onChange={() => clearErrors("password")}
           />
           {errors.password && (
-            <p className="error-input-message">{errors.password.message}</p>
+            <p className="error-input-message">{t(errors.password.message!)}</p>
           )}
         </div>
-        <input type="submit" value="Sign In" />
+        <input type="submit" value={t("signPage.login.button")} />
         <div className="icons">
           <FaFacebook className="icon" />
           <FaGoogle className="icon" />

@@ -10,6 +10,7 @@ import Delete from "../../../commons/delete/Delete";
 import UrlInfo from "../../../user/history/url_info/Info";
 import { FormPasswordType } from "../../../../services/zod/form/password";
 import { copyToClipboard } from "../../../../services/system/clipboard";
+import { useTranslation } from "react-i18next";
 import "./Data.css";
 
 interface props {
@@ -21,6 +22,7 @@ function UrlData({ isOpen, toggleQR }: props) {
   const { url, isNew, toggleShowForm } = useContext(UrlContext);
   const { toggleModal, setChildren } = useContext(ModalContext);
   const { removeItem } = useContext(HistoryContext);
+  const { t } = useTranslation();
 
   if (!url) {
     return null;
@@ -49,7 +51,12 @@ function UrlData({ isOpen, toggleQR }: props) {
   };
 
   const swapModalToDelete = () => {
-    setChildren(<Delete submitDelete={submitDelete} title="Delete your url" />);
+    setChildren(
+      <Delete
+        submitDelete={submitDelete}
+        title={t("commons.delete.urlTitle")}
+      />
+    );
   };
 
   //? remove protocol from URL
@@ -61,7 +68,9 @@ function UrlData({ isOpen, toggleQR }: props) {
         className={`card-label up ${isOpen ? "" : "close"}`}
         onClick={isOpen ? undefined : toggleQR}
       >
-        {`${isNew ? "Get" : "See"} your shorten link`}
+        {isNew
+          ? t("urlPage.show.urlTitle.new")
+          : t("urlPage.show.urlTitle.old")}
       </label>
       <div className="shorten-wrapper">
         {isNew ? (

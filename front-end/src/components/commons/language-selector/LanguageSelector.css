@@ -1,0 +1,25 @@
+.language-selector-container {
+  position: relative;
+  display: inline-block;
+
+  .options-list {
+    position: absolute;
+    top: calc(100% + 1rem);
+    left: 0;
+    background-color: var(--card-bg);
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 0.5rem;
+  }
+
+  .option {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+  }
+
+  .option:hover,
+  .option.selected {
+    background-color: rgb(from var(--secondary) r g b / 0.5);
+  }
+}

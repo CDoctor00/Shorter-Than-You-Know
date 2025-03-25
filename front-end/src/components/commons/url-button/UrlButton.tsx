@@ -2,16 +2,13 @@ import { FaPlus } from "react-icons/fa6";
 import { useContext } from "react";
 import { UrlContext } from "../../../contexts/url/Context";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./UrlButton.css";
 
-interface props {
-  redirect: boolean;
-  text?: string;
-}
-
-function UrlButton({ redirect, text }: props) {
+function UrlButton({ redirect }: { redirect: boolean }) {
   const { setUrl, toggleShowForm } = useContext(UrlContext);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <button
@@ -29,7 +26,7 @@ function UrlButton({ redirect, text }: props) {
       <span className="url-icon">
         <FaPlus />
       </span>
-      <span className="url-text">{text ? text : `Shorten a new link`}</span>
+      <span className="url-text">{t("commons.urlButton")}</span>
     </button>
   );
 }

@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 export const formUpdateUserSchema = z.object({
-  password: z
-    .string({ message: "Password error" })
-    .nonempty("A password could not be empty"),
+  password: z.string({ message: "Password error" }).nonempty("zod.password"),
   newPassword: z
     .string({ message: "New password error" })
     .optional()
