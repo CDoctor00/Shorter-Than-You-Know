@@ -18,7 +18,7 @@
     color: var(--title);
   }
 
-  .text {
+  .description {
     line-height: 1.625;
   }
 }

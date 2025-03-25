@@ -1,6 +1,6 @@
 import FaqContainer from "../faq/container/Container";
 import Main from "../main/Main";
-import Table from "../table/Table";
+import Explore from "../explore/Explore";
 import "./Page.css";
 
 function HomePage() {
@@ -8,7 +8,7 @@ function HomePage() {
     <div className="home-page">
       <div className="home-container">
         <Main />
-        <Table />
+        <Explore />
         <FaqContainer />
       </div>
     </div>

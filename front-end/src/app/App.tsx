@@ -39,6 +39,7 @@ function App() {
             <Route path="/shorten" element={<UrlPage />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/*" element={<RedirectPage />} />
+            <Route path="/" element={<HomePage />} />
           </Routes>
           <Modal />
         </main>

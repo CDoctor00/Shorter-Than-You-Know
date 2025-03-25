@@ -1,19 +1,19 @@
 import { TbKey, TbKeyOff } from "react-icons/tb";
 import { rows } from "./utils";
-import "./Table.css";
+import "./Explore.css";
 
-function Table() {
+function Explore() {
   return (
-    <div className="table-container">
-      <div className="table-text-container">
+    <div className="explore-container">
+      <div className="text-container">
         <h2 className="title">Improve your experience!</h2>
-        <p className="text">
+        <p className="description">
           Expand your possibilities by accessing all advanced features: track
           the history of your links, add notes, manage them as you prefer, and
           monitor their statistics.
         </p>
       </div>
-      <table className="home-table">
+      <table className="features-table">
         <tbody>
           <tr>
             <th className="header">Feature</th>
@@ -41,4 +41,4 @@ function Table() {
   );
 }
 
-export default Table;
+export default Explore;

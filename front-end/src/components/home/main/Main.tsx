@@ -9,7 +9,7 @@ function Main() {
         <h2 className="title">
           Shorten, Share, and Track Your Links Instantly!
         </h2>
-        <p className="text">
+        <p className="description">
           Reduce the length of your links in one click and make them easier and
           more stylish to share, or customize them. Manage your shared links the
           way you prefer and track their statistics.
