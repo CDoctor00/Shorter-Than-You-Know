@@ -7,7 +7,7 @@ import { HistoryContext } from "../../../../contexts/history/Context";
 import { getToken } from "../../../../services/api/utils/tokens";
 import { deleteUrl } from "../../../../services/api/auth/delete_url";
 import Delete from "../../../commons/delete/Delete";
-import UrlInfo from "../../../user/history/url_info/Info";
+import UrlInfo from "../../../user/history/url-info/Info";
 import { FormPasswordType } from "../../../../services/zod/form/password";
 import { copyToClipboard } from "../../../../services/system/clipboard";
 import { useTranslation } from "react-i18next";

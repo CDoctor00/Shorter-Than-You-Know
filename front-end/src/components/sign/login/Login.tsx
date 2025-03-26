@@ -1,4 +1,3 @@
-import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
 import { useContext, useRef } from "react";
 import { login } from "../../../services/api/base/login";
 import { localStorageManager } from "../../../services/system/local_storage";
@@ -92,12 +91,6 @@ function LoginForm({
           )}
         </div>
         <input type="submit" value={t("signPage.login.button")} />
-        <div className="icons">
-          <FaFacebook className="icon" />
-          <FaGoogle className="icon" />
-          <FaLinkedin className="icon" />
-          <FaGithub className="icon" />
-        </div>
       </form>
       <ToastContainer
         position="bottom-right"

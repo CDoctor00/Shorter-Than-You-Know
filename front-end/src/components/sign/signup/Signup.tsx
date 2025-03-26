@@ -1,4 +1,3 @@
-import { FaFacebook, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa6";
 import { useRef } from "react";
 import { signup } from "../../../services/api/base/signup";
 import {
@@ -131,12 +130,6 @@ function SignUp({
         </div>
         <input type="submit" value="Sign Up" />
       </form>
-      <div className="icons">
-        <FaFacebook className="icon" />
-        <FaGoogle className="icon" />
-        <FaLinkedin className="icon" />
-        <FaGithub className="icon" />
-      </div>
       <ToastContainer
         position="bottom-right"
         autoClose={3000}

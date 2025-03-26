@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import ListItem from "../list_item/ListItem";
+import ListItem from "../list-item/ListItem";
 import { HistoryContext } from "../../../../contexts/history/Context";
 import { getStatus } from "./utils";
 import { FaSearch } from "react-icons/fa";
