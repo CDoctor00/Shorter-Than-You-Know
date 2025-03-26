@@ -15,6 +15,7 @@ func Start() {
 
 	var server = fiber.New(config)
 	server.Server().MaxConnsPerIP = 2
+	server.Use(middlewares.GetLogger())
 	server.Use(middlewares.GetCors())
 	setupRoutes(server)
 
