@@ -1,6 +1,6 @@
 import { RequestSignupBody } from "../auth/types";
 
-export const signup = async (body: RequestSignupBody): Promise<undefined> => {
+export const signup = async (body: RequestSignupBody): Promise<number> => {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/signup`,
@@ -11,11 +11,7 @@ export const signup = async (body: RequestSignupBody): Promise<undefined> => {
       }
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    return;
+    return response.status;
   } catch (error) {
     throw new Error(`signup: ${error}`);
   }

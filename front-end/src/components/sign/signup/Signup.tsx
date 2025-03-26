@@ -8,6 +8,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import { ToastContainer, toast } from "react-toastify";
 import "./Signup.css";
 
 function SignUp({
@@ -36,9 +37,16 @@ function SignUp({
       name: data.name,
       surname: data.surname,
     })
-      .then(() => {
-        toggleForm();
-        ref.current?.reset();
+      .then((responseStatus) => {
+        if (responseStatus === 200) {
+          toast.success(t("signPage.signup.toastMessage.success"));
+          toggleForm();
+          ref.current?.reset();
+        } else if (responseStatus >= 400 && responseStatus < 500) {
+          toast.error(t("signPage.signup.toastMessage.fail"));
+        } else if (responseStatus >= 500) {
+          toast.error(t("serverError"));
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -129,6 +137,19 @@ function SignUp({
         <FaLinkedin className="icon" />
         <FaGithub className="icon" />
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        limit={3}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 }

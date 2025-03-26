@@ -10,8 +10,8 @@ import {
   FormLoginType,
 } from "../../../services/zod/form/login";
 import { ToastContainer, toast } from "react-toastify";
-import "./Login.css";
 import { useTranslation } from "react-i18next";
+import "./Login.css";
 
 function LoginForm({
   isOpen,
@@ -45,8 +45,10 @@ function LoginForm({
 
           loginUser(response.data!.accessToken);
           ref.current?.reset();
-        } else if (response.status >= 400) {
+        } else if (response.status >= 400 && response.status < 500) {
           toast.error(t("signPage.login.toastMessage"));
+        } else if (response.status >= 500) {
+          toast.error(t("serverError"));
         }
       })
       .catch((error) => {

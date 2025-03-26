@@ -79,6 +79,10 @@
         "email": "Email *",
         "password1": "Password *",
         "password2": "Ripeti la password *"
+      },
+      "toastMessage": {
+        "success": "Account creato con successo",
+        "fail": "L'email fornita è già in uso"
       }
     },
     "login": {
@@ -167,5 +171,6 @@
     "password": "Una password non può essere vuota",
     "email": "Il valore inserito deve rispettare il formato email",
     "mismatch": "Le password inserite non corrispondono"
-  }
+  },
+  "serverError": "Il sistema ha riscontrato un errore interno"
 }

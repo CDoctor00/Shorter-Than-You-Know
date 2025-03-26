@@ -79,6 +79,10 @@
         "email": "Email *",
         "password1": "Mot de passe *",
         "password2": "Répéter le mot de passe *"
+      },
+      "toastMessage": {
+        "success": "Compte créé avec succès",
+        "fail": "L'adresse e-mail fournie est déjà utilisée"
       }
     },
     "login": {
@@ -167,5 +171,6 @@
     "password": "Un mot de passe ne peut pas être vide",
     "email": "La valeur entrée doit être un email",
     "mismatch": "Les mots de passe ne correspondent pas"
-  }
+  },
+  "serverError": "Le système a rencontré une erreur interne"
 }

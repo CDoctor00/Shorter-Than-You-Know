@@ -79,6 +79,10 @@
         "email": "Email *",
         "password1": "Password *",
         "password2": "Repeat password *"
+      },
+      "toastMessage": {
+        "success": "Account created successfully",
+        "fail": "The given email is already in use"
       }
     },
     "login": {
@@ -167,5 +171,6 @@
     "password": "A password could not be empty",
     "email": "The entered value must be an email",
     "mismatch": "The passwords do not match"
-  }
+  },
+  "serverError": "The system has encountered an internal error"
 }
