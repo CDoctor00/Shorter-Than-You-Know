@@ -23,7 +23,7 @@ function UrlInfo() {
       </div>
       <div className="row">
         <p className="label">{`${t("userPage.history.item.status")}:`}</p>
-        <p className="value">{url.status}</p>
+        <p className={`value status ${url.status}`}>{url.status}</p>
       </div>
       <div className="row">
         <p className="label">{`${t("userPage.history.item.createdAt")}:`}</p>

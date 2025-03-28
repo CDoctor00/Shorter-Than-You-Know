@@ -101,6 +101,7 @@ function FormUrl() {
           prefix: requestBody.prefix,
           status: getStatus(requestBody.isEnabled, exp),
           note: data.note,
+          clicks: url.clicks,
         };
 
         setUrl(newUrl, false);

@@ -22,9 +22,9 @@ function ListItem({ url }: { url: Url }) {
       <div className="main-area">
         <div className="row first">
           {url.status == "Active" ? (
-            <MdOutlineCheckCircle />
+            <MdOutlineCheckCircle style={{ color: "var(--primary)" }} />
           ) : (
-            <MdOutlineBlock />
+            <MdOutlineBlock style={{ color: "red" }} />
           )}
           <h4 className="label">{url.longUrl}</h4>
         </div>

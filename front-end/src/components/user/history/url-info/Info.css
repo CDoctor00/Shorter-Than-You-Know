@@ -1,0 +1,18 @@
+.status {
+  border-radius: 1rem;
+  width: fit-content;
+  padding: 0 0.3rem;
+
+  &.Active {
+    color: var(--primary);
+    background-color: rgb(from var(--secondary) r g b / 0.3);
+  }
+  &.Disabled {
+    color: gray;
+    background-color: rgb(from gray r g b / 0.3);
+  }
+  &.Expired {
+    background-color: red;
+    background-color: rgb(from red r g b / 0.3);
+  }
+}
