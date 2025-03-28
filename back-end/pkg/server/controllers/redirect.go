@@ -25,6 +25,14 @@ func Redirect(context *fiber.Ctx) error {
 			})
 	}
 
+	if requestBody.ShortID == "" {
+		return context.Status(fiber.StatusNotAcceptable).JSON(
+			api.ResponseError{
+				Error:         "Empty 'ShortID' field",
+				FriendlyError: "The system could not accept to redirect to an url with empty 'ShortID' field",
+			})
+	}
+
 	var urlsDTO = database.NewUrlsDTO()
 
 	//? Get original URL's infos from the given shorten one
@@ -83,6 +91,11 @@ func Redirect(context *fiber.Ctx) error {
 				Error:         "Resource expired",
 				FriendlyError: "The system found the resource but it is expired",
 			})
+	}
+
+	errUpdate := urlsDTO.UpdateUrlClicks(originalURL.UUID)
+	if errUpdate != nil {
+		fmt.Printf("Error to increase clicks of url '%s'", originalURL.UUID)
 	}
 
 	return context.Status(fiber.StatusOK).JSON(

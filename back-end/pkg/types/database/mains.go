@@ -19,6 +19,7 @@ type URL struct {
 	UpdateTime     time.Time      `db_name:"update_time" db_type:"TIMESTAMPTZ NOT NULL"`
 	ExpirationTime sql.NullTime   `db_name:"expiration_time" db_type:"TIMESTAMPTZ"`
 	Note           sql.NullString `db_name:"note" db_type:"VARCHAR(500)"`
+	Clicks         int            `db_name:"clicks" db_type:"INTEGER"`
 }
 
 type User struct {

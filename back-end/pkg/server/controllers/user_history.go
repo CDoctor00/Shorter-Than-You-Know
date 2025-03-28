@@ -31,6 +31,7 @@ func UserHistory(context *fiber.Ctx) error {
 			IsEnabled:  row.Enabled,
 			CreateTime: row.InsertTime.Format(time.RFC3339),
 			UpdateTime: row.UpdateTime.Format(time.RFC3339),
+			Clicks:     row.Clicks,
 		}
 
 		if row.ExpirationTime.Valid {

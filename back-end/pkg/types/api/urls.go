@@ -44,6 +44,7 @@ type UrlData struct {
 	IsEnabled      bool      `json:"isEnabled"`
 	CreateTime     string    `json:"createTime"`
 	UpdateTime     string    `json:"updateTime"`
+	Clicks         int       `json:"clicks"`
 	Prefix         *string   `json:"prefix,omitempty"`
 	ExpirationTime *string   `json:"expirationTime,omitempty"`
 	Note           *string   `json:"note,omitempty"`
