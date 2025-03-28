@@ -1,54 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import ListItem from "../list-item/ListItem";
 import { HistoryContext } from "../../../../contexts/history/Context";
-import { getStatus } from "./utils";
 import { FaSearch } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
-import { getHistory } from "../../../../services/api/auth/history";
-import { getToken } from "../../../../services/api/utils/tokens";
 import { Url } from "../../../../types/contexts";
-import "./Container.css";
 import { useTranslation } from "react-i18next";
+import "./Container.css";
 
 function HistoryContainer() {
-  const { history, setHistory } = useContext(HistoryContext);
+  const { history } = useContext(HistoryContext);
   const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      return;
-    }
-
-    getHistory(token)
-      .then((response) => {
-        setHistory(
-          response.map((item) => {
-            const exp = item.expirationTime
-              ? new Date(item.expirationTime)
-              : undefined;
-
-            const newURL: Url = {
-              ...item,
-              shortUrl: `${window.location.origin}/${item.shortID}`,
-              createTime: new Date(item.createTime),
-              updateTime: new Date(item.updateTime),
-              expirationTime: exp,
-              status: getStatus(item.isEnabled, exp),
-            };
-
-            return newURL;
-          })
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-        return;
-      });
-  }, [setHistory]);
 
   let timeoutID: number;
   const updateFilter = (event: React.ChangeEvent<HTMLInputElement>) => {

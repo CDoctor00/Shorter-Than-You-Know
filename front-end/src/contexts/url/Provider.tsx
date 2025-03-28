@@ -18,6 +18,7 @@ const UrlContextProvider = (props: props) => {
   const updateStates = (newUrl: Url | undefined, isNew: boolean) => {
     setURL(newUrl);
     setIsNew(isNew);
+    setShowForm(false);
   };
 
   return (

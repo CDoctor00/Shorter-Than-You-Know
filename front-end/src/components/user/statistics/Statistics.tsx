@@ -1,15 +1,40 @@
 import { FaCheckCircle, FaLink, FaMousePointer } from "react-icons/fa";
-import "./Statistics.css";
 import { useTranslation } from "react-i18next";
+import { useContext, useEffect, useState } from "react";
+import { HistoryContext } from "../../../contexts/history/Context";
+import { getStatus } from "../../../services/system/urls";
+import "./Statistics.css";
 
-interface props {
-  clicks: number;
-  totalLinks: number;
-  activeLinks: number;
-}
+function Statistics() {
+  const { history } = useContext(HistoryContext);
+  const [totalLinks, setTotalLinks] = useState(0);
+  const [activeLinks, setActiveLinks] = useState(0);
+  const [totalClicks, setTotalClicks] = useState(0);
 
-function Statistics(props: props) {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    let tl = 0,
+      al = 0,
+      c = 0;
+
+    history.map((item) => {
+      tl++;
+
+      const exp = item.expirationTime
+        ? new Date(item.expirationTime)
+        : undefined;
+      if (getStatus(item.isEnabled!, exp) == "Active") {
+        al++;
+      }
+
+      c = item.clicks ? c + item.clicks : c;
+    });
+
+    setTotalLinks(tl);
+    setActiveLinks(al);
+    setTotalClicks(c);
+  }, [history]);
 
   return (
     <div className="statistics-container">
@@ -17,17 +42,17 @@ function Statistics(props: props) {
       <div className="statistics-card">
         <div className="item">
           <FaLink className="stats-icon" />
-          <p className="number">{props.totalLinks}</p>
+          <p className="number">{totalLinks}</p>
           <p className="description">{t("userPage.statistics.totalLinks")}</p>
         </div>
         <div className="item">
           <FaMousePointer className="stats-icon" />
-          <p className="number">{props.clicks}</p>
+          <p className="number">{totalClicks}</p>
           <p className="description">{t("userPage.statistics.totalClicks")}</p>
         </div>
         <div className="item">
           <FaCheckCircle className="stats-icon" />
-          <p className="number">{props.activeLinks}</p>
+          <p className="number">{activeLinks}</p>
           <p className="description">{t("userPage.statistics.activeLinks")}</p>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { FaArrowDown } from "react-icons/fa6";
 import { UrlContext } from "../../../contexts/url/Context";
 import { createExpDate } from "./utils";
-import { getStatus } from "../../user/history/container/utils";
+import { getStatus } from "../../../services/system/urls";
 import { HistoryContext } from "../../../contexts/history/Context";
 import { shorten } from "../../../services/api/base/shorten";
 import { getToken } from "../../../services/api/utils/tokens";
@@ -16,8 +16,8 @@ import {
   FormUrlType,
 } from "../../../services/zod/form/form_url";
 import { zodResolver } from "@hookform/resolvers/zod";
-import "./Form.css";
 import { useTranslation } from "react-i18next";
+import "./Form.css";
 
 function FormUrl() {
   const { url, isNew, setUrl, toggleShowForm } = useContext(UrlContext);

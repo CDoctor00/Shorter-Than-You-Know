@@ -19,10 +19,7 @@ const historyItemSchema = z.object({
     .string({ message: "note error" })
     .optional()
     .transform((val) => val || undefined),
-  clicks: z
-    .number({ message: "clicks error" })
-    .optional()
-    .transform((val) => val || undefined),
+  clicks: z.number({ message: "clicks error" }),
 });
 
 export const historyResponseSchema = z.array(historyItemSchema);

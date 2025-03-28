@@ -51,11 +51,11 @@ export interface HistoryItem {
   isEnabled: boolean;
   createTime: string;
   updateTime: string;
+  clicks: number;
   prefix?: string;
   expirationTime?: string;
   password?: string;
   note?: string;
-  clicks?: number;
 }
 
 export type ResponseHistory = HistoryItem[];
