@@ -7,7 +7,8 @@
       "urlTitle": "Delete your url",
       "text": "Press the button to confirm the delete",
       "button": "Confirm delete"
-    }
+    },
+    "passwordFail": "Wrong password"
   },
   "homePage": {
     "main": {

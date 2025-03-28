@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import "./UrlButton.css";
 
 function UrlButton({ redirect }: { redirect: boolean }) {
-  const { setUrl, toggleShowForm } = useContext(UrlContext);
+  const { setUrl, setShowForm } = useContext(UrlContext);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -19,7 +19,7 @@ function UrlButton({ redirect }: { redirect: boolean }) {
         if (redirect) {
           navigate("/shorten");
         } else {
-          toggleShowForm();
+          setShowForm(true);
         }
       }}
     >

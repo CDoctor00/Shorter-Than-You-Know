@@ -11,10 +11,6 @@ const UrlContextProvider = (props: props) => {
   const [isNew, setIsNew] = useState(true);
   const [showForm, setShowForm] = useState(url === undefined);
 
-  const toggleShowForm = () => {
-    setShowForm(!showForm);
-  };
-
   const updateStates = (newUrl: Url | undefined, isNew: boolean) => {
     setURL(newUrl);
     setIsNew(isNew);
@@ -23,7 +19,7 @@ const UrlContextProvider = (props: props) => {
 
   return (
     <UrlContext.Provider
-      value={{ url, isNew, setUrl: updateStates, showForm, toggleShowForm }}
+      value={{ url, isNew, setUrl: updateStates, showForm, setShowForm }}
     >
       {props.children}
     </UrlContext.Provider>

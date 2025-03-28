@@ -69,14 +69,20 @@ export interface ResponseLoginBody {
 }
 
 export interface ResponseShortenBody {
-  longUrl: string;
-  shortID: string;
+  status: number;
+  data?: {
+    longUrl: string;
+    shortID: string;
+  };
 }
 
 export interface ResponseUpdateUrlBody {
-  longUrl: string;
-  shortID: string;
-  updateTime: string;
+  status: number;
+  data?: {
+    longUrl: string;
+    shortID: string;
+    updateTime: string;
+  };
 }
 
 export interface ResponseRedirectBody {

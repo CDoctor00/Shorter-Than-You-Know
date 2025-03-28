@@ -1,25 +1,30 @@
 .language-selector-container {
   position: relative;
   display: inline-block;
+  z-index: 1;
 
   .options-list {
     position: absolute;
     top: calc(100% + 1rem);
     left: 0;
-    background-color: var(--card-bg);
+    background-color: var(--hover-bg);
     list-style-type: none;
     padding: 0;
     margin: 0;
     border-radius: 0.5rem;
+
+    li:last-child {
+      border-bottom: none;
+    }
   }
 
   .option {
     padding: 0.5rem 1rem;
     cursor: pointer;
+    border-bottom: 1px solid var(--input-bg);
   }
 
-  .option:hover,
-  .option.selected {
-    background-color: rgb(from var(--secondary) r g b / 0.5);
+  .option:hover {
+    background-color: rgb(from var(--secondary) r g b / 0.7);
   }
 }

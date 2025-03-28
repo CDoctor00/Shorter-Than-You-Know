@@ -15,8 +15,9 @@ import {
   formUpdateUserSchema,
   FormUpdateUserType,
 } from "../../../../services/zod/form/update_user";
-import "./Card.css";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+import "./Card.css";
 
 function ProfileCard() {
   const { user, logoutUser, updateUserInfo } = useContext(UserContext);
@@ -50,9 +51,15 @@ function ProfileCard() {
       surname: data.surname,
       newPassword: data.newPassword,
     })
-      .then(() => {
-        updateUserInfo(data.name, data.surname);
-        setIsShow(true);
+      .then((responseStatus) => {
+        if (responseStatus === 200) {
+          updateUserInfo(data.name, data.surname);
+          setIsShow(true);
+        } else if (responseStatus >= 400 && responseStatus < 500) {
+          toast.error(t("commons.passwordFail"));
+        } else if (responseStatus >= 500) {
+          toast.error(t("serverError"));
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -77,10 +84,16 @@ function ProfileCard() {
     }
 
     deleteUser(token, { password: data.password! })
-      .then(() => {
-        logoutUser();
-        toggleModal();
-        setChildren(<></>);
+      .then((responseStatus) => {
+        if (responseStatus === 200) {
+          logoutUser();
+          toggleModal();
+          setChildren(<></>);
+        } else if (responseStatus >= 400 && responseStatus < 500) {
+          toast.error(t("commons.passwordFail"));
+        } else if (responseStatus >= 500) {
+          toast.error(t("serverError"));
+        }
       })
       .catch((error) => {
         console.error(error);

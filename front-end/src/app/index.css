@@ -86,8 +86,9 @@ h6 {
   --accent: rgb(78, 244, 78);
 
   --card-bg: rgb(210, 241, 210);
-  --input-bg: rgb(from var(--text) r g b / 0.1);
+  --hover-bg: rgb(185, 240, 185);
   --title: rgb(50, 120, 50);
+  --input-bg: rgb(from var(--text) r g b / 0.1);
   --text-gray: rgb(from var(--text) r g b / 0.6);
   --border-gray: rgb(from var(--text) r g b / 0.3);
   --icon-bg: rgb(from var(--background) r g b / 0.5);
@@ -100,8 +101,9 @@ h6 {
   --accent: rgb(11, 177, 11);
 
   --card-bg: rgb(11, 33, 11);
-  --input-bg: rgb(from var(--text) r g b / 0.6);
+  --hover-bg: rgb(15, 50, 15);
   --title: rgb(50, 200, 50);
+  --input-bg: rgb(from var(--text) r g b / 0.6);
   --text-gray: rgb(from var(--text) r g b / 0.6);
   --border-gray: rgb(from var(--text) r g b / 0.3);
   --icon-bg: rgb(from var(--background) r g b / 0.5);

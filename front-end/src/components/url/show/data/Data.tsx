@@ -11,6 +11,7 @@ import UrlInfo from "../../../user/history/url-info/Info";
 import { FormPasswordType } from "../../../../services/zod/form/password";
 import { copyToClipboard } from "../../../../services/system/clipboard";
 import { useTranslation } from "react-i18next";
+import { toast, ToastContainer } from "react-toastify";
 import "./Data.css";
 
 interface props {
@@ -19,7 +20,7 @@ interface props {
 }
 
 function UrlData({ isOpen, toggleQR }: props) {
-  const { url, isNew, toggleShowForm } = useContext(UrlContext);
+  const { url, isNew, setShowForm } = useContext(UrlContext);
   const { toggleModal, setChildren } = useContext(ModalContext);
   const { removeItem } = useContext(HistoryContext);
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ function UrlData({ isOpen, toggleQR }: props) {
   }
 
   const modifyURL = () => {
-    toggleShowForm();
+    setShowForm(true);
   };
 
   const submitDelete = async (data: FormPasswordType) => {
@@ -39,10 +40,16 @@ function UrlData({ isOpen, toggleQR }: props) {
     }
 
     deleteUrl(token, { password: data.password, uuid: url.uuid! })
-      .then(() => {
-        removeItem(url.uuid!);
-        toggleModal();
-        setChildren(<></>);
+      .then((responseStatus) => {
+        if (responseStatus === 200) {
+          removeItem(url.uuid!);
+          toggleModal();
+          setChildren(<></>);
+        } else if (responseStatus >= 400 && responseStatus < 500) {
+          toast.error(t("commons.passwordFail"));
+        } else if (responseStatus >= 500) {
+          toast.error(t("serverError"));
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -107,6 +114,20 @@ function UrlData({ isOpen, toggleQR }: props) {
           )}
         </div>
       </div>
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        limit={3}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 }

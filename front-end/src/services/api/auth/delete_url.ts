@@ -3,7 +3,7 @@ import { RequestDeleteUrlBody } from "./types";
 export const deleteUrl = async (
   authToken: string,
   body: RequestDeleteUrlBody
-): Promise<undefined> => {
+): Promise<number> => {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/auth/deleteUrl`,
@@ -17,10 +17,7 @@ export const deleteUrl = async (
       }
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return;
+    return response.status;
   } catch (error) {
     throw new Error(`deleteUrl: ${error}`);
   }

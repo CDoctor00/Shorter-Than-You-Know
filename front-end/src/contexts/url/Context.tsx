@@ -6,7 +6,7 @@ interface context {
   isNew: boolean;
   setUrl: (newUrl: Url | undefined, isNew: boolean) => void;
   showForm: boolean;
-  toggleShowForm: () => void;
+  setShowForm: (value: boolean) => void;
 }
 
 export const UrlContext = createContext<context>({
@@ -14,5 +14,5 @@ export const UrlContext = createContext<context>({
   isNew: true,
   setUrl: () => {},
   showForm: true,
-  toggleShowForm: () => {},
+  setShowForm: () => {},
 });

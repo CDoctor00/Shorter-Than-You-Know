@@ -17,10 +17,11 @@ import {
 } from "../../../services/zod/form/form_url";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import { toast, ToastContainer } from "react-toastify";
 import "./Form.css";
 
 function FormUrl() {
-  const { url, isNew, setUrl, toggleShowForm } = useContext(UrlContext);
+  const { url, isNew, setUrl, setShowForm } = useContext(UrlContext);
   const { updateItem } = useContext(HistoryContext);
   const { isAuthenticated } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(!isNew);
@@ -47,15 +48,21 @@ function FormUrl() {
 
     shorten(getToken(), requestBody)
       .then((response) => {
-        setUrl(
-          {
-            longUrl: response.longUrl,
-            shortID: response.shortID,
-            shortUrl: `${window.location.origin}/${response.shortID}`,
-          },
-          true
-        );
-        toggleShowForm();
+        if (response.status === 201 && response.data) {
+          setUrl(
+            {
+              longUrl: response.data.longUrl,
+              shortID: response.data.shortID,
+              shortUrl: `${window.location.origin}/${response.data.shortID}`,
+            },
+            true
+          );
+          setShowForm(false);
+        } else if (response.status >= 400 && response.status < 500) {
+          toast.error(t("commons.passwordFail"));
+        } else if (response.status >= 500) {
+          toast.error(t("serverError"));
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -85,28 +92,34 @@ function FormUrl() {
 
     updateUrl(token, requestBody)
       .then((response) => {
-        const exp = requestBody.expirationTime
-          ? new Date(requestBody.expirationTime)
-          : undefined;
+        if (response.status === 201 && response.data) {
+          const exp = requestBody.expirationTime
+            ? new Date(requestBody.expirationTime)
+            : undefined;
 
-        const newUrl: Url = {
-          longUrl: response.longUrl,
-          shortID: response.shortID,
-          shortUrl: `${window.location.origin}/${response.shortID}`,
-          createTime: url.createTime,
-          uuid: url.uuid,
-          updateTime: new Date(response.updateTime),
-          expirationTime: exp,
-          isEnabled: requestBody.isEnabled,
-          prefix: requestBody.prefix,
-          status: getStatus(requestBody.isEnabled, exp),
-          note: data.note,
-          clicks: url.clicks,
-        };
+          const newUrl: Url = {
+            longUrl: response.data.longUrl,
+            shortID: response.data.shortID,
+            shortUrl: `${window.location.origin}/${response.data.shortID}`,
+            createTime: url.createTime,
+            uuid: url.uuid,
+            updateTime: new Date(response.data.updateTime),
+            expirationTime: exp,
+            isEnabled: requestBody.isEnabled,
+            prefix: requestBody.prefix,
+            status: getStatus(requestBody.isEnabled, exp),
+            note: data.note,
+            clicks: url.clicks,
+          };
 
-        setUrl(newUrl, false);
-        updateItem(newUrl);
-        toggleShowForm();
+          setUrl(newUrl, false);
+          updateItem(newUrl);
+          setShowForm(false);
+        } else if (response.status >= 400 && response.status < 500) {
+          toast.error(t("commons.passwordFail"));
+        } else if (response.status >= 500) {
+          toast.error(t("serverError"));
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -286,6 +299,19 @@ function FormUrl() {
           }
         />
       </form>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        limit={3}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 }

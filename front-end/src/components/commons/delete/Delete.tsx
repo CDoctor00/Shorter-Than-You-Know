@@ -5,6 +5,7 @@ import {
   FormPasswordType,
 } from "../../../services/zod/form/password";
 import { useTranslation } from "react-i18next";
+import { ToastContainer } from "react-toastify";
 import "./Delete.css";
 
 interface props {
@@ -33,6 +34,20 @@ const Delete = ({ submitDelete, title, hasPassword }: props) => {
         />
         <input type="submit" value={t("commons.delete.button")} />
       </form>
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        limit={3}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

@@ -22,7 +22,9 @@ export const shorten = async (
 
     const responseData = await response.json();
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      return {
+        status: response.status,
+      };
     }
 
     const resultsResponse = responseShortenSchema.safeParse(responseData);
@@ -32,7 +34,10 @@ export const shorten = async (
       );
     }
 
-    return resultsResponse.data;
+    return {
+      status: response.status,
+      data: resultsResponse.data,
+    };
   } catch (error) {
     throw new Error(`shorten: ${error}`);
   }

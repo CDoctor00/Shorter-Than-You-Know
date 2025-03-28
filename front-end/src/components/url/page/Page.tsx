@@ -5,10 +5,11 @@ import UrlContainer from "../container/Container";
 import "./Page.css";
 
 function UrlPage() {
-  const { url, setUrl } = useContext(UrlContext);
+  const { url, setUrl, setShowForm } = useContext(UrlContext);
 
   useEffect(() => {
     setUrl(undefined, true);
+    setShowForm(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

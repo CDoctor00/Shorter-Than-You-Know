@@ -7,7 +7,8 @@
       "urlTitle": "Elimina il tuo url",
       "text": "Premi il bottone per confermare l'eliminazione",
       "button": "Conferma eliminazione"
-    }
+    },
+    "passwordFail": "Password errata"
   },
   "homePage": {
     "main": {
