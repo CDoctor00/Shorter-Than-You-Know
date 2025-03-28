@@ -4,40 +4,33 @@ import {
   formPasswordSchema,
   FormPasswordType,
 } from "../../../services/zod/form/password";
-import "./Delete.css";
 import { useTranslation } from "react-i18next";
+import "./Delete.css";
 
 interface props {
   submitDelete: (data: FormPasswordType) => void;
+  hasPassword: boolean;
   title: string;
 }
 
-const Delete = ({ submitDelete, title }: props) => {
+const Delete = ({ submitDelete, title, hasPassword }: props) => {
   const { t } = useTranslation();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    clearErrors,
-  } = useForm<FormPasswordType>({
+  const { register, handleSubmit } = useForm<FormPasswordType>({
     resolver: zodResolver(formPasswordSchema),
   });
 
   return (
     <div className="delete-container">
-      <h2 className="title">{title}</h2>
+      <h2>{title}</h2>
+      <p>{t("commons.delete.text")}</p>
       <form onSubmit={handleSubmit(submitDelete)}>
         <input
           type="password"
-          placeholder={t("commons.delete.placeholder")}
+          placeholder="Password"
           {...register("password")}
-          onChange={() => clearErrors("password")}
-          className={errors.password && "error-input"}
+          style={hasPassword ? {} : { display: "none" }}
         />
-        {errors.password && (
-          <p className="error-input-message">{t(errors.password.message!)}</p>
-        )}
         <input type="submit" value={t("commons.delete.button")} />
       </form>
     </div>

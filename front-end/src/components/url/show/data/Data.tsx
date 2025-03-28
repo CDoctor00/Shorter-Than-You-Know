@@ -55,6 +55,7 @@ function UrlData({ isOpen, toggleQR }: props) {
       <Delete
         submitDelete={submitDelete}
         title={t("commons.delete.urlTitle")}
+        hasPassword={url.hasPassword!}
       />
     );
   };

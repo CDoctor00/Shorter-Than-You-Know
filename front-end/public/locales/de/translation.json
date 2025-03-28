@@ -5,7 +5,7 @@
     "delete": {
       "userTitle": "Ihr Konto löschen",
       "urlTitle": "Ihre URL löschen",
-      "placeholder": "Passwort eingeben, um zu bestätigen",
+      "text": "Drücken Sie die Taste, um den Löschvorgang zu bestätigen",
       "button": "Löschen bestätigen"
     }
   },

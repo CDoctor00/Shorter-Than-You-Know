@@ -25,13 +25,14 @@ func UserHistory(context *fiber.Ctx) error {
 
 	for _, row := range rows {
 		var url = api.UrlData{
-			UUID:       row.UUID,
-			LongUrl:    row.LongUrl,
-			ShortID:    row.ShortID,
-			IsEnabled:  row.Enabled,
-			CreateTime: row.InsertTime.Format(time.RFC3339),
-			UpdateTime: row.UpdateTime.Format(time.RFC3339),
-			Clicks:     row.Clicks,
+			UUID:        row.UUID,
+			LongUrl:     row.LongUrl,
+			ShortID:     row.ShortID,
+			IsEnabled:   row.Enabled,
+			CreateTime:  row.InsertTime.Format(time.RFC3339),
+			UpdateTime:  row.UpdateTime.Format(time.RFC3339),
+			Clicks:      row.Clicks,
+			HasPassword: row.Password.Valid,
 		}
 
 		if row.ExpirationTime.Valid {

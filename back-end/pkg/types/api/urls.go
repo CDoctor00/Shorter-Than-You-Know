@@ -45,6 +45,7 @@ type UrlData struct {
 	CreateTime     string    `json:"createTime"`
 	UpdateTime     string    `json:"updateTime"`
 	Clicks         int       `json:"clicks"`
+	HasPassword    bool      `json:"hasPassword"`
 	Prefix         *string   `json:"prefix,omitempty"`
 	ExpirationTime *string   `json:"expirationTime,omitempty"`
 	Note           *string   `json:"note,omitempty"`

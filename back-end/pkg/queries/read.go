@@ -152,9 +152,10 @@ func (dto DTO) GetUserUrls(userID string) ([]database.URL, error) {
 	var rows = []database.URL{}
 
 	var query = fmt.Sprintf(`SELECT 
-	uuid, long_url, short_id, prefix, enabled,
-	insert_time, update_time, expiration_time, 
-	note, clicks FROM %s.%s WHERE owner_id = $1
+	uuid, long_url, short_id, password, prefix,
+	enabled, insert_time, update_time, 
+	expiration_time, note, clicks 
+	FROM %s.%s WHERE owner_id = $1
 	ORDER BY update_time DESC`,
 		dto.Table.Schema, dto.Table.Name)
 
@@ -169,6 +170,7 @@ func (dto DTO) GetUserUrls(userID string) ([]database.URL, error) {
 			&row.UUID,
 			&row.LongUrl,
 			&row.ShortID,
+			&row.Password,
 			&row.Prefix,
 			&row.Enabled,
 			&row.InsertTime,

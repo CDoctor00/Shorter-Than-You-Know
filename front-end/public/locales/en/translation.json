@@ -5,7 +5,7 @@
     "delete": {
       "userTitle": "Delete your account",
       "urlTitle": "Delete your url",
-      "placeholder": "Enter the password to confirm",
+      "text": "Press the button to confirm the delete",
       "button": "Confirm delete"
     }
   },

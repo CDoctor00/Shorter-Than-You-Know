@@ -4,6 +4,7 @@ const historyItemSchema = z.object({
   longUrl: z.string({ message: "longUrl error" }).nonempty(),
   shortID: z.string({ message: "shortID error" }).nonempty(),
   uuid: z.string({ message: "uuid error" }).nonempty(),
+  hasPassword: z.boolean({ message: "hasPassword error" }),
   isEnabled: z.boolean({ message: "isEnabled error" }),
   createTime: z.string({ message: "createdTime error" }).nonempty(),
   updateTime: z.string({ message: "lastUpdateTime error" }).nonempty(),

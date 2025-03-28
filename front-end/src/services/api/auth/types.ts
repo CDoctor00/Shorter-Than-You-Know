@@ -2,7 +2,7 @@
 
 export interface RequestDeleteUrlBody {
   uuid: string;
-  password: string;
+  password?: string;
 }
 
 export interface RequestDeleteUserBody {

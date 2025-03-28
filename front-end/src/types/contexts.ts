@@ -3,6 +3,7 @@ export interface Url {
   shortUrl: string;
   shortID: string;
   uuid?: string;
+  hasPassword?: boolean;
   isEnabled?: boolean;
   status?: string;
   createTime?: Date;

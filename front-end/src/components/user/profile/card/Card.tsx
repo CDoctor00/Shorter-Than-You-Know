@@ -62,7 +62,11 @@ function ProfileCard() {
 
   const swapModalToDelete = () => {
     setChildren(
-      <Delete submitDelete={submitDelete} title="Delete your profile" />
+      <Delete
+        submitDelete={submitDelete}
+        title="Delete your profile"
+        hasPassword={true}
+      />
     );
   };
 
@@ -72,7 +76,7 @@ function ProfileCard() {
       return;
     }
 
-    deleteUser(token, { password: data.password })
+    deleteUser(token, { password: data.password! })
       .then(() => {
         logoutUser();
         toggleModal();

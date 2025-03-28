@@ -5,7 +5,7 @@
     "delete": {
       "userTitle": "Elimina il tuo account",
       "urlTitle": "Elimina il tuo url",
-      "placeholder": "Inserisci la password per confermare",
+      "text": "Premi il bottone per confermare l'eliminazione",
       "button": "Conferma eliminazione"
     }
   },

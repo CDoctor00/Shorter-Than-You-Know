@@ -50,12 +50,7 @@ function RedirectPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    clearErrors,
-  } = useForm<FormPasswordType>({
+  const { register, handleSubmit } = useForm<FormPasswordType>({
     resolver: zodResolver(formPasswordSchema),
   });
 
@@ -73,14 +68,7 @@ function RedirectPage() {
                 type="password"
                 placeholder="Password"
                 {...register("password")}
-                onChange={() => clearErrors("password")}
-                className={errors.password && "error-input"}
               />
-              {errors.password && (
-                <p className="error-input-message">
-                  {t(errors.password.message!)}
-                </p>
-              )}
               <input type="submit" value={t("redirectPage.protected.button")} />
             </form>
           </div>
