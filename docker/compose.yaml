@@ -1,0 +1,52 @@
+services:
+  back_end:
+    build:
+      context: .././back-end
+      dockerfile: Dockerfile
+    container_name: styk_be
+    ports:
+      - 10000:10000
+    networks:
+      - styk_network
+    environment:
+      TZ: "Europe/Rome"
+      PORT: "10000"
+      DB_CONNECTION: "postgresql://styk_user:styk_password@styk_db:5432/styk?sslmode=disable&application_name=styk_be"
+      JWT_KEY: "shorter_than_you_know"
+    depends_on:
+      - database
+
+  front_end:
+    build:
+      context: .././front-end
+      dockerfile: Dockerfile
+    container_name: styk_fe
+    ports:
+      - 10001:80
+    networks:
+      - styk_network
+    environment:
+      TZ: "Europe/Rome"
+      VITE_API_BASE_URL: "http://styk_be:10000/api"
+
+  database:
+    image: postgres:17.0-alpine3.20
+    container_name: styk_db
+    ports:
+      - 10864:5432
+    networks:
+      - styk_network
+    environment:
+      POSTGRES_USER: styk_user
+      POSTGRES_PASSWORD: styk_password
+      POSTGRES_DB: styk
+      TZ: "Europe/Rome"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+
+networks:
+  styk_network:
+    driver: bridge
