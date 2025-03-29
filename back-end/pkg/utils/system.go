@@ -9,6 +9,12 @@ import (
 )
 
 func LoadEnv() {
+	//? Check before if is necessary to load the .env file
+	env := os.Getenv("PORT")
+	if env != "" {
+		return
+	}
+
 	file, errOpen := os.Open(".env")
 	if errOpen != nil {
 		fmt.Println("Error encountered during opening the env file: %w", errOpen)

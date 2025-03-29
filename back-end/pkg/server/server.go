@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"os"
 	"styk/pkg/server/controllers"
 	"styk/pkg/server/middlewares"
 
@@ -19,7 +21,7 @@ func Start() {
 	server.Use(middlewares.GetCors())
 	setupRoutes(server)
 
-	server.Listen(":10000")
+	server.Listen(fmt.Sprintf(":%s", os.Getenv("PORT")))
 }
 
 func setupRoutes(server *fiber.App) {
