@@ -8,7 +8,15 @@
       "text": "Press the button to confirm the delete",
       "button": "Confirm delete"
     },
-    "passwordFail": "Wrong password"
+    "passwordFail": "Wrong password",
+    "buttons": {
+      "copy": "Copy",
+      "share": "Share",
+      "download": "Download",
+      "edit": "Edit",
+      "delete": "Delete",
+      "logout": "Logout"
+    }
   },
   "homePage": {
     "main": {

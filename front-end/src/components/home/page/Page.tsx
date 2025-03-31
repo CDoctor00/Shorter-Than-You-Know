@@ -6,7 +6,7 @@ import "./Page.css";
 function HomePage() {
   return (
     <div className="home-page">
-      <div className="home-container">
+      <div className="home-wrapper">
         <Main />
         <Explore />
         <FaqContainer />

@@ -1,16 +1,21 @@
 .user-page {
-  height: 100%;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-}
 
-.user-container {
-  width: 90vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+  @media screen and (max-width: 768px) {
+    margin: 2rem 0;
+  }
+
+  .user-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+
+    @media screen and (max-width: 768px) {
+      width: 90%;
+    }
+  }
 }

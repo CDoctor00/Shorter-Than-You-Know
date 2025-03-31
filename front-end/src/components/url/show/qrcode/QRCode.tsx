@@ -77,6 +77,7 @@ function QRCode({ isOpen, toggleQR }: props) {
               copyToClipboard(blob);
             }}
           >
+            <span>{t("commons.buttons.copy")}</span>
             <FaCopy />
           </button>
           <button
@@ -84,6 +85,7 @@ function QRCode({ isOpen, toggleQR }: props) {
               downdloadBlob(blob);
             }}
           >
+            <span>{t("commons.buttons.download")}</span>
             <FaDownload />
           </button>
         </div>

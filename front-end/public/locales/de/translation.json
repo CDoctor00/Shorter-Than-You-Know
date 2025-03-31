@@ -8,7 +8,15 @@
       "text": "Drücken Sie die Taste, um den Löschvorgang zu bestätigen",
       "button": "Löschen bestätigen"
     },
-    "passwordFail": "Falsches Passwort"
+    "passwordFail": "Falsches Passwort",
+    "buttons": {
+      "copy": "Kopieren",
+      "share": "Teilen",
+      "download": "Herunterladen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "logout": "Abmelden"
+    }
   },
   "homePage": {
     "main": {

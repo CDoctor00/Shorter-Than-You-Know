@@ -1,24 +1,53 @@
-.main-container {
+.main {
   display: flex;
   flex-direction: column;
   align-items: center;
-
   gap: 3rem;
+
+  @media screen and (min-width: 1024px) {
+    gap: 5rem;
+  }
+
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+
+    @media screen and (min-width: 1024px) {
+      display: grid;
+      grid-template-columns: 5fr 5fr;
+    }
+  }
 }
 
-.main-text-container {
+.top-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 1rem;
+
+  @media screen and (min-width: 768px) {
+    gap: 1.5rem;
+  }
 
   .title {
     font-size: 2rem;
     line-height: 2.5rem;
     color: var(--title);
+
+    @media screen and (min-width: 768px) {
+      font-size: 3rem;
+      line-height: 4rem;
+      text-wrap: unset;
+    }
   }
 
   .description {
     line-height: 1.625;
+
+    @media screen and (min-width: 768px) {
+      font-size: 1.3rem;
+      line-height: 2rem;
+    }
   }
 }

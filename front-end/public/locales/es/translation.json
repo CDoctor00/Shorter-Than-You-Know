@@ -8,7 +8,15 @@
       "text": "Pulse el botón para confirmar la eliminación",
       "button": "Confirmar eliminación"
     },
-    "passwordFail": "Contraseña incorrecta"
+    "passwordFail": "Contraseña incorrecta",
+    "buttons": {
+      "copy": "Copiar",
+      "share": "Compartir",
+      "download": "Descarga",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "logout": "Cerrar sesión"
+    }
   },
   "homePage": {
     "main": {

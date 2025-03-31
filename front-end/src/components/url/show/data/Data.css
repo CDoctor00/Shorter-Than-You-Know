@@ -4,11 +4,33 @@
   padding: 2.5rem 1rem;
   gap: 2rem;
 
-  .buttons {
-    gap: 1.5rem;
+  @media screen and (min-width: 768px) {
+    padding: 2.5rem;
+  }
 
-    button {
-      width: 2.5rem;
+  .buttons {
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    @media screen and (min-width: 768px) {
+      margin-top: 1rem;
+      flex-direction: row;
+      gap: 0;
+    }
+
+    .buttons-row {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      justify-content: space-evenly;
+
+      button {
+        width: 40%;
+        max-width: 10rem;
+      }
     }
   }
 }

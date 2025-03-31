@@ -10,6 +10,15 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+
+  .buttons {
+    gap: 2rem;
+
+    button {
+      width: 40%;
+      max-width: 10rem;
+    }
+  }
 }
 
 .big {
@@ -19,6 +28,12 @@
 
     .buttons {
       flex-direction: row;
+      width: 100%;
+
+      button {
+        max-width: 10rem;
+        width: 40%;
+      }
     }
 
     #qrcode {
@@ -33,7 +48,13 @@
     height: 16rem;
 
     .buttons {
+      justify-content: center;
+      align-items: center;
       flex-direction: column;
+
+      button {
+        width: 10rem;
+      }
     }
 
     #qrcode {
@@ -51,10 +72,10 @@
   padding-top: 4rem;
 
   &.small {
-    transform: translateY(-20rem);
+    transform: translateY(-21rem);
   }
 
   &.big {
-    transform: translateY(-35rem);
+    transform: translateY(-36rem);
   }
 }

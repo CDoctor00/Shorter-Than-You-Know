@@ -3,11 +3,12 @@
   justify-content: center;
   align-items: center;
   height: 3rem;
-  width: 20rem;
+  width: 50%;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
   background: rgb(from var(--primary) r g b / 0.8);
+  min-width: 15rem;
 
   &:hover {
     background: var(--primary);
@@ -20,11 +21,22 @@
       font-size: 1.1rem;
     }
   }
+
+  @media screen and (min-width: 1024px) {
+    font-size: 1.5rem;
+    height: 4rem;
+
+    &:hover {
+      .url-text {
+        font-size: 2rem;
+      }
+    }
+  }
 }
 
 .url-icon {
-  width: 2rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,7 +45,7 @@
   top: 0;
   border-radius: 0 50% 50% 0;
   background: var(--icon-bg);
-  transform: translatex(-2rem);
+  transform: translatex(-2.5rem);
   transition: all 0.25s ease-in-out;
   z-index: 1;
 }

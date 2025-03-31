@@ -1,15 +1,17 @@
 .home-page {
-  height: 100%;
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.home-container {
-  display: flex;
-  flex-direction: column;
-  width: 90vw;
-  margin: 5rem 0;
-  gap: 4rem;
+  .home-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    margin: 5rem 0;
+    gap: 3rem;
+
+    @media screen and (min-width: 1024px) {
+      gap: 5rem;
+    }
+  }
 }

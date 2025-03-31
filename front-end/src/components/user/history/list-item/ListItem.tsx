@@ -5,6 +5,7 @@ import { ModalContext } from "../../../../contexts/modal/Context";
 import { UrlContext } from "../../../../contexts/url/Context";
 import UrlContainer from "../../../url/container/Container";
 import { Url } from "../../../../types/contexts";
+import { copyToClipboard } from "../../../../services/system/clipboard";
 import "./ListItem.css";
 
 function ListItem({ url }: { url: Url }) {
@@ -32,7 +33,11 @@ function ListItem({ url }: { url: Url }) {
           <p className="date">{url.updateTime!.toLocaleDateString()}</p>
           <div className="buttons">
             <button>
-              <FaCopy />
+              <FaCopy
+                onClick={() => {
+                  copyToClipboard(url.shortUrl);
+                }}
+              />
             </button>
             <button onClick={handleClickInfo}>
               <FaInfo />

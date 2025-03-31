@@ -2,4 +2,8 @@
   width: fit-content;
   height: 100%;
   cursor: pointer;
+
+  &:hover {
+    color: var(--accent);
+  }
 }

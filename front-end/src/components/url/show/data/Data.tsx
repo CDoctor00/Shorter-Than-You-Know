@@ -92,25 +92,31 @@ function UrlData({ isOpen, toggleQR }: props) {
           <UrlInfo />
         )}
         <div className="buttons">
-          <button
-            onClick={() => {
-              copyToClipboard(url.shortUrl);
-            }}
-          >
-            <FaCopy />
-          </button>
-          <button>
-            <FaShare />
-          </button>
+          <div className="buttons-row">
+            <button
+              onClick={() => {
+                copyToClipboard(url.shortUrl);
+              }}
+            >
+              <span>{t("commons.buttons.copy")}</span>
+              <FaCopy />
+            </button>
+            <button>
+              <span>{t("commons.buttons.share")}</span>
+              <FaShare />
+            </button>
+          </div>
           {!isNew && (
-            <>
+            <div className="buttons-row">
               <button onClick={modifyURL}>
+                <span>{t("commons.buttons.edit")}</span>
                 <FaPen />
               </button>
               <button onClick={swapModalToDelete}>
+                <span>{t("commons.buttons.delete")}</span>
                 <MdDelete />
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>

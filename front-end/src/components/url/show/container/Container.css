@@ -3,10 +3,10 @@
   border-radius: 1rem;
 
   &.small {
-    height: 20rem;
+    height: 21rem;
   }
 
   &.big {
-    height: 35rem;
+    height: 36rem;
   }
 }

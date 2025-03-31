@@ -15,9 +15,11 @@ function UrlPage() {
 
   return (
     <div className="url-page">
-      <UrlContainer />
+      <div className="url-wrapper">
+        <UrlContainer />
 
-      {url && <UrlButton redirect={false} />}
+        {url && <UrlButton redirect={false} />}
+      </div>
     </div>
   );
 }

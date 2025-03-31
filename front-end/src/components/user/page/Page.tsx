@@ -47,7 +47,7 @@ function UserPage() {
 
   return (
     <div className="user-page">
-      <div className="user-container">
+      <div className="user-wrapper">
         <ProfileBar />
         <Statistics />
         <HistoryContainer />

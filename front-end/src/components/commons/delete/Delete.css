@@ -5,6 +5,7 @@
   text-align: center;
   padding: 1rem;
   gap: 1rem;
+  max-width: 30rem;
 
   form {
     padding: 0;

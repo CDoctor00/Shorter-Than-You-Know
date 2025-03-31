@@ -19,11 +19,11 @@ function Explore() {
               {t("homePage.explore.columnsTitle.feature")}
             </th>
             <th className="header">
-              <TbKey />
+              <TbKey className="th-icon" />
               {t("homePage.explore.columnsTitle.signed")}
             </th>
             <th className="header">
-              <TbKeyOff />
+              <TbKeyOff className="th-icon" />
               {t("homePage.explore.columnsTitle.free")}
             </th>
           </tr>

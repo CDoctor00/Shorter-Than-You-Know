@@ -1,6 +1,6 @@
 {
   "commons": {
-    "urlButton": "Riduci un nuovo link",
+    "urlButton": "Abbrevia un nuovo link",
     "footerPhrase": "Fatto con sangue e sudore",
     "delete": {
       "userTitle": "Elimina il tuo account",
@@ -8,7 +8,15 @@
       "text": "Premi il bottone per confermare l'eliminazione",
       "button": "Conferma eliminazione"
     },
-    "passwordFail": "Password errata"
+    "passwordFail": "Password errata",
+    "buttons": {
+      "copy": "Copia",
+      "share": "Condividi",
+      "download": "Scarica",
+      "edit": "Modifica",
+      "delete": "Elimina",
+      "logout": "Esci"
+    }
   },
   "homePage": {
     "main": {

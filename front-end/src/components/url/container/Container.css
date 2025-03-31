@@ -1,3 +1,4 @@
 .url-container {
   width: 90vw;
+  max-width: 640px;
 }

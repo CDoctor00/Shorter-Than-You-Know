@@ -1,11 +1,9 @@
 .redirect-page {
-  height: 100%;
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  .protected-container {
+  .protected-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -15,10 +13,13 @@
 
     svg {
       height: fit-content;
+      max-height: 25rem;
     }
 
     form {
       width: 100%;
+      max-width: 30rem;
+
       input {
         margin: 0;
       }

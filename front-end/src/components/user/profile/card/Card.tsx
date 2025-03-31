@@ -132,13 +132,16 @@ function ProfileCard() {
           </div>
           <div className="buttons">
             <button onClick={swapToUpdate}>
-              <FaPen />
+              <span>{t("commons.buttons.edit")}</span>
+              <FaPen className="button-icon" />
             </button>
             <button onClick={swapModalToDelete}>
-              <MdDelete />
+              <span>{t("commons.buttons.delete")}</span>
+              <MdDelete className="button-icon" />
             </button>
             <button onClick={logout}>
-              <MdLogout />
+              <span>{t("commons.buttons.logout")}</span>
+              <MdLogout className="button-icon" />
             </button>
           </div>
         </div>

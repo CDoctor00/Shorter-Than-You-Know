@@ -8,7 +8,15 @@
       "text": "Appuyez sur le bouton pour confirmer la suppression",
       "button": "Confirmer la suppression"
     },
-    "passwordFail": "Mot de passe incorrect"
+    "passwordFail": "Mot de passe incorrect",
+    "buttons": {
+      "copy": "Copier",
+      "share": "Partager",
+      "download": "Téléchargement",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "logout": "Déconnexion"
+    }
   },
   "homePage": {
     "main": {

@@ -162,7 +162,11 @@ function FormUrl() {
               <FaArrowDown className={`arrow ${isOpen ? "open" : ""}`} />
             </button>
           )}
-          <div className={`advanced ${isOpen ? "" : "close"}`}>
+          <div
+            className={`advanced ${
+              isOpen ? isAuthenticated && "large" : "close"
+            }`}
+          >
             <div className="input-container">
               <label htmlFor="password">
                 {t("urlPage.form.placeholders.password")}
@@ -291,7 +295,6 @@ function FormUrl() {
         </div>
         <input
           type="submit"
-          id="submit"
           value={
             isNew
               ? t("urlPage.form.submitButton.new")

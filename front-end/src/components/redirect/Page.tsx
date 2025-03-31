@@ -60,7 +60,7 @@ function RedirectPage() {
         <Loader />
       ) : (
         isProtected && (
-          <div className="protected-container">
+          <div className="protected-wrapper">
             <h2 className="title">{t("redirectPage.protected.title")}</h2>
             <Image />
             <form onSubmit={handleSubmit(openUrl)}>

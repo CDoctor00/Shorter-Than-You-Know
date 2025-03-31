@@ -7,12 +7,14 @@ function Main() {
   const { t } = useTranslation();
 
   return (
-    <div className="main-container">
-      <div className="main-text-container">
-        <h2 className="title">{t("homePage.main.title")}</h2>
-        <p className="description"> {t("homePage.main.description")}</p>
+    <div className="main">
+      <div className="main-container">
+        <div className="top-container">
+          <h2 className="title">{t("homePage.main.title")}</h2>
+          <p className="description"> {t("homePage.main.description")}</p>
+        </div>
+        <Image />
       </div>
-      <Image />
       <UrlButton redirect={true} />
     </div>
   );

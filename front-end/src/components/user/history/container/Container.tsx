@@ -42,7 +42,7 @@ function HistoryContainer() {
   const currentItems = filteredHistory.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div className="history-container">
+    <div className="history-wrapper">
       <h2 className="title">{t("userPage.history.title")}</h2>
       <div className="bar">
         <form className="search">
